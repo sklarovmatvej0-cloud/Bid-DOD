@@ -559,6 +559,21 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 onHint={handleHintClick}
               />
 
+              {/* Authentic OPAC Search Terminal & Reader Request Slip */}
+              <div className="rounded-2xl bg-[#13294b] text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                <div className="flex items-center gap-2.5 text-xs">
+                  <span className="px-2 py-0.5 rounded bg-[#135c75] text-[#7dd3fc] font-mono-tabular font-extrabold">
+                    АБИС OPAC · КАТАЛОГ
+                  </span>
+                  <span className="font-semibold text-white/90">
+                    Запрос читателя: <strong className="text-[#ffd66b]">Марина Миронова · 2023 г. · шрифты и композиция плакатов</strong>
+                  </span>
+                </div>
+                <span className="font-mono-tabular text-xs font-extrabold text-[#ffd66b]">
+                  Найдено записей: {filteredBooks.length} из {CATALOG_BOOKS.length}
+                </span>
+              </div>
+
               {/* Clean Filter Bar */}
               <div className="bg-white rounded-2xl p-3.5 border border-[#13294b]/10 shadow-xs flex flex-wrap items-center gap-2.5">
                 <div className="relative flex-1 min-w-[190px]">
@@ -640,34 +655,40 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 ))}
               </div>
 
-              {/* Book Inspect Popover */}
+              {/* Book Inspect Popover (Styled as Authentic Catalog Card + Reader Issue Button) */}
               {openedBook && (
                 <div
                   className="fixed inset-0 z-40 bg-[#0d1c34]/65 backdrop-blur-[2px] flex items-center justify-center p-4"
                   onClick={() => setOpenedBook(null)}
                 >
                   <div
-                    className="max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl animate-card-in"
+                    className="max-w-lg w-full bg-[#fdfbf5] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#135c75]/35 animate-card-in"
                     onClick={(e) => e.stopPropagation()}
                   >
+                    <div className="bg-[#13294b] text-white px-5 py-3 flex items-center justify-between text-xs font-extrabold">
+                      <span>КАРТОЧКА ЭЛЕКТРОННОГО КАТАЛОГА · Шифр {openedBook.code}</span>
+                      <span className="font-mono-tabular text-[#ffd66b]">ГОСТ Р 7.0.100</span>
+                    </div>
                     <div className="p-5 flex gap-4 items-start">
                       <img
                         src={openedBook.cover}
                         alt={openedBook.title}
                         className="w-28 h-28 rounded-2xl object-cover shadow-md shrink-0"
                       />
-                      <div className="min-w-0 space-y-1">
+                      <div className="min-w-0 space-y-1.5">
                         <div className="text-xs font-mono-tabular font-extrabold text-[#135c75]">
-                          {openedBook.theme} · {openedBook.year} · {openedBook.code}
+                          Раздел: {openedBook.theme} · Год: {openedBook.year} · Индекс ББК: {openedBook.code}
                         </div>
                         <h3 className="font-display font-extrabold text-lg text-[#13294b] leading-tight">
                           {openedBook.title}
                         </h3>
-                        <div className="text-xs font-bold text-[#13294b]/70">{openedBook.author}</div>
+                        <div className="text-xs font-bold text-[#13294b]/75">
+                          Автор: {openedBook.author}
+                        </div>
                       </div>
                     </div>
                     <div className="px-5 pb-4">
-                      <div className="rounded-2xl bg-[#f3f6fc] p-4 text-sm text-[#13294b] leading-relaxed">
+                      <div className="rounded-2xl bg-white border border-[#13294b]/12 p-4 text-sm text-[#13294b] leading-relaxed">
                         <strong>О чём книга:</strong> {openedBook.about}
                       </div>
                     </div>
@@ -675,14 +696,14 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setOpenedBook(null)}
-                        className="min-h-[44px] px-4 rounded-xl bg-[#f2f5fa] hover:bg-[#e5ecf6] text-[#13294b] text-xs font-bold"
+                        className="min-h-[44px] px-4 rounded-xl bg-[#e9eef6] hover:bg-[#dce4f2] text-[#13294b] text-xs font-bold"
                       >
                         Закрыть
                       </button>
                       <button
                         type="button"
                         onClick={() => handleGiveBookToReader(openedBook)}
-                        className="flex-1 min-h-[44px] px-4 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white text-sm font-extrabold"
+                        className="flex-1 min-h-[44px] px-4 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white text-sm font-extrabold shadow-sm"
                       >
                         Отдать книгу читателю!
                       </button>
@@ -711,6 +732,19 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 accentColor="#135c75"
                 onHint={handleHintClick}
               />
+
+              {/* BBK Classification Legend Strip */}
+              <div className="rounded-2xl bg-[#13294b] text-white px-4 py-3 text-xs flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <span className="font-display font-extrabold text-[#ffd66b]">Памятка систематической расстановки ББК:</span>
+                  <span><strong className="font-mono-tabular text-[#7dd3fc]">85.12</strong> — Графический дизайн (верхний стеллаж)</span>
+                  <span className="text-white/35">·</span>
+                  <span><strong className="font-mono-tabular text-[#86efac]">26.8</strong> — География и путешествия (нижний стеллаж)</span>
+                </div>
+                <span className="text-[11px] text-white/75 font-semibold">
+                  Сверяй шифр на ярлыке каждой книги!
+                </span>
+              </div>
 
               {/* Helper banner if user clicked a book instead of dragging */}
               {selectedShelfBookId && (
@@ -994,117 +1028,162 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 </div>
               )}
 
-              <div className="rounded-3xl bg-[#eef3fa] p-5 sm:p-6 border border-[#13294b]/12 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                {/* LEFT: REAL BOOK WITH IMPRINT DATA */}
-                <div className="bg-[#fdfbf7] rounded-2xl p-5 shadow-lg border border-[#13294b]/15 flex flex-col sm:flex-row gap-5 items-center">
-                  <img
-                    src={MEDIA.oceanExpedition}
-                    alt="Издание Экспедиция на дно океана"
-                    className="w-40 aspect-[3/4] object-cover rounded-xl shadow-lg shrink-0"
-                  />
-                  <div className="space-y-2.5 text-sm">
-                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#135c75]">
-                      Издание · выходные данные книги
-                    </div>
-                    <div className="font-display font-extrabold text-lg text-[#13294b] leading-snug">
-                      Экспедиция на дно океана
-                    </div>
-                    <div className="space-y-1.5 text-sm text-[#13294b] pt-1 border-t border-[#13294b]/10">
-                      <div>
-                        <strong>Автор:</strong> Елена Крылова
+              <div className="rounded-3xl bg-[#eef3fa] p-5 sm:p-6 border border-[#13294b]/12 grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                {/* LEFT: REAL BOOK TITLE PAGE & IMPRINT */}
+                <div className="bg-[#fdfbf7] rounded-2xl p-5 shadow-lg border border-[#13294b]/15 flex flex-col justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row gap-5 items-center">
+                    <img
+                      src={MEDIA.oceanExpedition}
+                      alt="Издание Экспедиция на дно океана"
+                      className="w-36 aspect-[3/4] object-cover rounded-xl shadow-lg shrink-0"
+                    />
+                    <div className="space-y-2.5 text-sm">
+                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#135c75]">
+                        Титульный лист · выходные данные книги
                       </div>
-                      <div>
-                        <strong>Год издания:</strong>{' '}
-                        <span className="font-mono-tabular font-extrabold text-[#13294b]">
-                          2022
-                        </span>
+                      <div className="font-display font-extrabold text-lg text-[#13294b] leading-snug">
+                        Экспедиция на дно океана
                       </div>
-                      <div>
-                        <strong>Предметная рубрика:</strong>{' '}
-                        <span className="font-bold text-[#13294b]">
-                          Глубоководные экспедиции
-                        </span>
+                      <div className="space-y-1.5 text-sm text-[#13294b] pt-1 border-t border-[#13294b]/10">
+                        <div>
+                          <strong>Автор:</strong> Елена Крылова
+                        </div>
+                        <div>
+                          <strong>Год издания:</strong>{' '}
+                          <span className="font-mono-tabular font-extrabold text-[#13294b]">
+                            2022
+                          </span>
+                        </div>
+                        <div>
+                          <strong>Предметная рубрика:</strong>{' '}
+                          <span className="font-bold text-[#13294b]">
+                            Глубоководные экспедиции
+                          </span>
+                        </div>
+                        <div>
+                          <strong>Шифр ББК:</strong>{' '}
+                          <span className="font-mono-tabular font-bold text-[#135c75]">
+                            26.8 / К85
+                          </span>
+                        </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Live ISBD / ГОСТ Р 7.0.100 Bibliographic Description String */}
+                  <div className="rounded-xl bg-white border border-[#13294b]/12 p-3.5 space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#135c75]">
+                      <span>Библиографическое описание по ГОСТ Р 7.0.100</span>
+                      <span className="font-mono-tabular">ISBD</span>
+                    </div>
+                    <p className="font-mono-tabular text-xs text-[#13294b] leading-relaxed">
+                      Крылова, Е. Экспедиция на дно океана / Елена Крылова. — Москва,{' '}
+                      <strong className={fixedYear ? 'text-[#157a4f]' : 'text-[#c41e2e] underline'}>
+                        {fixedYear ? '2022' : '2019'}
+                      </strong>
+                      . — Рубрика:{' '}
+                      <strong className={fixedTopic ? 'text-[#157a4f]' : 'text-[#c41e2e] underline'}>
+                        {fixedTopic ? 'Глубоководные экспедиции' : 'Коралловые рифы и пляжи'}
+                      </strong>
+                      .
+                    </p>
                   </div>
                 </div>
 
                 {/* RIGHT: AUTHENTIC BIBLIOGRAPHIC CATALOG RECORD */}
-                <div className="bg-[#fdfbf5] rounded-2xl p-5 sm:p-6 shadow-lg border-2 border-[#135c75]/30 space-y-3">
-                  <div className="flex items-center justify-between border-b-2 border-[#c41e2e]/35 pb-2">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-[#135c75]">
-                      Библиографическая запись · нажми на ошибки
-                    </span>
-                    <span className="font-mono-tabular text-xs font-extrabold text-[#13294b]">
-                      Исправлено: {(fixedYear ? 1 : 0) + (fixedTopic ? 1 : 0)} / 2
-                    </span>
+                <div className="bg-[#fdfbf5] rounded-2xl p-5 sm:p-6 shadow-lg border-2 border-[#135c75]/30 space-y-3 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b-2 border-[#c41e2e]/35 pb-2">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-[#135c75]">
+                        Библиографическая запись · нажми на поле с ошибкой
+                      </span>
+                      <span className="font-mono-tabular text-xs font-extrabold text-[#13294b]">
+                        Исправлено: {(fixedYear ? 1 : 0) + (fixedTopic ? 1 : 0)} / 2
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleStickyFieldClick('title')}
+                      className="w-full p-3.5 rounded-xl bg-white hover:bg-[#f4f7fc] text-left border border-[#13294b]/12 transition-colors flex items-center justify-between gap-2"
+                    >
+                      <div>
+                        <div className="text-[11px] font-bold text-[#135c75]">Заглавие (поле 200$a)</div>
+                        <div className="font-display font-bold text-sm text-[#13294b]">
+                          Экспедиция на дно океана
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-bold text-[#13294b]/45">Сверить</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleStickyFieldClick('author')}
+                      className="w-full p-3.5 rounded-xl bg-white hover:bg-[#f4f7fc] text-left border border-[#13294b]/12 transition-colors flex items-center justify-between gap-2"
+                    >
+                      <div>
+                        <div className="text-[11px] font-bold text-[#135c75]">Автор (поле 700$a)</div>
+                        <div className="font-display font-bold text-sm text-[#13294b]">
+                          Елена Крылова
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-bold text-[#13294b]/45">Сверить</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleStickyFieldClick('year')}
+                      className={`w-full p-3.5 rounded-xl text-left border-2 transition-all flex items-center justify-between gap-2 ${
+                        fixedYear
+                          ? 'bg-[#e9f7ef] border-[#157a4f]'
+                          : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
+                      }`}
+                    >
+                      <div>
+                        <div className="text-[11px] font-bold text-[#135c75]">Год издания (поле 210$d)</div>
+                        <div className="font-mono-tabular font-extrabold text-sm flex items-center gap-2">
+                          {fixedYear ? (
+                            <>
+                              <span className="line-through text-[#c41e2e]">2019</span>
+                              <span className="text-[#157a4f]">→ 2022 ✓</span>
+                            </>
+                          ) : (
+                            <span className="text-[#13294b]">2019</span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-extrabold text-[#135c75]">
+                        {fixedYear ? 'Исправлено' : 'Исправить'}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleStickyFieldClick('topic')}
+                      className={`w-full p-3.5 rounded-xl text-left border-2 transition-all flex items-center justify-between gap-2 ${
+                        fixedTopic
+                          ? 'bg-[#e9f7ef] border-[#157a4f]'
+                          : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
+                      }`}
+                    >
+                      <div>
+                        <div className="text-[11px] font-bold text-[#135c75]">Предметная рубрика (поле 606$a)</div>
+                        <div className="font-display font-bold text-sm flex flex-wrap items-center gap-2">
+                          {fixedTopic ? (
+                            <>
+                              <span className="line-through text-[#c41e2e]">Коралловые рифы и пляжи</span>
+                              <span className="text-[#157a4f]">→ Глубоководные экспедиции ✓</span>
+                            </>
+                          ) : (
+                            <span className="text-[#13294b]">Коралловые рифы и пляжи</span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-extrabold text-[#135c75]">
+                        {fixedTopic ? 'Исправлено' : 'Исправить'}
+                      </span>
+                    </button>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleStickyFieldClick('title')}
-                    className="w-full p-3.5 rounded-xl bg-white hover:bg-[#f4f7fc] text-left border border-[#13294b]/12 transition-colors"
-                  >
-                    <div className="text-[11px] font-bold text-[#135c75]">Заглавие</div>
-                    <div className="font-display font-bold text-sm text-[#13294b]">
-                      Экспедиция на дно океана
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleStickyFieldClick('author')}
-                    className="w-full p-3.5 rounded-xl bg-white hover:bg-[#f4f7fc] text-left border border-[#13294b]/12 transition-colors"
-                  >
-                    <div className="text-[11px] font-bold text-[#135c75]">Автор</div>
-                    <div className="font-display font-bold text-sm text-[#13294b]">
-                      Елена Крылова
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleStickyFieldClick('year')}
-                    className={`w-full p-3.5 rounded-xl text-left border-2 transition-all ${
-                      fixedYear
-                        ? 'bg-[#e9f7ef] border-[#157a4f]'
-                        : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
-                    }`}
-                  >
-                    <div className="text-[11px] font-bold text-[#135c75]">Год издания</div>
-                    <div className="font-mono-tabular font-extrabold text-sm flex items-center gap-2">
-                      {fixedYear ? (
-                        <>
-                          <span className="line-through text-[#c41e2e]">2019</span>
-                          <span className="text-[#157a4f]">→ 2022 ✓</span>
-                        </>
-                      ) : (
-                        <span className="text-[#13294b]">2019</span>
-                      )}
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleStickyFieldClick('topic')}
-                    className={`w-full p-3.5 rounded-xl text-left border-2 transition-all ${
-                      fixedTopic
-                        ? 'bg-[#e9f7ef] border-[#157a4f]'
-                        : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
-                    }`}
-                  >
-                    <div className="text-[11px] font-bold text-[#135c75]">Предметная рубрика</div>
-                    <div className="font-display font-bold text-sm flex flex-wrap items-center gap-2">
-                      {fixedTopic ? (
-                        <>
-                          <span className="line-through text-[#c41e2e]">Коралловые рифы и пляжи</span>
-                          <span className="text-[#157a4f]">→ Глубоководные экспедиции ✓</span>
-                        </>
-                      ) : (
-                        <span className="text-[#13294b]">Коралловые рифы и пляжи</span>
-                      )}
-                    </div>
-                  </button>
                 </div>
               </div>
             </>

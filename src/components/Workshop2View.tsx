@@ -5,11 +5,19 @@ import {
   Check,
   CheckCircle2,
   Columns,
+  FileText,
+  Grid,
+  GripVertical,
   Image as ImageIcon,
   Layers,
+  Mail,
   Mic,
+  Paperclip,
+  Pause,
+  Play,
   Printer,
   Sparkles,
+  Trash2,
   XCircle,
 } from 'lucide-react';
 import { MEDIA } from '../game/assets';
@@ -131,27 +139,32 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
 }) => {
   const wsMeta = WORKSHOPS[1];
 
-  /* ---- Task 0: Focused One-Card-at-a-Time Article Selection ---- */
+  /* ---- Task 0: Editorial Inbox + Flatplan ---- */
   const [activePitchIdx, setActivePitchIdx] = useState(0);
   const [placedLeadId, setPlacedLeadId] = useState<string | null>(null);
   const [placedBriefId, setPlacedBriefId] = useState<string | null>(null);
   const [trashedIds, setTrashedIds] = useState<string[]>([]);
   const [deskFeedback, setDeskFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  const [draggedPitchId, setDraggedPitchId] = useState<string | null>(null);
+  const [overFlatplanSlot, setOverFlatplanSlot] = useState<'lead' | 'brief' | 'trash' | null>(null);
 
-  /* ---- Task 1: One Sentence at a Time Proofreading ---- */
+  /* ---- Task 1: Dictaphone + Manuscript Redaction ---- */
   const [editStepIdx, setEditStepIdx] = useState(0);
   const [solvedEdits, setSolvedEdits] = useState<Record<string, string>>({});
   const [editFeedback, setEditFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  const [tapePlaying, setTapePlaying] = useState(false);
 
-  /* ---- Task 2: 4-Step Visual Page Designer ---- */
+  /* ---- Task 2: InDesign-style Page Studio ---- */
   const [layoutStep, setLayoutStep] = useState<number>(0);
   const [layoutHeadline, setLayoutHeadline] = useState<'dry' | 'clickbait' | 'strong'>('dry');
   const [layoutPhoto, setLayoutPhoto] = useState<'print' | 'music' | 'arch'>('arch');
   const [layoutPreset, setLayoutPreset] = useState<'textover' | 'columns' | 'giant'>('textover');
   const [layoutCaption, setLayoutCaption] = useState<'none' | 'wrong' | 'good'>('none');
+  const [showLayoutGrid, setShowLayoutGrid] = useState(true);
 
-  /* ---- Task 3: Focused 4-Page Pre-Print Check ---- */
+  /* ---- Task 3: Pre-Press Inspection Table ---- */
   const [proofPage, setProofPage] = useState<number>(0);
+  const [inspectedPages, setInspectedPages] = useState<Record<string, boolean>>({});
   const [fixedDefects, setFixedDefects] = useState<Record<ProofDefect['id'], string>>({
     age: PROOF_DEFECTS.age.bad,
     page: PROOF_DEFECTS.page.bad,
@@ -203,7 +216,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
 
   const handleDecidePitch = (pitchId: string, decision: 'lead' | 'brief' | 'trash') => {
     const pitch = EDITORIAL_PITCHES.find((p) => p.id === pitchId);
-    if (!pitch) return;
+    if (!pitch || isPitchSorted(pitchId)) return;
 
     if (decision === 'trash') {
       if (pitch.idealSlot !== null) {
@@ -258,7 +271,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
     checkTask0AutoWin(nextLead, nextBrief, trashedIds);
   };
 
-  /* ---- Task 1 Handlers (Instant One-Sentence-at-a-Time Flow) ---- */
+  /* ---- Task 1 Handlers ---- */
   const activeEditItem = EDITORIAL_EDITS[editStepIdx] ?? EDITORIAL_EDITS[0];
   const solvedEditCount = Object.keys(solvedEdits).length;
 
@@ -621,10 +634,16 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
   const currentProofTab = PROOF_PAGES[proofPage] ?? PROOF_PAGES[0];
   const currentProofDefect = PROOF_DEFECTS[currentProofTab.defId];
 
+  const getDraftLine = (item: (typeof EDITORIAL_EDITS)[number]) => {
+    const chosenId = solvedEdits[item.id];
+    if (!chosenId) return null;
+    return item.options.find((o) => o.id === chosenId)?.text ?? null;
+  };
+
   return (
     <div className="h-full flex flex-col overflow-hidden">
       {/* Compact Stepper */}
-      <div className="shrink-0 bg-white border-b border-[#13294b]/10 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2 overflow-x-auto">
+      <div className="shrink-0 bg-white border-b border-[#13294b]/10 px-4 sm:px-6 py-2 flex items-center justify-between gap-2 overflow-x-auto">
         <div className="flex items-center gap-1.5">
           {wsMeta.tasks.map((t, idx) => {
             const done = progress[idx].completed;
@@ -634,9 +653,9 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 key={t.title}
                 type="button"
                 onClick={() => onSelectTask(idx)}
-                className={`min-h-[38px] px-3.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                className={`min-h-[36px] px-3.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all whitespace-nowrap ${
                   active
-                    ? 'bg-[#c41e2e] text-white'
+                    ? 'bg-[#c41e2e] text-white shadow-xs'
                     : done
                       ? 'bg-[#e9f7ef] text-[#157a4f]'
                       : 'bg-[#f2f5fa] text-[#13294b]/75 hover:bg-[#e5ebf6]'
@@ -651,7 +670,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
             <button
               type="button"
               onClick={onOpenShowcase}
-              className="min-h-[38px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
+              className="min-h-[36px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Готовый журнал
@@ -661,9 +680,9 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
       </div>
 
       {/* Main Game Stage */}
-      <div className="flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-5">
-        <div className="max-w-5xl mx-auto space-y-5 animate-card-in" key={`w2-t${taskIdx}`}>
-          {/* ============ TASK 0: SIMPLE ONE-CARD ARTICLE SELECTION ============ */}
+      <div className="flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-4">
+        <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w2-t${taskIdx}`}>
+          {/* ============ TASK 0: EDITORIAL INBOX + MAGAZINE FLATPLAN ============ */}
           {taskIdx === 0 && (
             <>
               <MissionBanner
@@ -682,145 +701,349 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 onHint={handleHintClick}
               />
 
-              {/* Compact 1-Line Status Bar (Replaces Heavy Competing Sidebar) */}
-              <div className="rounded-2xl bg-[#13294b] text-white px-5 py-3.5 text-xs sm:text-sm flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
-                  <span>
-                    <strong className="text-[#ffd66b]">Главная (стр. 8):</strong>{' '}
-                    {leadPitch ? `✓ ${leadPitch.title}` : 'свободно'}
-                  </span>
-                  <span>
-                    <strong className="text-[#ffd66b]">Короткая (стр. 14):</strong>{' '}
-                    {briefPitch ? `✓ ${briefPitch.title}` : 'свободно'}
-                  </span>
-                  <span>
-                    <strong className="text-[#ffd66b]">Отклонено:</strong> {trashedIds.length} из 2
-                  </span>
-                </div>
-                <span className="font-mono-tabular font-extrabold text-[#ffd66b]">
-                  Разобрано {sortedCount} из 4
-                </span>
-              </div>
-
-              {/* Clean Tabs for 4 Articles */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                {EDITORIAL_PITCHES.map((p, idx) => {
-                  const sorted = isPitchSorted(p.id);
-                  const isCurrent = activePitchIdx === idx;
-                  return (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => {
-                        soundEngine.playSelectTick();
-                        setActivePitchIdx(idx);
-                        setDeskFeedback(null);
-                      }}
-                      className={`min-h-[42px] px-4 rounded-xl text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
-                        isCurrent
-                          ? 'bg-[#c41e2e] text-white shadow-sm'
-                          : sorted
-                            ? 'bg-[#e9f7ef] text-[#157a4f]'
-                            : 'bg-white text-[#13294b] border border-[#13294b]/15 hover:bg-[#f4f7fc]'
-                      }`}
-                    >
-                      {sorted && <Check className="w-4 h-4" />}
-                      <span>Заявка {idx + 1}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Single Focused Card */}
-              <div className="bg-white rounded-3xl border border-[#13294b]/12 shadow-md p-5 sm:p-7 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                  <div className="md:col-span-5 aspect-[4/3] rounded-2xl overflow-hidden bg-[#f4f7fc] border border-[#13294b]/10">
-                    <img
-                      src={activePitch.img}
-                      alt={activePitch.title}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="md:col-span-7 space-y-3">
-                    <div className="text-xs font-extrabold text-[#c41e2e]">
-                      {activePitch.kind} · Автор: {activePitch.by}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* LEFT 7 COLS: EDITORIAL MAILBOX INBOX */}
+                <div className="lg:col-span-7 bg-white rounded-3xl border border-[#13294b]/12 shadow-md overflow-hidden">
+                  {/* Email Client Toolbar */}
+                  <div className="bg-[#13294b] text-white px-5 py-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 text-xs font-extrabold">
+                      <Mail className="w-4 h-4 text-[#ffd66b]" />
+                      <span>Входящие заявки редакции · «Культура № 01»</span>
                     </div>
-                    <h3 className="font-display font-extrabold text-2xl text-[#13294b] leading-tight">
-                      {activePitch.title}
-                    </h3>
-                    <div className="rounded-2xl bg-[#fff8eb] border border-[#f2d08b] p-4 space-y-1">
-                      <div className="text-xs font-extrabold uppercase tracking-wider text-[#9c5a08]">
-                        Что написал автор:
-                      </div>
-                      <p className="text-sm sm:text-base text-[#13294b] leading-relaxed font-medium">
-                        {activePitch.emailText}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {deskFeedback && (
-                  <div
-                    className={`rounded-2xl px-4 py-3.5 text-sm font-bold animate-card-in ${
-                      deskFeedback.ok
-                        ? 'bg-[#e9f7ef] text-[#157a4f]'
-                        : 'bg-[#fde8ea] text-[#c41e2e]'
-                    }`}
-                  >
-                    {deskFeedback.text}
-                  </div>
-                )}
-
-                {isPitchSorted(activePitch.id) ? (
-                  <div className="rounded-2xl bg-[#e9f7ef] px-4 py-3.5 text-sm font-extrabold text-[#157a4f] flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 shrink-0" />
-                    <span>
-                      {placedLeadId === activePitch.id
-                        ? 'Поставлена на главную страницу (стр. 8).'
-                        : placedBriefId === activePitch.id
-                          ? 'Поставлена в короткую рубрику (стр. 14).'
-                          : 'Эта заявка отклонена.'}
+                    <span className="font-mono-tabular text-xs font-bold text-[#ffd66b]">
+                      Разобрано {sortedCount} из 4
                     </span>
                   </div>
-                ) : (
-                  <div className="space-y-2.5 pt-3 border-t border-[#13294b]/10">
-                    <div className="text-xs font-extrabold uppercase tracking-wider text-[#13294b]/60">
-                      Твоё решение:
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <button
-                        type="button"
-                        disabled={Boolean(placedLeadId)}
-                        onClick={() => handleDecidePitch(activePitch.id, 'lead')}
-                        className="min-h-[50px] px-4 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] disabled:opacity-40 text-white text-xs sm:text-sm font-extrabold transition-colors"
-                      >
-                        {placedLeadId ? 'Стр. 8 уже занята' : 'На главную (стр. 8)'}
-                      </button>
-                      <button
-                        type="button"
-                        disabled={Boolean(placedBriefId)}
-                        onClick={() => handleDecidePitch(activePitch.id, 'brief')}
-                        className="min-h-[50px] px-4 rounded-xl bg-[#135c75] hover:bg-[#187595] disabled:opacity-40 text-white text-xs sm:text-sm font-extrabold transition-colors"
-                      >
-                        {placedBriefId ? 'Стр. 14 уже занята' : 'В короткую рубрику (стр. 14)'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDecidePitch(activePitch.id, 'trash')}
-                        className="min-h-[50px] px-4 rounded-xl bg-[#fde8ea] hover:bg-[#c41e2e] text-[#c41e2e] hover:text-white text-xs sm:text-sm font-extrabold transition-colors inline-flex items-center justify-center gap-1.5"
-                      >
-                        <XCircle className="w-4 h-4" />
-                        Отклонить заявку
-                      </button>
-                    </div>
+
+                  {/* Inbox Message Strip */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-[#13294b]/10 bg-[#f6f8fc]">
+                    {EDITORIAL_PITCHES.map((p, idx) => {
+                      const sorted = isPitchSorted(p.id);
+                      const isCurrent = activePitchIdx === idx;
+                      const isRejected = trashedIds.includes(p.id);
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          draggable={!sorted}
+                          onDragStart={(e) => {
+                            setDraggedPitchId(p.id);
+                            setActivePitchIdx(idx);
+                            e.dataTransfer.setData('text/plain', p.id);
+                          }}
+                          onDragEnd={() => {
+                            setDraggedPitchId(null);
+                            setOverFlatplanSlot(null);
+                          }}
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setActivePitchIdx(idx);
+                            setDeskFeedback(null);
+                          }}
+                          className={`px-3 py-2.5 text-left border-r border-[#13294b]/8 last:border-r-0 transition-all relative ${
+                            isCurrent
+                              ? 'bg-white shadow-xs'
+                              : sorted
+                                ? 'bg-[#f1f6f3] opacity-80'
+                                : 'hover:bg-white/70'
+                          }`}
+                        >
+                          {isCurrent && (
+                            <span className="absolute top-0 inset-x-0 h-[3px] bg-[#c41e2e]" />
+                          )}
+                          <div className="flex items-center justify-between gap-1 text-[10px] font-extrabold uppercase tracking-wider text-[#13294b]/55">
+                            <span>Заявка {idx + 1}</span>
+                            {sorted ? (
+                              isRejected ? (
+                                <XCircle className="w-3.5 h-3.5 text-[#c41e2e]" />
+                              ) : (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[#157a4f]" />
+                              )
+                            ) : (
+                              <span className="w-2 h-2 rounded-full bg-[#c41e2e]" />
+                            )}
+                          </div>
+                          <div className="text-xs font-extrabold text-[#13294b] truncate mt-0.5">
+                            {p.by}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
-                )}
+
+                  {/* Opened Email Letter Body */}
+                  <div className="p-5 sm:p-6 space-y-4">
+                    <div
+                      draggable={!isPitchSorted(activePitch.id)}
+                      onDragStart={(e) => {
+                        setDraggedPitchId(activePitch.id);
+                        e.dataTransfer.setData('text/plain', activePitch.id);
+                      }}
+                      onDragEnd={() => {
+                        setDraggedPitchId(null);
+                        setOverFlatplanSlot(null);
+                      }}
+                      className={`rounded-2xl border border-[#13294b]/12 bg-[#fcfdff] p-4 space-y-4 ${
+                        !isPitchSorted(activePitch.id) ? 'cursor-grab active:cursor-grabbing' : ''
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row gap-4 items-start">
+                        <div className="w-full sm:w-44 aspect-[4/3] rounded-xl overflow-hidden bg-[#eef2f8] border border-[#13294b]/10 shrink-0 relative">
+                          <img
+                            src={activePitch.img}
+                            alt={activePitch.title}
+                            draggable={false}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover"
+                          />
+                          <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded bg-black/70 text-white text-[10px] font-bold inline-flex items-center gap-1">
+                            <Paperclip className="w-3 h-3" /> Вложение
+                          </span>
+                        </div>
+
+                        <div className="flex-1 min-w-0 space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="px-2.5 py-0.5 rounded-md bg-[#fde8ea] text-[#c41e2e] text-[11px] font-extrabold">
+                              {activePitch.kind}
+                            </span>
+                            {!isPitchSorted(activePitch.id) && (
+                              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-[#13294b]/45 font-bold">
+                                <GripVertical className="w-3.5 h-3.5" /> Можно перетянуть в макет →
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="font-display font-extrabold text-lg sm:text-xl text-[#13294b] leading-snug">
+                            {activePitch.title}
+                          </h3>
+                          <div className="text-xs font-bold text-[#13294b]/70">
+                            От кого: <span className="text-[#13294b]">{activePitch.by}</span>
+                          </div>
+                          <p className="text-xs text-[#13294b]/75 leading-relaxed">
+                            {activePitch.summary}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl bg-[#fff8eb] border border-[#f2d08b] p-3.5 space-y-1">
+                        <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#9c5a08]">
+                          Письмо автора в редакцию:
+                        </div>
+                        <p className="text-xs sm:text-sm text-[#13294b] leading-relaxed font-medium">
+                          {activePitch.emailText}
+                        </p>
+                      </div>
+                    </div>
+
+                    {deskFeedback && (
+                      <div
+                        className={`rounded-2xl px-4 py-3 text-xs sm:text-sm font-bold ${
+                          deskFeedback.ok
+                            ? 'bg-[#e9f7ef] text-[#157a4f] animate-card-in'
+                            : 'bg-[#fde8ea] text-[#c41e2e] animate-stage-shake'
+                        }`}
+                      >
+                        {deskFeedback.text}
+                      </div>
+                    )}
+
+                    {isPitchSorted(activePitch.id) ? (
+                      <div className="rounded-2xl bg-[#e9f7ef] px-4 py-3 text-sm font-extrabold text-[#157a4f] flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 shrink-0" />
+                        <span>
+                          {placedLeadId === activePitch.id
+                            ? 'Поставлена на главную страницу (стр. 8).'
+                            : placedBriefId === activePitch.id
+                              ? 'Поставлена в короткую рубрику (стр. 14).'
+                              : 'Эта заявка отклонена.'}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <button
+                          type="button"
+                          disabled={Boolean(placedLeadId)}
+                          onClick={() => handleDecidePitch(activePitch.id, 'lead')}
+                          className="min-h-[46px] px-3.5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] disabled:opacity-40 text-white text-xs font-extrabold transition-colors"
+                        >
+                          {placedLeadId ? 'Стр. 8 уже занята' : 'На главную (стр. 8)'}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={Boolean(placedBriefId)}
+                          onClick={() => handleDecidePitch(activePitch.id, 'brief')}
+                          className="min-h-[46px] px-3.5 rounded-xl bg-[#135c75] hover:bg-[#187595] disabled:opacity-40 text-white text-xs font-extrabold transition-colors"
+                        >
+                          {placedBriefId ? 'Стр. 14 уже занята' : 'На стр. 14 (короткая)'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDecidePitch(activePitch.id, 'trash')}
+                          className="min-h-[46px] px-3.5 rounded-xl bg-[#fde8ea] hover:bg-[#c41e2e] text-[#c41e2e] hover:text-white text-xs font-extrabold transition-colors inline-flex items-center justify-center gap-1.5"
+                        >
+                          <XCircle className="w-4 h-4" />
+                          Отклонить заявку
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* RIGHT 5 COLS: LIVE FLATPLAN OF ISSUE #01 */}
+                <aside className="lg:col-span-5 bg-[#eef2f8] rounded-3xl p-4 sm:p-5 border border-[#13294b]/12 space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-extrabold uppercase tracking-wider text-[#13294b]">
+                      Макет номера «Культура · № 01»
+                    </div>
+                    <span className="font-mono-tabular text-[11px] font-bold text-[#135c75]">
+                      Flatplan
+                    </span>
+                  </div>
+
+                  {/* Page 8 Slot */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setOverFlatplanSlot('lead');
+                    }}
+                    onDragLeave={() => setOverFlatplanSlot(null)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setOverFlatplanSlot(null);
+                      const id = e.dataTransfer.getData('text/plain') || draggedPitchId;
+                      if (id) handleDecidePitch(id, 'lead');
+                    }}
+                    className={`rounded-2xl p-3.5 border-2 transition-all ${
+                      leadPitch
+                        ? 'bg-white border-[#157a4f] shadow-sm'
+                        : overFlatplanSlot === 'lead'
+                          ? 'bg-[#fff8d6] border-[#c41e2e] scale-[1.01]'
+                          : 'bg-white/80 border-dashed border-[#13294b]/30'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-[11px] font-extrabold mb-2">
+                      <span className="text-[#13294b]">СТР. 8 · Главная статья (большой объём)</span>
+                      {leadPitch && <span className="text-[#157a4f]">✓ В макете</span>}
+                    </div>
+                    {leadPitch ? (
+                      <div className="flex items-center gap-3 animate-stamp-pop">
+                        <img
+                          src={leadPitch.img}
+                          alt={leadPitch.title}
+                          className="w-16 h-12 rounded-lg object-cover shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="font-display font-bold text-xs text-[#13294b] truncate">
+                            {leadPitch.title}
+                          </div>
+                          <div className="text-[11px] text-[#13294b]/65">{leadPitch.by}</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="py-3 text-center text-xs text-[#13294b]/55 font-bold">
+                        Перетащи сюда большую статью или нажми кнопку слева
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Page 14 Slot */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setOverFlatplanSlot('brief');
+                    }}
+                    onDragLeave={() => setOverFlatplanSlot(null)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setOverFlatplanSlot(null);
+                      const id = e.dataTransfer.getData('text/plain') || draggedPitchId;
+                      if (id) handleDecidePitch(id, 'brief');
+                    }}
+                    className={`rounded-2xl p-3.5 border-2 transition-all ${
+                      briefPitch
+                        ? 'bg-white border-[#157a4f] shadow-sm'
+                        : overFlatplanSlot === 'brief'
+                          ? 'bg-[#fff8d6] border-[#135c75] scale-[1.01]'
+                          : 'bg-white/80 border-dashed border-[#13294b]/30'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-[11px] font-extrabold mb-2">
+                      <span className="text-[#135c75]">СТР. 14 · Короткий репортаж</span>
+                      {briefPitch && <span className="text-[#157a4f]">✓ В макете</span>}
+                    </div>
+                    {briefPitch ? (
+                      <div className="flex items-center gap-3 animate-stamp-pop">
+                        <img
+                          src={briefPitch.img}
+                          alt={briefPitch.title}
+                          className="w-16 h-12 rounded-lg object-cover shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="font-display font-bold text-xs text-[#13294b] truncate">
+                            {briefPitch.title}
+                          </div>
+                          <div className="text-[11px] text-[#13294b]/65">{briefPitch.by}</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="py-3 text-center text-xs text-[#13294b]/55 font-bold">
+                        Перетащи сюда короткий материал
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Rejected Folder */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setOverFlatplanSlot('trash');
+                    }}
+                    onDragLeave={() => setOverFlatplanSlot(null)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setOverFlatplanSlot(null);
+                      const id = e.dataTransfer.getData('text/plain') || draggedPitchId;
+                      if (id) handleDecidePitch(id, 'trash');
+                    }}
+                    className={`rounded-2xl p-3.5 border-2 transition-all ${
+                      overFlatplanSlot === 'trash'
+                        ? 'bg-[#fde8ea] border-[#c41e2e] scale-[1.01]'
+                        : 'bg-white/75 border-dashed border-[#c41e2e]/35'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-[11px] font-extrabold text-[#c41e2e] mb-2">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Отклонённые заявки ({trashedIds.length} / 2)
+                      </span>
+                    </div>
+                    {trashedIds.length === 0 ? (
+                      <div className="py-2 text-center text-xs text-[#13294b]/50 font-semibold">
+                        Сюда попадают материалы с нарушениями
+                      </div>
+                    ) : (
+                      <div className="space-y-1.5">
+                        {trashedIds.map((id) => {
+                          const item = EDITORIAL_PITCHES.find((p) => p.id === id);
+                          if (!item) return null;
+                          return (
+                            <div
+                              key={id}
+                              className="px-2.5 py-1.5 rounded-lg bg-[#fde8ea] text-[#c41e2e] text-xs font-bold flex items-center justify-between animate-stamp-pop"
+                            >
+                              <span className="truncate">{item.title}</span>
+                              <span className="font-mono-tabular text-[10px] shrink-0 ml-2">ОТКЛ.</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </aside>
               </div>
             </>
           )}
 
-          {/* ============ TASK 1: ONE-SENTENCE-AT-A-TIME PROOFREADING ============ */}
+          {/* ============ TASK 1: DICTAPHONE + FULL MANUSCRIPT REDACTION ============ */}
           {taskIdx === 1 && (
             <>
               <MissionBanner
@@ -839,114 +1062,189 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 onHint={handleHintClick}
               />
 
-              {/* Top Reference Strip: Interview Quote */}
-              <div className="rounded-3xl bg-[#13294b] text-white p-5 sm:p-6 shadow-md space-y-2">
-                <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
-                  <Mic className="w-4 h-4 text-[#ff6b78]" />
-                  <span>Что сказала художница в интервью:</span>
+              {/* Visual Dictaphone Tape Strip (Zero-Audio Friendly!) */}
+              <div className="rounded-2xl bg-[#13294b] text-white p-4 sm:p-5 shadow-md space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setTapePlaying((p) => !p)}
+                      className="w-9 h-9 rounded-full bg-[#c41e2e] hover:bg-[#dc2638] text-white flex items-center justify-center shrink-0 shadow-sm transition-colors"
+                      title={tapePlaying ? 'Пауза расшифровки' : 'Запустить расшифровку записи'}
+                    >
+                      {tapePlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+                    </button>
+                    <div>
+                      <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
+                        <Mic className="w-3.5 h-3.5 text-[#ff6b78]" />
+                        <span>Диктофон · Расшифровка интервью художницы</span>
+                      </div>
+                      <div className="text-[11px] font-mono-tabular text-white/65">
+                        REC_04_INTERVIEW.WAV · 00:18 / 00:42
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Animated Visual Waveform */}
+                  <div className="flex items-center gap-1 h-6 px-3 rounded-lg bg-white/10" aria-hidden="true">
+                    {[0.4, 0.9, 0.6, 1, 0.5, 0.85, 0.45, 0.95, 0.7, 0.55, 0.9, 0.4].map((h, i) => (
+                      <span
+                        key={i}
+                        className={`w-1 rounded-full bg-[#ffd66b] ${
+                          tapePlaying ? 'animate-wave-bar' : 'opacity-65'
+                        }`}
+                        style={{
+                          height: `${Math.round(h * 18)}px`,
+                          animationDelay: `${i * 75}ms`,
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <blockquote className="text-sm sm:text-base leading-relaxed text-white font-medium">
+
+                <blockquote className="rounded-xl bg-white/8 border border-white/10 px-4 py-2.5 text-xs sm:text-sm leading-relaxed text-white font-medium">
                   «Эскиз плаката я нарисовала сама, а трафареты мы вырезали вдвоём с мастером.
                   Печатали в три цвета — за весь день получилось ровно шесть экземпляров».
                 </blockquote>
               </div>
 
-              {/* 4 Sentence Tabs */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                {EDITORIAL_EDITS.map((item, idx) => {
-                  const solved = Boolean(solvedEdits[item.id]);
-                  const isCurrent = editStepIdx === idx;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        soundEngine.playSelectTick();
-                        setEditStepIdx(idx);
-                        setEditFeedback(null);
-                      }}
-                      className={`min-h-[42px] px-4 rounded-xl text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
-                        isCurrent
-                          ? 'bg-[#c41e2e] text-white shadow-sm'
-                          : solved
-                            ? 'bg-[#e9f7ef] text-[#157a4f]'
-                            : 'bg-white text-[#13294b] border border-[#13294b]/15 hover:bg-[#f4f7fc]'
-                      }`}
-                    >
-                      {solved && <Check className="w-4 h-4" />}
-                      <span>Предложение {idx + 1}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Single Clean Proofreading Card */}
-              <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#13294b]/12 shadow-md space-y-5">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e]">
-                    Предложение {editStepIdx + 1} из 4 · {activeEditItem.category}
-                  </span>
-                  <span className="font-mono-tabular text-xs font-extrabold text-[#157a4f]">
-                    Готово: {solvedEditCount} / 4
-                  </span>
-                </div>
-
-                <div className="rounded-2xl bg-[#fff8eb] border border-[#f2d08b] p-4 sm:p-5 space-y-1.5">
-                  <div className="text-xs font-extrabold uppercase tracking-wider text-[#9c5a08]">
-                    В черновике статьи написано:
-                  </div>
-                  <p className="text-base sm:text-lg font-display font-extrabold text-[#13294b] leading-snug">
-                    «{activeEditItem.original}»
-                  </p>
-                </div>
-
-                {editFeedback && (
-                  <div
-                    className={`rounded-2xl px-4 py-3.5 text-sm font-bold animate-card-in ${
-                      editFeedback.ok
-                        ? 'bg-[#e9f7ef] text-[#157a4f]'
-                        : 'bg-[#fde8ea] text-[#c41e2e]'
-                    }`}
-                  >
-                    {editFeedback.text}
-                  </div>
-                )}
-
-                {solvedEdits[activeEditItem.id] ? (
-                  <div className="rounded-2xl bg-[#e9f7ef] px-4 py-3.5 text-sm font-extrabold text-[#157a4f] flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 shrink-0" />
-                    <span>
-                      Исправлено верно:{' '}
-                      {
-                        activeEditItem.options.find((o) => o.id === solvedEdits[activeEditItem.id])
-                          ?.text
-                      }
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* LEFT 7 COLS: REAL MANUSCRIPT DOCUMENT WITH INLINE MARKUP */}
+                <div className="lg:col-span-7 bg-[#fdfcf8] rounded-3xl p-5 sm:p-7 border border-[#13294b]/15 shadow-lg space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#13294b]/12 pb-3">
+                    <div className="flex items-center gap-2 text-xs font-extrabold text-[#13294b]/75">
+                      <FileText className="w-4 h-4 text-[#c41e2e]" />
+                      <span>Рукопись_Статья_Стр8_Черновик.docx</span>
+                    </div>
+                    <span className="font-mono-tabular text-xs font-extrabold text-[#157a4f]">
+                      Проверено: {solvedEditCount} / 4
                     </span>
                   </div>
-                ) : (
-                  <div className="space-y-2.5">
-                    <div className="text-xs font-extrabold uppercase tracking-wider text-[#13294b]/60">
-                      Как правильно написать?
+
+                  <div className="space-y-1">
+                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#c41e2e]">
+                      Репортаж из печатной мастерской
                     </div>
-                    <div className="space-y-2.5">
+                    <h3 className="font-display font-extrabold text-xl text-[#13294b]">
+                      От эскиза до плаката
+                    </h3>
+                  </div>
+
+                  {/* Interactive Article Paragraphs */}
+                  <div className="space-y-3 text-sm sm:text-[15px] leading-relaxed text-[#13294b]">
+                    {EDITORIAL_EDITS.map((item, idx) => {
+                      const solvedText = getDraftLine(item);
+                      const isCurrent = editStepIdx === idx;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setEditStepIdx(idx);
+                            setEditFeedback(null);
+                          }}
+                          className={`w-full text-left rounded-xl p-3 border-2 transition-all block ${
+                            isCurrent
+                              ? 'bg-[#fff8d6] border-[#e59c2d] shadow-xs'
+                              : solvedText
+                                ? 'bg-[#effaf3] border-[#157a4f]/30'
+                                : 'bg-white border-[#13294b]/10 hover:border-[#13294b]/30'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="font-mono-tabular text-[10px] font-extrabold uppercase tracking-wider text-[#13294b]/55">
+                              Фрагмент #{idx + 1} · {item.category}
+                            </span>
+                            {solvedText ? (
+                              <span className="text-[11px] font-extrabold text-[#157a4f] inline-flex items-center gap-1">
+                                <Check className="w-3.5 h-3.5" /> Вычитано
+                              </span>
+                            ) : isCurrent ? (
+                              <span className="text-[11px] font-extrabold text-[#b76506]">
+                                Редактируется
+                              </span>
+                            ) : null}
+                          </div>
+
+                          {solvedText ? (
+                            <div className="space-y-1">
+                              {item.hasError && (
+                                <div className="text-xs line-through text-[#c41e2e]/75">
+                                  {item.original}
+                                </div>
+                              )}
+                              <div className="font-bold text-[#157a4f]">{solvedText}</div>
+                            </div>
+                          ) : (
+                            <div className="font-semibold text-[#13294b]">{item.original}</div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* RIGHT 5 COLS: REDACTION REVIEW PANEL */}
+                <aside className="lg:col-span-5 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
+                  <div className="flex items-center justify-between gap-2 border-b border-[#13294b]/10 pb-3">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e]">
+                      Правка редактора · #{editStepIdx + 1}
+                    </span>
+                    <span className="text-xs font-bold text-[#13294b]/60">
+                      {activeEditItem.category}
+                    </span>
+                  </div>
+
+                  <div className="rounded-2xl bg-[#fff8eb] border border-[#f2d08b] p-3.5 space-y-1">
+                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#9c5a08]">
+                      Фраза в рукописи:
+                    </div>
+                    <p className="text-sm font-bold text-[#13294b] leading-snug">
+                      «{activeEditItem.original}»
+                    </p>
+                  </div>
+
+                  {editFeedback && (
+                    <div
+                      className={`rounded-2xl px-4 py-3 text-xs sm:text-sm font-bold ${
+                        editFeedback.ok
+                          ? 'bg-[#e9f7ef] text-[#157a4f] animate-card-in'
+                          : 'bg-[#fde8ea] text-[#c41e2e] animate-stage-shake'
+                      }`}
+                    >
+                      {editFeedback.text}
+                    </div>
+                  )}
+
+                  {solvedEdits[activeEditItem.id] ? (
+                    <div className="rounded-2xl bg-[#e9f7ef] px-4 py-3.5 text-sm font-extrabold text-[#157a4f] flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 shrink-0" />
+                      <span>Исправлено верно! Выбери следующий фрагмент в рукописи.</span>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="text-xs font-extrabold uppercase tracking-wider text-[#13294b]/60">
+                        Выбери правку для рукописи:
+                      </div>
                       {activeEditItem.options.map((opt) => (
                         <button
                           key={opt.id}
                           type="button"
                           onClick={() => handleAnswerEdit(opt)}
-                          className="w-full p-4 rounded-2xl bg-[#f5f8fc] hover:bg-[#13294b] hover:text-white border-2 border-[#13294b]/10 hover:border-[#13294b] text-left text-sm sm:text-base font-bold text-[#13294b] transition-colors"
+                          className="w-full p-3.5 rounded-xl bg-[#f5f8fc] hover:bg-[#13294b] hover:text-white border-2 border-[#13294b]/10 hover:border-[#13294b] text-left text-xs sm:text-sm font-bold text-[#13294b] transition-colors"
                         >
                           {opt.text}
                         </button>
                       ))}
                     </div>
-                  </div>
-                )}
+                  )}
+                </aside>
               </div>
             </>
           )}
 
-          {/* ============ TASK 2: STEP-BY-STEP MAGAZINE PAGE DESIGNER ============ */}
+          {/* ============ TASK 2: INDESIGN-STYLE MAGAZINE PAGE STUDIO ============ */}
           {taskIdx === 2 && (
             <>
               <MissionBanner
@@ -965,104 +1263,147 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 onHint={handleHintClick}
               />
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* LEFT 7 COLS: LIVE MAGAZINE PAGE PREVIEW */}
-                <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-[#13294b]/15 shadow-lg min-h-[440px] flex flex-col justify-between">
-                  <div className="space-y-5">
-                    <div className="flex items-center justify-between border-b border-[#13294b]/12 pb-2.5 text-xs font-mono-tabular font-bold text-[#c41e2e]">
-                      <span>ЖУРНАЛ «КУЛЬТУРА» · МАСТЕРСКАЯ</span>
-                      <span>СТР. 8</span>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* LEFT 7 COLS: DARK WORKBENCH ARTBOARD + RULERS + GRID */}
+                <div className="lg:col-span-7 rounded-3xl bg-[#1a2436] p-4 sm:p-5 border border-[#2d3b55] shadow-2xl space-y-3">
+                  {/* Artboard Top Toolbar */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-white/80 text-xs">
+                    <div className="flex items-center gap-2 font-mono-tabular">
+                      <span className="px-2 py-0.5 rounded bg-[#c41e2e] text-white font-bold text-[10px]">
+                        InLayout Pro
+                      </span>
+                      <span className="text-[11px] text-white/65">Стр_08_Макет.indd · A4</span>
                     </div>
-
-                    {layoutPreset === 'textover' && (
-                      <div className="relative rounded-2xl overflow-hidden aspect-[4/3] p-5 flex flex-col justify-end">
-                        <img
-                          src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
-                          alt="Иллюстрация статьи"
-                          referrerPolicy="no-referrer"
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                        <div className="relative bg-black/35 p-3.5 rounded-xl text-white">
-                          <h3 className="font-display font-extrabold text-base leading-snug">
-                            {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
-                          </h3>
-                          <p className="mt-2 text-[10px] leading-snug text-white/90">
-                            Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
-                            Плакаты печатали в три цвета и за день получили шесть экземпляров.
-                          </p>
-                          {layoutCaption !== 'none' && (
-                            <div className="mt-2 text-[10px] text-white/80">
-                              {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {layoutPreset === 'giant' && (
-                      <div className="space-y-4">
-                        <figure className="space-y-1.5">
-                          <img
-                            src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
-                            alt="Иллюстрация статьи"
-                            referrerPolicy="no-referrer"
-                            className="w-full aspect-[4/3] max-h-56 object-cover rounded-2xl"
-                          />
-                          {layoutCaption !== 'none' && (
-                            <figcaption className="text-xs text-[#13294b]/65">
-                              {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
-                            </figcaption>
-                          )}
-                        </figure>
-                        <h3 className="font-display font-extrabold text-2xl leading-tight text-[#13294b]">
-                          {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
-                        </h3>
-                        <p className="text-xl leading-snug text-[#13294b]/85">
-                          Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
-                          Плакаты печатали в три цвета и за день получили шесть экземпляров.
-                        </p>
-                      </div>
-                    )}
-
-                    {layoutPreset === 'columns' && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-                        <div className="space-y-3">
-                          <h3 className="font-display font-extrabold text-xl leading-snug text-[#13294b]">
-                            {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
-                          </h3>
-                          <p className="text-sm text-[#13294b]/85 leading-relaxed">
-                            Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
-                            Плакаты печатали в три цвета и за день получили шесть экземпляров.
-                          </p>
-                          <p className="text-sm text-[#13294b]/85 leading-relaxed">
-                            Шелкография позволяет печатать плотным, насыщенным слоем краски.
-                            Открытие выставки прошло в 19:00 и стало дебютом студии.
-                          </p>
-                        </div>
-                        <figure className="space-y-2">
-                          <img
-                            src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
-                            alt="Иллюстрация статьи"
-                            referrerPolicy="no-referrer"
-                            className="w-full aspect-[4/3] object-cover rounded-2xl shadow-sm"
-                          />
-                          {layoutCaption !== 'none' && (
-                            <figcaption className="text-xs font-semibold text-[#13294b]/70">
-                              {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
-                            </figcaption>
-                          )}
-                        </figure>
-                      </div>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => setShowLayoutGrid((g) => !g)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors ${
+                        showLayoutGrid
+                          ? 'bg-[#38bdf8]/20 text-[#7dd3fc] border border-[#38bdf8]/40'
+                          : 'bg-white/10 text-white/70 hover:bg-white/15'
+                      }`}
+                    >
+                      <Grid className="w-3.5 h-3.5" />
+                      <span>Модульная сетка</span>
+                    </button>
                   </div>
 
-                  <div className="pt-4 mt-5 border-t border-[#13294b]/10 text-xs text-[#13294b]/55">
-                    Так будет выглядеть страница 8 в журнале «Культура»
+                  {/* Top Ruler */}
+                  <div className="hidden sm:flex justify-between px-4 text-[9px] font-mono-tabular text-white/40 border-b border-white/10 pb-1">
+                    {[0, 30, 60, 90, 120, 150, 180, 210].map((mm) => (
+                      <span key={mm}>{mm} мм</span>
+                    ))}
+                  </div>
+
+                  {/* Paper Sheet With Trim Marks & Optional Column Grid */}
+                  <div className="relative bg-white rounded-xl p-5 sm:p-6 shadow-xl min-h-[380px] flex flex-col justify-between overflow-hidden">
+                    {showLayoutGrid && (
+                      <div
+                        className="pointer-events-none absolute inset-x-5 inset-y-4 grid grid-cols-2 gap-6 z-10"
+                        aria-hidden="true"
+                      >
+                        <div className="border border-dashed border-[#38bdf8]/55 bg-[#38bdf8]/[0.03] rounded" />
+                        <div className="border border-dashed border-[#38bdf8]/55 bg-[#38bdf8]/[0.03] rounded" />
+                      </div>
+                    )}
+
+                    <div className="relative z-0 space-y-4">
+                      <div className="flex items-center justify-between border-b border-[#13294b]/12 pb-2 text-xs font-mono-tabular font-bold text-[#c41e2e]">
+                        <span>ЖУРНАЛ «КУЛЬТУРА» · МАСТЕРСКАЯ</span>
+                        <span>СТР. 8</span>
+                      </div>
+
+                      {layoutPreset === 'textover' && (
+                        <div className="relative rounded-xl overflow-hidden aspect-[4/3] max-h-[310px] w-full p-4 flex flex-col justify-end">
+                          <img
+                            src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
+                            alt="Иллюстрация статьи"
+                            referrerPolicy="no-referrer"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                          <div className="relative bg-black/35 p-3.5 rounded-xl text-white">
+                            <h3 className="font-display font-extrabold text-base leading-snug">
+                              {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
+                            </h3>
+                            <p className="mt-1.5 text-[10px] leading-snug text-white/90">
+                              Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
+                              Плакаты печатали в три цвета и за день получили шесть экземпляров.
+                            </p>
+                            {layoutCaption !== 'none' && (
+                              <div className="mt-1.5 text-[10px] text-white/80">
+                                {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {layoutPreset === 'giant' && (
+                        <div className="space-y-3">
+                          <figure className="space-y-1">
+                            <img
+                              src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
+                              alt="Иллюстрация статьи"
+                              referrerPolicy="no-referrer"
+                              className="w-full aspect-[4/3] max-h-44 object-cover rounded-xl"
+                            />
+                            {layoutCaption !== 'none' && (
+                              <figcaption className="text-xs text-[#13294b]/65">
+                                {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
+                              </figcaption>
+                            )}
+                          </figure>
+                          <h3 className="font-display font-extrabold text-xl leading-tight text-[#13294b]">
+                            {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
+                          </h3>
+                          <p className="text-lg leading-snug text-[#13294b]/85">
+                            Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
+                            Плакаты печатали в три цвета и за день получили шесть экземпляров.
+                          </p>
+                        </div>
+                      )}
+
+                      {layoutPreset === 'columns' && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
+                          <div className="space-y-2.5">
+                            <h3 className="font-display font-extrabold text-lg sm:text-xl leading-snug text-[#13294b]">
+                              {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
+                            </h3>
+                            <p className="text-xs sm:text-sm text-[#13294b]/85 leading-relaxed">
+                              Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
+                              Плакаты печатали в три цвета и за день получили шесть экземпляров.
+                            </p>
+                            <p className="text-xs sm:text-sm text-[#13294b]/85 leading-relaxed">
+                              Шелкография позволяет печатать плотным, насыщенным слоем краски.
+                              Открытие выставки прошло в 19:00 и стало дебютом студии.
+                            </p>
+                          </div>
+                          <figure className="space-y-2">
+                            <img
+                              src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
+                              alt="Иллюстрация статьи"
+                              referrerPolicy="no-referrer"
+                              className="w-full aspect-[4/3] object-cover rounded-xl shadow-sm"
+                            />
+                            {layoutCaption !== 'none' && (
+                              <figcaption className="text-xs font-semibold text-[#13294b]/70">
+                                {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
+                              </figcaption>
+                            )}
+                          </figure>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-3 mt-4 border-t border-[#13294b]/10 flex items-center justify-between text-[11px] text-[#13294b]/55">
+                      <span>Так будет выглядеть страница 8 в журнале «Культура»</span>
+                      <span className="font-mono-tabular">300 DPI · CMYK</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* RIGHT 5 COLS: ONE SETTING STEP AT A TIME (4 CLEAN TABS) */}
-                <aside className="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-6 border border-[#13294b]/12 shadow-sm space-y-5">
+                {/* RIGHT 5 COLS: PROPERTIES INSPECTOR */}
+                <aside className="lg:col-span-5 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
                   <div className="grid grid-cols-2 gap-1.5">
                     {LAYOUT_STEPS.map((st) => {
                       const active = layoutStep === st.idx;
@@ -1205,7 +1546,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setLayoutStep((s) => s - 1)}
-                        className="min-h-[44px] px-4 rounded-xl bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b] text-xs font-extrabold inline-flex items-center gap-1"
+                        className="min-h-[42px] px-4 rounded-xl bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b] text-xs font-extrabold inline-flex items-center gap-1"
                       >
                         <ArrowLeft className="w-4 h-4" /> Назад
                       </button>
@@ -1220,7 +1561,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                           soundEngine.playSelectTick();
                           setLayoutStep((s) => s + 1);
                         }}
-                        className="min-h-[44px] px-5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5"
+                        className="min-h-[42px] px-5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5"
                       >
                         Дальше <ArrowRight className="w-4 h-4" />
                       </button>
@@ -1228,7 +1569,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                       <button
                         type="button"
                         onClick={handleCheckTask2}
-                        className="min-h-[46px] px-5 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-xs sm:text-sm shadow-sm transition-colors"
+                        className="min-h-[44px] px-5 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-xs sm:text-sm shadow-sm transition-colors"
                       >
                         Утвердить страницу →
                       </button>
@@ -1239,7 +1580,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
             </>
           )}
 
-          {/* ============ TASK 3: FOCUSED TOP-TO-BOTTOM 4-PAGE PRE-PRINT CHECK ============ */}
+          {/* ============ TASK 3: PRE-PRESS PROOFING TABLE ============ */}
           {taskIdx === 3 && (
             <>
               <MissionBanner
@@ -1258,252 +1599,257 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 onHint={handleHintClick}
               />
 
-              {/* Clean Reference Strip */}
-              <div className="rounded-2xl bg-[#13294b] text-white px-5 py-3.5 text-xs sm:text-sm flex flex-wrap items-center gap-x-4 gap-y-1.5">
-                <span className="font-display font-extrabold text-[#ffd66b]">Памятка номера:</span>
-                <span>Возраст: 12+</span>
-                <span className="text-white/35">·</span>
-                <span>Стр. 8: «От эскиза до плаката» (Фото: Алексей Климов)</span>
-                <span className="text-white/35">·</span>
-                <span>Стр. 14: «За кулисами фестиваля»</span>
-              </div>
-
-              {/* Clean Page Tabs + Primary Submit */}
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap gap-2">
-                  {PROOF_PAGES.map((tab) => {
-                    const isFixed = fixedDefects[tab.defId] === PROOF_DEFECTS[tab.defId].good;
-                    const isCurrent = proofPage === tab.idx;
-                    return (
-                      <button
-                        key={tab.label}
-                        type="button"
-                        onClick={() => {
-                          soundEngine.playPaperSlide();
-                          setProofPage(tab.idx);
-                        }}
-                        className={`min-h-[42px] px-4 rounded-xl text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 transition-colors whitespace-nowrap ${
-                          isCurrent
-                            ? 'bg-[#c41e2e] text-white'
-                            : isFixed
-                              ? 'bg-[#e9f7ef] text-[#157a4f]'
-                              : 'bg-white text-[#13294b] border border-[#13294b]/15 hover:bg-[#f4f7fc]'
-                        }`}
-                      >
-                        {isFixed && <CheckCircle2 className="w-4 h-4" />}
-                        <span>{tab.label}</span>
-                      </button>
-                    );
-                  })}
+              {/* Technical Spec Strip + CMYK Color Bars */}
+              <div className="rounded-2xl bg-[#13294b] text-white px-5 py-3 text-xs sm:text-sm flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <span className="font-display font-extrabold text-[#ffd66b]">Памятка номера:</span>
+                  <span>Возраст: 12+</span>
+                  <span className="text-white/35">·</span>
+                  <span>Стр. 8: «От эскиза до плаката» (Фото: Алексей Климов)</span>
+                  <span className="text-white/35">·</span>
+                  <span>Стр. 14: «За кулисами фестиваля»</span>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={handleCheckTask3}
-                  className="min-h-[44px] px-5 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 shadow-sm whitespace-nowrap"
-                >
-                  <Printer className="w-4 h-4" />
-                  Подписать в печать ({fixedCount}/4)
-                </button>
+                <div className="flex items-center gap-1" title="Типографская шкала CMYK">
+                  <span className="w-3 h-3 rounded-xs bg-[#00aeef]" />
+                  <span className="w-3 h-3 rounded-xs bg-[#ec008c]" />
+                  <span className="w-3 h-3 rounded-xs bg-[#fff200]" />
+                  <span className="w-3 h-3 rounded-xs bg-[#111827] border border-white/30" />
+                </div>
               </div>
 
-              {/* Single Clean Page Preview + Direct Question Underneath */}
-              <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#13294b]/12 shadow-md space-y-6">
-                {proofPage === 0 && (
-                  <div className="relative rounded-2xl overflow-hidden bg-[#13294b] text-white min-h-[280px] p-6 flex flex-col justify-between">
-                    <img
-                      src={MEDIA.studioPrint}
-                      alt="Обложка журнала Культура"
-                      referrerPolicy="no-referrer"
-                      className="absolute inset-0 w-full h-full object-cover opacity-40"
-                    />
-                    <div className="relative flex items-center justify-between">
-                      <span className="font-mono-tabular text-xs font-extrabold bg-[#c41e2e] px-3 py-1 rounded">
-                        КУЛЬТУРА · № 01
-                      </span>
-                      <span
-                        className={`px-4 py-2 rounded-xl font-mono-tabular text-base font-extrabold border-2 ${
-                          fixedDefects.age === PROOF_DEFECTS.age.good
-                            ? 'bg-[#157a4f] border-[#86efac] text-white'
-                            : 'bg-white text-[#c41e2e] border-[#c41e2e]'
-                        }`}
-                      >
-                        {fixedDefects.age}
-                      </span>
-                    </div>
-                    <div className="relative space-y-1">
-                      <div className="font-display font-extrabold text-4xl">КУЛЬТУРА</div>
-                      <div className="text-sm text-[#ffd66b] font-bold">
-                        От эскиза до плаката · За кулисами фестиваля
-                      </div>
-                    </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* LEFT 3 COLS: PAGE THUMBNAIL STRIP */}
+                <div className="lg:col-span-3 space-y-2.5">
+                  <div className="text-xs font-extrabold uppercase tracking-wider text-[#13294b]/65 px-1">
+                    Сигнальные полосы
                   </div>
-                )}
-
-                {proofPage === 1 && (
-                  <div className="space-y-4">
-                    <div className="border-b border-[#13294b]/10 pb-3">
-                      <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e]">
-                        Журнал «Культура» · № 01
-                      </div>
-                      <h3 className="font-display font-extrabold text-2xl text-[#13294b] mt-1">
-                        Содержание номера
-                      </h3>
-                    </div>
-                    <div className="divide-y divide-[#13294b]/10">
-                      <div className="py-4 flex items-center justify-between gap-4">
-                        <div>
-                          <div className="font-display font-bold text-base text-[#13294b]">
-                            От эскиза до плаката
-                          </div>
-                          <div className="text-xs text-[#13294b]/65">Мария Соколова · Главная статья</div>
-                        </div>
-                        <span
-                          className={`px-4 py-2 rounded-xl font-mono-tabular text-sm font-extrabold border-2 ${
-                            fixedDefects.page === PROOF_DEFECTS.page.good
-                              ? 'bg-[#e9f7ef] border-[#157a4f] text-[#157a4f]'
-                              : 'bg-[#fde8ea] border-[#c41e2e] text-[#c41e2e]'
-                          }`}
-                        >
-                          {fixedDefects.page}
-                        </span>
-                      </div>
-                      <div className="py-4 flex items-center justify-between gap-4">
-                        <div>
-                          <div className="font-display font-bold text-base text-[#13294b]">
-                            За кулисами фестиваля
-                          </div>
-                          <div className="text-xs text-[#13294b]/65">Илья Родин · Фоторепортаж</div>
-                        </div>
-                        <span className="font-mono-tabular text-sm font-extrabold text-[#13294b]">
-                          Стр. 14
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {proofPage === 2 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div className="space-y-2.5">
-                      <div className="text-xs font-extrabold text-[#c41e2e]">
-                        СТР. 8 · ГЛАВНАЯ СТАТЬЯ
-                      </div>
-                      <h3 className="font-display font-extrabold text-2xl text-[#13294b] leading-snug">
-                        От эскиза до плаката
-                      </h3>
-                      <p className="text-sm text-[#13294b]/80 leading-relaxed">
-                        Художница нарисовала эскиз, а трафареты сделала вместе с мастером. Плакаты
-                        печатали в три цвета и за день получили шесть экземпляров.
-                      </p>
-                    </div>
-                    <div className="space-y-2.5">
-                      <img
-                        src={MEDIA.studioPrint}
-                        alt="Печать плаката в мастерской"
-                        referrerPolicy="no-referrer"
-                        className="w-full aspect-[4/3] object-cover rounded-2xl shadow-sm"
-                      />
-                      <div
-                        className={`w-full px-4 py-2.5 rounded-xl text-sm font-extrabold border-2 ${
-                          fixedDefects.author === PROOF_DEFECTS.author.good
-                            ? 'bg-[#e9f7ef] border-[#157a4f] text-[#157a4f]'
-                            : 'bg-[#fde8ea] border-[#c41e2e] text-[#c41e2e]'
-                        }`}
-                      >
-                        {fixedDefects.author}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {proofPage === 3 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div className="space-y-2.5">
-                      <img
-                        src={MEDIA.studioMusic}
-                        alt="Вечерний двор и гости фестиваля"
-                        referrerPolicy="no-referrer"
-                        className="w-full aspect-[4/3] object-cover rounded-2xl shadow-sm"
-                      />
-                      <div
-                        className={`w-full px-4 py-2.5 rounded-xl text-sm font-extrabold border-2 ${
-                          fixedDefects.caption === PROOF_DEFECTS.caption.good
-                            ? 'bg-[#e9f7ef] border-[#157a4f] text-[#157a4f]'
-                            : 'bg-[#fde8ea] border-[#c41e2e] text-[#c41e2e]'
-                        }`}
-                      >
-                        {fixedDefects.caption}
-                      </div>
-                    </div>
-                    <div className="space-y-2.5">
-                      <div className="text-xs font-extrabold text-[#135c75]">
-                        СТР. 14 · ФОТОРЕПОРТАЖ
-                      </div>
-                      <h3 className="font-display font-extrabold text-2xl text-[#13294b] leading-snug">
-                        За кулисами фестиваля
-                      </h3>
-                      <p className="text-sm text-[#13294b]/80 leading-relaxed">
-                        За три часа до старта команда подготовила площадку, зажгла огни во дворе и
-                        встретила первых гостей вечерней программы.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Direct Question & 3 Options Right Underneath the Page */}
-                <div className="pt-5 border-t border-[#13294b]/10 space-y-3">
-                  <div className="font-display font-extrabold text-base text-[#13294b]">
-                    {currentProofTab.question}
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                    {currentProofDefect.alts.map((alt) => {
-                      const selected = fixedDefects[currentProofTab.defId] === alt;
+                  <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+                    {PROOF_PAGES.map((tab) => {
+                      const isCurrent = proofPage === tab.idx;
+                      const touched = inspectedPages[tab.defId];
                       return (
                         <button
-                          key={alt}
+                          key={tab.label}
                           type="button"
                           onClick={() => {
-                            soundEngine.playPencilMark();
-                            setFixedDefects((prev) => ({
-                              ...prev,
-                              [currentProofTab.defId]: alt,
-                            }));
+                            soundEngine.playPaperSlide();
+                            setProofPage(tab.idx);
                           }}
-                          className={`min-h-[48px] px-4 py-3 rounded-xl text-left text-xs sm:text-sm font-bold transition-colors ${
-                            selected
-                              ? 'bg-[#13294b] text-white'
-                              : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b]'
+                          className={`p-3 rounded-2xl text-left border-2 transition-all flex items-center justify-between gap-2 ${
+                            isCurrent
+                              ? 'bg-[#13294b] text-white border-[#13294b] shadow-md'
+                              : touched
+                                ? 'bg-[#e9f7ef] text-[#157a4f] border-[#157a4f]/25'
+                                : 'bg-white text-[#13294b] border-[#13294b]/12 hover:bg-[#f4f7fc]'
                           }`}
                         >
-                          {alt}
+                          <div>
+                            <div className="text-xs font-extrabold">{tab.label}</div>
+                            <div
+                              className={`text-[10px] font-mono-tabular mt-0.5 ${
+                                isCurrent ? 'text-[#ffd66b]' : 'text-current/70'
+                              }`}
+                            >
+                              {fixedDefects[tab.defId]}
+                            </div>
+                          </div>
+                          {touched && <CheckCircle2 className="w-4 h-4 shrink-0" />}
                         </button>
                       );
                     })}
                   </div>
 
-                  <div className="flex justify-end pt-2">
-                    {proofPage < PROOF_PAGES.length - 1 ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundEngine.playPaperSlide();
-                          setProofPage((p) => p + 1);
-                        }}
-                        className="min-h-[44px] px-5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5"
-                      >
-                        Следующая страница <ArrowRight className="w-4 h-4" />
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleCheckTask3}
-                        className="min-h-[46px] px-6 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 shadow-sm"
-                      >
-                        <Printer className="w-4 h-4" />
-                        Подписать номер в печать ({fixedCount}/4)
-                      </button>
+                  <button
+                    type="button"
+                    onClick={handleCheckTask3}
+                    className="w-full min-h-[46px] px-4 rounded-2xl bg-[#157a4f] hover:bg-[#116440] text-white text-xs font-extrabold inline-flex items-center justify-center gap-2 shadow-md transition-colors"
+                  >
+                    <Printer className="w-4 h-4" />
+                    Подписать в печать ({Object.keys(inspectedPages).length}/4)
+                  </button>
+                </div>
+
+                {/* RIGHT 9 COLS: PRE-PRESS PROOFING SHEET + CORRECTION OPTIONS */}
+                <div className="lg:col-span-9 bg-white rounded-3xl p-5 sm:p-6 border border-[#13294b]/12 shadow-md space-y-5">
+                  {/* Press Proof Sheet Frame with Subtle Crop Marks */}
+                  <div className="relative rounded-2xl bg-[#f5f7fb] p-4 sm:p-5 border border-[#13294b]/15">
+                    {proofPage === 0 && (
+                      <div className="relative rounded-xl overflow-hidden bg-[#13294b] text-white min-h-[240px] p-6 flex flex-col justify-between">
+                        <img
+                          src={MEDIA.studioPrint}
+                          alt="Обложка журнала Культура"
+                          referrerPolicy="no-referrer"
+                          className="absolute inset-0 w-full h-full object-cover opacity-40"
+                        />
+                        <div className="relative flex items-center justify-between">
+                          <span className="font-mono-tabular text-xs font-extrabold bg-[#c41e2e] px-3 py-1 rounded">
+                            КУЛЬТУРА · № 01
+                          </span>
+                          <span className="px-4 py-1.5 rounded-xl font-mono-tabular text-base font-extrabold border-2 bg-white text-[#13294b] border-[#ffd66b] shadow">
+                            {fixedDefects.age}
+                          </span>
+                        </div>
+                        <div className="relative space-y-1">
+                          <div className="font-display font-extrabold text-3xl sm:text-4xl">КУЛЬТУРА</div>
+                          <div className="text-sm text-[#ffd66b] font-bold">
+                            От эскиза до плаката · За кулисами фестиваля
+                          </div>
+                        </div>
+                      </div>
                     )}
+
+                    {proofPage === 1 && (
+                      <div className="bg-white rounded-xl p-5 border border-[#13294b]/10 space-y-4">
+                        <div className="border-b border-[#13294b]/10 pb-2.5">
+                          <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e]">
+                            Журнал «Культура» · № 01
+                          </div>
+                          <h3 className="font-display font-extrabold text-xl text-[#13294b] mt-1">
+                            Содержание номера
+                          </h3>
+                        </div>
+                        <div className="divide-y divide-[#13294b]/10">
+                          <div className="py-3 flex items-center justify-between gap-4">
+                            <div>
+                              <div className="font-display font-bold text-base text-[#13294b]">
+                                От эскиза до плаката
+                              </div>
+                              <div className="text-xs text-[#13294b]/65">Мария Соколова · Главная статья</div>
+                            </div>
+                            <span className="px-3.5 py-1.5 rounded-xl font-mono-tabular text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b]">
+                              {fixedDefects.page}
+                            </span>
+                          </div>
+                          <div className="py-3 flex items-center justify-between gap-4">
+                            <div>
+                              <div className="font-display font-bold text-base text-[#13294b]">
+                                За кулисами фестиваля
+                              </div>
+                              <div className="text-xs text-[#13294b]/65">Илья Родин · Фоторепортаж</div>
+                            </div>
+                            <span className="font-mono-tabular text-sm font-extrabold text-[#13294b]">
+                              Стр. 14
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {proofPage === 2 && (
+                      <div className="bg-white rounded-xl p-5 border border-[#13294b]/10 grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
+                        <div className="space-y-2">
+                          <div className="text-xs font-extrabold text-[#c41e2e]">
+                            СТР. 8 · ГЛАВНАЯ СТАТЬЯ
+                          </div>
+                          <h3 className="font-display font-extrabold text-xl text-[#13294b] leading-snug">
+                            От эскиза до плаката
+                          </h3>
+                          <p className="text-sm text-[#13294b]/80 leading-relaxed">
+                            Художница нарисовала эскиз, а трафареты сделала вместе с мастером. Плакаты
+                            печатали в три цвета и за день получили шесть экземпляров.
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <img
+                            src={MEDIA.studioPrint}
+                            alt="Печать плаката в мастерской"
+                            referrerPolicy="no-referrer"
+                            className="w-full aspect-[4/3] object-cover rounded-xl shadow-sm"
+                          />
+                          <div className="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b]">
+                            {fixedDefects.author}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {proofPage === 3 && (
+                      <div className="bg-white rounded-xl p-5 border border-[#13294b]/10 grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
+                        <div className="space-y-2">
+                          <img
+                            src={MEDIA.studioMusic}
+                            alt="Вечерний двор и гости фестиваля"
+                            referrerPolicy="no-referrer"
+                            className="w-full aspect-[4/3] object-cover rounded-xl shadow-sm"
+                          />
+                          <div className="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b]">
+                            {fixedDefects.caption}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="text-xs font-extrabold text-[#135c75]">
+                            СТР. 14 · ФОТОРЕПОРТАЖ
+                          </div>
+                          <h3 className="font-display font-extrabold text-xl text-[#13294b] leading-snug">
+                            За кулисами фестиваля
+                          </h3>
+                          <p className="text-sm text-[#13294b]/80 leading-relaxed">
+                            За три часа до старта команда подготовила площадку, зажгла огни во дворе и
+                            встретила первых гостей вечерней программы.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Direct Question & 3 Options Right Underneath the Proof Sheet */}
+                  <div className="space-y-3">
+                    <div className="font-display font-extrabold text-sm sm:text-base text-[#13294b]">
+                      {currentProofTab.question}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      {currentProofDefect.alts.map((alt) => {
+                        const selected = fixedDefects[currentProofTab.defId] === alt;
+                        return (
+                          <button
+                            key={alt}
+                            type="button"
+                            onClick={() => {
+                              soundEngine.playPencilMark();
+                              setInspectedPages((prev) => ({
+                                ...prev,
+                                [currentProofTab.defId]: true,
+                              }));
+                              setFixedDefects((prev) => ({
+                                ...prev,
+                                [currentProofTab.defId]: alt,
+                              }));
+                            }}
+                            className={`min-h-[46px] px-4 py-2.5 rounded-xl text-left text-xs sm:text-sm font-bold transition-colors ${
+                              selected
+                                ? 'bg-[#13294b] text-white shadow-xs'
+                                : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b]'
+                            }`}
+                          >
+                            {alt}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex justify-end pt-1">
+                      {proofPage < PROOF_PAGES.length - 1 ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playPaperSlide();
+                            setProofPage((p) => p + 1);
+                          }}
+                          className="min-h-[42px] px-5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5"
+                        >
+                          Следующая страница <ArrowRight className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleCheckTask3}
+                          className="min-h-[44px] px-6 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 shadow-sm"
+                        >
+                          <Printer className="w-4 h-4" />
+                          Подписать номер в печать
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

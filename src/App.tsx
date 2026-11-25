@@ -209,6 +209,7 @@ export function App() {
         muted={muted}
         onNavigate={handleNavigate}
         onToggleMute={handleToggleMute}
+        onResetProgress={handleResetProgress}
       />
 
       <main className="flex-1 min-h-0 overflow-hidden">

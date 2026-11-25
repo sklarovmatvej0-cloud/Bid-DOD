@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import {
+  ArrowLeft,
   ArrowRight,
   Award,
+  BarChart3,
+  CalendarClock,
   Check,
   CheckCircle2,
+  Clock,
   Flame,
   Heart,
+  MapPin,
   MessageCircle,
   Send,
   ShieldCheck,
@@ -26,6 +31,7 @@ import { FeedbackState, KnigogradSave, TaskProgress } from '../game/knigogradTyp
 import { soundEngine } from '../game/sound';
 import { MissionBanner } from './MissionBanner';
 import { ProjectShowcase3D } from './ProjectShowcase3D';
+import { AnimatedNumber } from './VisualEffects';
 
 interface Workshop3ViewProps {
   taskIdx: number;
@@ -71,13 +77,16 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
 }) => {
   const wsMeta = WORKSHOPS[2];
 
-  /* ---- Task 0: Live Illustrated Festival Poster Builder ---- */
+  /* ---- Task 0: Producer Concept & Poster Studio ---- */
+  const [conceptStepIdx, setConceptStepIdx] = useState(0);
   const [conceptPicks, setConceptPicks] = useState<Record<string, string>>({});
 
-  /* ---- Task 1: Illustrated 3-Zone Festival Map + Budget ---- */
+  /* ---- Task 1: Festival Command Center + Budget & Timeline ---- */
+  const [activeZoneIdx, setActiveZoneIdx] = useState(0);
   const [budgetPicks, setBudgetPicks] = useState<Record<string, string>>({});
 
-  /* ---- Task 2: Realistic Smartphone SMM Studio ---- */
+  /* ---- Task 2: Tabbed SMM Studio + Realistic Smartphone ---- */
+  const [smmStepIdx, setSmmStepIdx] = useState(0);
   const [smmPicks, setSmmPicks] = useState<Record<string, string>>({
     hook: 'dry',
     visual: 'wall',
@@ -85,7 +94,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
     timing: 'late',
   });
 
-  /* ---- Task 3: Live Messenger Comment Thread ---- */
+  /* ---- Task 3: Community Inbox + Comment Thread ---- */
   const [chatIdx, setChatIdx] = useState(0);
   const [resolvedChats, setResolvedChats] = useState<
     Record<string, { reply: string; guestReaction: string }>
@@ -130,10 +139,12 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
       return;
     }
 
-    for (const step of CONCEPT_STEPS) {
+    for (let i = 0; i < CONCEPT_STEPS.length; i++) {
+      const step = CONCEPT_STEPS[i];
       const chosen = step.options.find((o) => o.id === conceptPicks[step.id]);
       if (!chosen?.isBest) {
         onRecordMistake(0);
+        setConceptStepIdx(i);
         onShowError('Афишу можно сделать ярче!', chosen?.feedback ?? 'Сверься с данными опроса аудитории.');
         return;
       }
@@ -193,10 +204,12 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
 
   /* ---- Check Task 2 ---- */
   const handleCheckTask2 = () => {
-    for (const step of SMM_CONSTRUCTOR_STEPS) {
+    for (let i = 0; i < SMM_CONSTRUCTOR_STEPS.length; i++) {
+      const step = SMM_CONSTRUCTOR_STEPS[i];
       const chosen = step.options.find((o) => o.id === smmPicks[step.id]);
       if (!chosen?.isBest) {
         onRecordMistake(2);
+        setSmmStepIdx(i);
         onShowError(
           `Сейчас анонс собрал ${smmMetrics.regs} регистраций (нужно 400+)`,
           chosen?.feedback ?? 'Попробуй другой вариант слева и следи за счётчиком на экране смартфона.'
@@ -242,9 +255,10 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
     };
     setResolvedChats(nextResolved);
 
-    if (chatIdx < COMMUNITY_COMMENTS.length - 1) {
+    const nextPending = COMMUNITY_COMMENTS.findIndex((c) => !nextResolved[c.id]);
+    if (nextPending !== -1) {
       setTimeout(() => {
-        setChatIdx((i) => i + 1);
+        setChatIdx(nextPending);
       }, 900);
     } else {
       setTimeout(() => {
@@ -378,11 +392,16 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
   const activeHook = SMM_CONSTRUCTOR_STEPS[0].options.find((o) => o.id === smmPicks.hook);
   const activeVisual = SMM_CONSTRUCTOR_STEPS[1].options.find((o) => o.id === smmPicks.visual);
   const activeCta = SMM_CONSTRUCTOR_STEPS[2].options.find((o) => o.id === smmPicks.cta);
+  const activeTiming = SMM_CONSTRUCTOR_STEPS[3].options.find((o) => o.id === smmPicks.timing);
+
+  const activeConceptStep = CONCEPT_STEPS[conceptStepIdx] ?? CONCEPT_STEPS[0];
+  const activeSmmStep = SMM_CONSTRUCTOR_STEPS[smmStepIdx] ?? SMM_CONSTRUCTOR_STEPS[0];
+  const activeZone = EVENT_BUDGET_STEPS[activeZoneIdx] ?? EVENT_BUDGET_STEPS[0];
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
       {/* Compact Stepper */}
-      <div className="shrink-0 bg-white border-b border-[#13294b]/10 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2 overflow-x-auto">
+      <div className="shrink-0 bg-white border-b border-[#13294b]/10 px-4 sm:px-6 py-2 flex items-center justify-between gap-2 overflow-x-auto">
         <div className="flex items-center gap-1.5">
           {wsMeta.tasks.map((t, idx) => {
             const done = progress[idx].completed;
@@ -392,9 +411,9 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 key={t.title}
                 type="button"
                 onClick={() => onSelectTask(idx)}
-                className={`min-h-[38px] px-3.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                className={`min-h-[36px] px-3.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all whitespace-nowrap ${
                   active
-                    ? 'bg-[#13294b] text-white'
+                    ? 'bg-[#13294b] text-white shadow-xs'
                     : done
                       ? 'bg-[#e9f7ef] text-[#157a4f]'
                       : 'bg-[#f2f5fa] text-[#13294b]/75 hover:bg-[#e5ebf6]'
@@ -409,7 +428,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
             <button
               type="button"
               onClick={onOpenShowcase}
-              className="min-h-[38px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
+              className="min-h-[36px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Готовая «Библионочь»
@@ -419,9 +438,9 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
       </div>
 
       {/* Main Game Stage */}
-      <div className="flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-5">
-        <div className="max-w-6xl mx-auto space-y-5 animate-card-in" key={`w3-t${taskIdx}`}>
-          {/* ============ TASK 0: ILLUSTRATED FESTIVAL POSTER BUILDER ============ */}
+      <div className="flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-4">
+        <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w3-t${taskIdx}`}>
+          {/* ============ TASK 0: AUDIENCE INSIGHTS + POSTER STUDIO ============ */}
           {taskIdx === 0 && (
             <>
               <MissionBanner
@@ -440,77 +459,154 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 onHint={handleHintClick}
               />
 
-              {/* Compact Visual Survey Strip */}
-              <div className="bg-white rounded-2xl p-4 border border-[#13294b]/10 shadow-xs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {SURVEY_STATS.map((st) => (
-                  <div key={st.label} className="space-y-1.5">
-                    <div className="flex items-center justify-between gap-2 text-xs font-bold text-[#13294b]">
-                      <span className="line-clamp-1">{st.label}</span>
-                      <span className="font-mono-tabular font-extrabold text-[#c41e2e] shrink-0">
-                        {st.percent}%
-                      </span>
-                    </div>
-                    <div className="h-2.5 rounded-full bg-[#eef2f8] overflow-hidden">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${st.percent}%`,
-                          backgroundColor: st.percent > 50 ? '#157a4f' : '#c41e2e',
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                {/* LEFT 7 COLS: 3 CLEAR CHOICE BLOCKS */}
-                <div className="lg:col-span-7 space-y-4">
-                  {CONCEPT_STEPS.map((step) => (
+              {/* Full-Text Audience Insights Dashboard */}
+              <div className="bg-white rounded-2xl p-4 border border-[#13294b]/10 shadow-xs space-y-2.5">
+                <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#135c75]">
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Аналитика опроса гостей библиотеки</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {SURVEY_STATS.map((st) => (
                     <div
-                      key={step.id}
-                      className="bg-white rounded-2xl p-4 border border-[#13294b]/10 shadow-xs space-y-2.5"
+                      key={st.label}
+                      className="rounded-xl bg-[#f6f8fc] border border-[#13294b]/8 p-3 flex flex-col justify-between gap-2"
                     >
-                      <div className="font-display font-extrabold text-sm text-[#13294b]">
-                        {step.title}
+                      <div className="text-xs font-bold text-[#13294b] leading-snug">
+                        {st.label}
                       </div>
-                      <div className="grid grid-cols-1 gap-2">
-                        {step.options.map((opt) => {
-                          const selected = conceptPicks[step.id] === opt.id;
-                          return (
-                            <button
-                              key={opt.id}
-                              type="button"
-                              onClick={() => {
-                                soundEngine.playSelectTick();
-                                setConceptPicks((prev) => ({ ...prev, [step.id]: opt.id }));
-                              }}
-                              className={`p-3.5 rounded-xl border-2 text-left transition-all ${
-                                selected
-                                  ? 'bg-[#13294b] text-white border-[#13294b] shadow'
-                                  : 'bg-[#f5f7fc] hover:bg-[#e8effa] text-[#13294b] border-transparent'
-                              }`}
-                            >
-                              <div className="text-xs sm:text-sm font-extrabold">{opt.label}</div>
-                              <div
-                                className={`text-[11px] mt-0.5 ${
-                                  selected ? 'text-white/75' : 'text-[#13294b]/65'
-                                }`}
-                              >
-                                {opt.sub}
-                              </div>
-                            </button>
-                          );
-                        })}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-xs font-mono-tabular font-extrabold">
+                          <span className={st.percent > 50 ? 'text-[#157a4f]' : 'text-[#c41e2e]'}>
+                            {st.percent}%
+                          </span>
+                        </div>
+                        <div className="h-2 rounded-full bg-[#e3e9f3] overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all"
+                            style={{
+                              width: `${st.percent}%`,
+                              backgroundColor: st.percent > 50 ? '#157a4f' : '#c41e2e',
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
+              </div>
 
-                {/* RIGHT 5 COLS: BIG LIVE ILLUSTRATED POSTER PREVIEW */}
-                <div className="lg:col-span-5 space-y-3 sticky top-4">
-                  <div className="rounded-3xl overflow-hidden bg-[#13294b] text-white shadow-2xl border-2 border-[#ffd66b]/50">
-                    <div className="relative aspect-[4/3] bg-[#0a182e]">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* LEFT 7 COLS: TABBED PRODUCER CONFIGURATOR */}
+                <div className="lg:col-span-7 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
+                  <div className="grid grid-cols-3 gap-2">
+                    {CONCEPT_STEPS.map((st, idx) => {
+                      const picked = Boolean(conceptPicks[st.id]);
+                      const isCurrent = conceptStepIdx === idx;
+                      return (
+                        <button
+                          key={st.id}
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setConceptStepIdx(idx);
+                          }}
+                          className={`min-h-[40px] px-3 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-1.5 transition-all ${
+                            isCurrent
+                              ? 'bg-[#13294b] text-white shadow-xs'
+                              : picked
+                                ? 'bg-[#e9f7ef] text-[#157a4f]'
+                                : 'bg-[#f4f7fc] text-[#13294b]/75 hover:bg-[#e7eef9]'
+                          }`}
+                        >
+                          {picked && <Check className="w-3.5 h-3.5 shrink-0" />}
+                          <span className="truncate">
+                            {idx === 0 ? '1. Формат' : idx === 1 ? '2. Название' : '3. Партнёры'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="font-display font-extrabold text-sm sm:text-base text-[#13294b]">
+                      {activeConceptStep.title}
+                    </div>
+                    <div className="space-y-2.5">
+                      {activeConceptStep.options.map((opt) => {
+                        const selected = conceptPicks[activeConceptStep.id] === opt.id;
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => {
+                              soundEngine.playSelectTick();
+                              setConceptPicks((prev) => ({
+                                ...prev,
+                                [activeConceptStep.id]: opt.id,
+                              }));
+                            }}
+                            className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
+                              selected
+                                ? 'bg-[#13294b] text-white border-[#13294b] shadow-sm'
+                                : 'bg-[#f6f8fc] hover:bg-[#e8effa] text-[#13294b] border-transparent'
+                            }`}
+                          >
+                            <div className="text-xs sm:text-sm font-extrabold leading-snug">
+                              {opt.label}
+                            </div>
+                            <div
+                              className={`text-[11px] mt-1 ${
+                                selected ? 'text-white/75' : 'text-[#13294b]/65'
+                              }`}
+                            >
+                              {opt.sub}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-[#13294b]/10 flex items-center justify-between gap-2">
+                    {conceptStepIdx > 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => setConceptStepIdx((s) => s - 1)}
+                        className="min-h-[42px] px-4 rounded-xl bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b] text-xs font-extrabold inline-flex items-center gap-1"
+                      >
+                        <ArrowLeft className="w-4 h-4" /> Назад
+                      </button>
+                    ) : (
+                      <div />
+                    )}
+
+                    {conceptStepIdx < CONCEPT_STEPS.length - 1 ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          soundEngine.playSelectTick();
+                          setConceptStepIdx((s) => s + 1);
+                        }}
+                        className="min-h-[42px] px-5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5"
+                      >
+                        Дальше <ArrowRight className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleCheckTask0}
+                        className="min-h-[44px] px-5 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-xs sm:text-sm shadow-sm transition-colors"
+                      >
+                        Утвердить афишу ({Object.keys(conceptPicks).length}/3) →
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* RIGHT 5 COLS: DESIGNER EVENT POSTER PREVIEW */}
+                <div className="lg:col-span-5 space-y-3">
+                  <div className="rounded-3xl overflow-hidden bg-gradient-to-b from-[#0d1f3a] via-[#13294b] to-[#1a345c] text-white shadow-2xl border-2 border-[#ffd66b]/45">
+                    <div className="relative aspect-[16/10] bg-[#0a182e]">
                       <img
                         src={
                           conceptPicks.format === 'lecture'
@@ -523,40 +619,45 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#13294b] via-[#13294b]/25 to-transparent" />
-                      <div className="absolute top-3 left-3 px-3 py-1 rounded-lg bg-[#c41e2e] text-white font-mono-tabular text-[11px] font-extrabold">
-                        МАКЕТ АФИШИ
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f3a] via-[#0d1f3a]/30 to-transparent" />
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                        <span className="px-2.5 py-1 rounded-lg bg-[#c41e2e] text-white font-mono-tabular text-[10px] font-extrabold tracking-wider">
+                          АФИША СОБЫТИЯ · БГИИК
+                        </span>
+                        <span className="px-2.5 py-1 rounded-lg bg-black/60 text-[#ffd66b] font-mono-tabular text-[10px] font-extrabold inline-flex items-center gap-1">
+                          <CalendarClock className="w-3 h-3" /> ПТ · 18:30
+                        </span>
                       </div>
                     </div>
 
                     <div className="p-5 space-y-3">
-                      <div className="font-display font-extrabold text-xl text-[#ffd66b] leading-snug">
+                      <div className="font-display font-extrabold text-lg sm:text-xl text-[#ffd66b] leading-snug">
                         {pickedName ? pickedName.label : '← Выбери название афиши'}
                       </div>
-                      <div className="rounded-xl bg-white/10 p-3 text-xs text-white/90">
+                      <div className="rounded-xl bg-white/10 border border-white/10 p-3 text-xs text-white/90 leading-relaxed">
                         <strong className="text-[#7dd3fc]">Формат:</strong>{' '}
                         {pickedFormat ? pickedFormat.label : 'ещё не выбран'}
                       </div>
-                      <div className="rounded-xl bg-white/10 p-3 text-xs text-white/90">
+                      <div className="rounded-xl bg-white/10 border border-white/10 p-3 text-xs text-white/90 leading-relaxed">
                         <strong className="text-[#86efac]">Партнёры:</strong>{' '}
                         {pickedPartner ? pickedPartner.label : 'ещё не выбраны'}
                       </div>
+                      <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-white/70">
+                        <span className="inline-flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-[#ffd66b]" /> Библиотека БИД
+                        </span>
+                        <span className="font-mono-tabular text-[#ffd66b]">
+                          {Object.keys(conceptPicks).length}/3 элемента
+                        </span>
+                      </div>
                     </div>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={handleCheckTask0}
-                    className="w-full min-h-[50px] rounded-2xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-sm shadow-lg transition-colors"
-                  >
-                    Утвердить афишу ({Object.keys(conceptPicks).length}/3) →
-                  </button>
                 </div>
               </div>
             </>
           )}
 
-          {/* ============ TASK 1: ILLUSTRATED 3-ZONE FESTIVAL MAP + BUDGET ============ */}
+          {/* ============ TASK 1: COMMAND CENTER + GRANT BUDGET + TIMELINE ============ */}
           {taskIdx === 1 && (
             <>
               <MissionBanner
@@ -575,30 +676,30 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 onHint={handleHintClick}
               />
 
-              {/* 3 Big Clear Live Gauges */}
+              {/* Live Grant & KPI Dashboard */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                 <div
-                  className={`rounded-2xl p-4 border-2 shadow-xs ${
+                  className={`rounded-2xl p-4 border-2 shadow-xs transition-colors ${
                     budgetMetrics.cost > 300
-                      ? 'bg-[#fde8ea] border-[#c41e2e]'
+                      ? 'bg-[#fde8ea] border-[#c41e2e] animate-stage-shake'
                       : 'bg-white border-[#13294b]/10'
                   }`}
                 >
-                  <div className="flex items-center justify-between text-xs font-extrabold text-[#13294b]/70">
+                  <div className="flex items-center justify-between text-xs font-extrabold text-[#13294b]/75">
                     <span className="inline-flex items-center gap-1.5">
-                      <Wallet className="w-4 h-4 text-[#c41e2e]" /> Грант библиотеки (лимит 300 тыс.)
+                      <Wallet className="w-4 h-4 text-[#c41e2e]" /> Грант (лимит 300 тыс.)
                     </span>
                     <span
                       className={`font-mono-tabular text-base ${
                         budgetMetrics.cost > 300 ? 'text-[#c41e2e]' : 'text-[#13294b]'
                       }`}
                     >
-                      {budgetMetrics.cost} / 300 тыс. ₽
+                      <AnimatedNumber value={budgetMetrics.cost} /> / 300 т.₽
                     </span>
                   </div>
                   <div className="h-2.5 rounded-full bg-[#e9edf5] overflow-hidden mt-2">
                     <div
-                      className="h-full rounded-full transition-all"
+                      className="h-full rounded-full transition-all duration-300"
                       style={{
                         width: `${Math.min(100, (budgetMetrics.cost / 300) * 100)}%`,
                         backgroundColor: budgetMetrics.cost > 300 ? '#c41e2e' : '#135c75',
@@ -608,7 +709,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 </div>
 
                 <div className="rounded-2xl bg-white p-4 border-2 border-[#13294b]/10 shadow-xs">
-                  <div className="flex items-center justify-between text-xs font-extrabold text-[#13294b]/70">
+                  <div className="flex items-center justify-between text-xs font-extrabold text-[#13294b]/75">
                     <span className="inline-flex items-center gap-1.5">
                       <Flame className="w-4 h-4 text-[#e59c2d]" /> Настроение (нужно 80%+)
                     </span>
@@ -617,12 +718,12 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         budgetMetrics.vibe >= 80 ? 'text-[#157a4f]' : 'text-[#b76506]'
                       }`}
                     >
-                      {budgetMetrics.vibe}%
+                      <AnimatedNumber value={budgetMetrics.vibe} />%
                     </span>
                   </div>
                   <div className="h-2.5 rounded-full bg-[#e9edf5] overflow-hidden mt-2">
                     <div
-                      className="h-full rounded-full transition-all"
+                      className="h-full rounded-full transition-all duration-300"
                       style={{
                         width: `${Math.min(100, budgetMetrics.vibe)}%`,
                         backgroundColor: budgetMetrics.vibe >= 80 ? '#157a4f' : '#e59c2d',
@@ -632,7 +733,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 </div>
 
                 <div className="rounded-2xl bg-white p-4 border-2 border-[#13294b]/10 shadow-xs">
-                  <div className="flex items-center justify-between text-xs font-extrabold text-[#13294b]/70">
+                  <div className="flex items-center justify-between text-xs font-extrabold text-[#13294b]/75">
                     <span className="inline-flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-[#157a4f]" /> Порядок (нужно 80%+)
                     </span>
@@ -641,12 +742,12 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         budgetMetrics.org >= 80 ? 'text-[#157a4f]' : 'text-[#135c75]'
                       }`}
                     >
-                      {budgetMetrics.org}%
+                      <AnimatedNumber value={budgetMetrics.org} />%
                     </span>
                   </div>
                   <div className="h-2.5 rounded-full bg-[#e9edf5] overflow-hidden mt-2">
                     <div
-                      className="h-full rounded-full transition-all"
+                      className="h-full rounded-full transition-all duration-300"
                       style={{
                         width: `${Math.min(100, budgetMetrics.org)}%`,
                         backgroundColor: budgetMetrics.org >= 80 ? '#157a4f' : '#135c75',
@@ -656,79 +757,158 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 </div>
               </div>
 
-              {/* 3 Illustrated Festival Zones */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                {EVENT_BUDGET_STEPS.map((zone) => (
-                  <div
-                    key={zone.id}
-                    className="bg-white rounded-3xl overflow-hidden border border-[#13294b]/12 shadow-md flex flex-col"
-                  >
-                    <div className="relative aspect-[4/3] bg-[#13294b]">
-                      <img
-                        src={ZONE_IMAGES[zone.id] ?? MEDIA.sceneSmmFestival}
-                        alt={zone.title}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute bottom-2.5 left-3.5 right-3.5 text-white font-display font-extrabold text-sm">
-                        {zone.title}
-                      </div>
-                    </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* LEFT 7 COLS: ZONE MAP SELECTOR + PROGRAM OPTIONS (WITHOUT SPOILER NUMBERS!) */}
+                <div className="lg:col-span-7 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {EVENT_BUDGET_STEPS.map((zone, idx) => {
+                      const picked = Boolean(budgetPicks[zone.id]);
+                      const isCurrent = activeZoneIdx === idx;
+                      return (
+                        <button
+                          key={zone.id}
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setActiveZoneIdx(idx);
+                          }}
+                          className={`p-3 rounded-2xl text-left border-2 transition-all ${
+                            isCurrent
+                              ? 'bg-[#13294b] text-white border-[#13294b] shadow-xs'
+                              : picked
+                                ? 'bg-[#e9f7ef] text-[#157a4f] border-[#157a4f]/25'
+                                : 'bg-[#f4f7fc] text-[#13294b] border-transparent hover:bg-[#e7eef9]'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider opacity-75">
+                            <span>Зона {idx + 1}</span>
+                            {picked && <CheckCircle2 className="w-3.5 h-3.5" />}
+                          </div>
+                          <div className="text-xs font-extrabold mt-0.5 line-clamp-1">
+                            {zone.title.replace(/^\d+\.\s*/, '')}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                    <div className="p-3.5 space-y-2 flex-1">
-                      {zone.options.map((opt) => {
-                        const selected = budgetPicks[zone.id] === opt.id;
-                        return (
-                          <button
-                            key={opt.id}
-                            type="button"
-                            onClick={() => {
-                              soundEngine.playSelectTick();
-                              setBudgetPicks((prev) => ({ ...prev, [zone.id]: opt.id }));
-                            }}
-                            className={`w-full p-3 rounded-2xl border-2 text-left transition-all ${
-                              selected
-                                ? 'bg-[#13294b] text-white border-[#13294b]'
-                                : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b] border-transparent'
-                            }`}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <span className="text-xs font-extrabold leading-snug">{opt.label}</span>
-                              <span
-                                className={`font-mono-tabular text-xs font-extrabold shrink-0 ${
-                                  selected ? 'text-[#ffd66b]' : 'text-[#c41e2e]'
-                                }`}
-                              >
-                                {opt.cost} т.₽
-                              </span>
-                            </div>
-                            <div
-                              className={`text-[11px] mt-1 ${
-                                selected ? 'text-white/75' : 'text-[#13294b]/65'
-                              }`}
-                            >
-                              Настроение +{opt.vibe}% · Порядок +{opt.org}%
-                            </div>
-                          </button>
-                        );
-                      })}
+                  <div className="flex flex-col sm:flex-row gap-4 items-center rounded-2xl bg-[#f6f8fc] p-3.5 border border-[#13294b]/10">
+                    <img
+                      src={ZONE_IMAGES[activeZone.id] ?? MEDIA.sceneSmmFestival}
+                      alt={activeZone.title}
+                      referrerPolicy="no-referrer"
+                      className="w-full sm:w-32 aspect-[4/3] object-cover rounded-xl shrink-0"
+                    />
+                    <div className="space-y-1">
+                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#135c75]">
+                        Площадка {activeZoneIdx + 1} из 3
+                      </div>
+                      <h3 className="font-display font-extrabold text-base text-[#13294b]">
+                        {activeZone.title}
+                      </h3>
+                      <p className="text-xs text-[#13294b]/70">
+                        Выбери вариант программы и сверься со сметой гранта и показателями сверху.
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
 
-              <button
-                type="button"
-                onClick={handleCheckTask1}
-                className="w-full min-h-[50px] rounded-2xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-sm shadow-lg"
-              >
-                Утвердить площадки «Библионочи» ({budgetMetrics.count}/3) →
-              </button>
+                  <div className="space-y-2.5">
+                    {activeZone.options.map((opt) => {
+                      const selected = budgetPicks[activeZone.id] === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setBudgetPicks((prev) => ({ ...prev, [activeZone.id]: opt.id }));
+                          }}
+                          className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
+                            selected
+                              ? 'bg-[#13294b] text-white border-[#13294b] shadow-sm'
+                              : 'bg-[#f6f8fc] hover:bg-[#e8effa] text-[#13294b] border-transparent'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <span className="text-xs sm:text-sm font-extrabold leading-snug">
+                              {opt.label}
+                            </span>
+                            <span
+                              className={`font-mono-tabular text-xs font-extrabold px-2.5 py-1 rounded-lg shrink-0 ${
+                                selected
+                                  ? 'bg-[#ffd66b] text-[#13294b]'
+                                  : 'bg-white text-[#c41e2e] border border-[#13294b]/10'
+                              }`}
+                            >
+                              {opt.cost} тыс. ₽
+                            </span>
+                          </div>
+                          <div
+                            className={`text-xs mt-1.5 leading-relaxed ${
+                              selected ? 'text-white/80' : 'text-[#13294b]/70'
+                            }`}
+                          >
+                            {opt.desc}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* RIGHT 5 COLS: LIVE EVENING SCHEDULE & GRANT LEDGER */}
+                <aside className="lg:col-span-5 bg-[#13294b] text-white rounded-3xl p-5 border border-white/10 shadow-xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-white/12 pb-3">
+                    <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
+                      <Clock className="w-4 h-4" />
+                      <span>Смета и расписание вечера</span>
+                    </div>
+                    <span className="font-mono-tabular text-xs text-white/70">
+                      Остаток: {300 - budgetMetrics.cost} т.₽
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {EVENT_BUDGET_STEPS.map((zone, idx) => {
+                      const picked = zone.options.find((o) => o.id === budgetPicks[zone.id]);
+                      return (
+                        <button
+                          key={zone.id}
+                          type="button"
+                          onClick={() => setActiveZoneIdx(idx)}
+                          className={`w-full text-left rounded-2xl p-3.5 border transition-all ${
+                            activeZoneIdx === idx
+                              ? 'bg-white/15 border-[#ffd66b]'
+                              : 'bg-white/8 border-white/10 hover:bg-white/12'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2 text-[11px] font-bold text-[#7dd3fc]">
+                            <span>{zone.title}</span>
+                            <span className="font-mono-tabular text-[#ffd66b]">
+                              {picked ? `${picked.cost} т.₽` : '—'}
+                            </span>
+                          </div>
+                          <div className="text-xs sm:text-sm font-extrabold text-white mt-1">
+                            {picked ? picked.timeLabel : 'Программа не выбрана'}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleCheckTask1}
+                    className="w-full min-h-[48px] rounded-2xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-sm shadow-lg transition-colors"
+                  >
+                    Утвердить площадки «Библионочи» ({budgetMetrics.count}/3) →
+                  </button>
+                </aside>
+              </div>
             </>
           )}
 
-          {/* ============ TASK 2: REALISTIC SMARTPHONE SMM POST STUDIO ============ */}
+          {/* ============ TASK 2: TABBED SMM STUDIO + REALISTIC SMARTPHONE ============ */}
           {taskIdx === 2 && (
             <>
               <MissionBanner
@@ -747,94 +927,160 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 onHint={handleHintClick}
               />
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* LEFT 7 COLS: 4 VISUAL CONTROLS */}
-                <div className="lg:col-span-7 space-y-4">
-                  {SMM_CONSTRUCTOR_STEPS.map((step) => (
-                    <div
-                      key={step.id}
-                      className="bg-white rounded-2xl p-4 border border-[#13294b]/10 shadow-xs space-y-2.5"
-                    >
-                      <div className="font-display font-extrabold text-sm text-[#13294b]">
-                        {step.title}
-                      </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* LEFT 7 COLS: TABBED SMM STUDIO CONTROLS */}
+                <div className="lg:col-span-7 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    {SMM_CONSTRUCTOR_STEPS.map((st, idx) => {
+                      const isCurrent = smmStepIdx === idx;
+                      return (
+                        <button
+                          key={st.id}
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setSmmStepIdx(idx);
+                          }}
+                          className={`min-h-[38px] px-2.5 rounded-xl text-xs font-extrabold transition-all truncate ${
+                            isCurrent
+                              ? 'bg-[#13294b] text-white shadow-xs'
+                              : 'bg-[#f4f7fc] text-[#13294b]/75 hover:bg-[#e5eefb]'
+                          }`}
+                        >
+                          {st.title}
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                      {step.id === 'visual' ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {step.options.map((opt) => {
-                            const selected = smmPicks[step.id] === opt.id;
-                            return (
-                              <button
-                                key={opt.id}
-                                type="button"
-                                onClick={() => {
-                                  soundEngine.playSelectTick();
-                                  setSmmPicks((prev) => ({ ...prev, [step.id]: opt.id }));
-                                }}
-                                className={`rounded-2xl overflow-hidden border-2 text-left transition-all flex flex-col ${
-                                  selected
-                                    ? 'border-[#13294b] ring-2 ring-[#ffd66b]'
-                                    : 'border-[#13294b]/12 opacity-85 hover:opacity-100'
-                                }`}
-                              >
-                                <img
-                                  src={SMM_VISUAL_PREVIEWS[opt.id] ?? MEDIA.w3SmmCards}
-                                  alt={opt.label}
-                                  referrerPolicy="no-referrer"
-                                  className="w-full aspect-[4/3] object-cover"
-                                />
-                                <div
-                                  className={`p-3 text-xs font-bold leading-snug flex-1 ${
-                                    selected ? 'bg-[#13294b] text-white' : 'bg-[#f4f7fc] text-[#13294b]'
-                                  }`}
-                                >
-                                  {opt.label}
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          {step.options.map((opt) => {
-                            const selected = smmPicks[step.id] === opt.id;
-                            return (
-                              <button
-                                key={opt.id}
-                                type="button"
-                                onClick={() => {
-                                  soundEngine.playSelectTick();
-                                  setSmmPicks((prev) => ({ ...prev, [step.id]: opt.id }));
-                                }}
-                                className={`w-full p-3 rounded-xl border-2 text-left text-xs sm:text-sm font-bold transition-all ${
-                                  selected
-                                    ? 'bg-[#13294b] text-white border-[#13294b]'
-                                    : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b] border-transparent'
+                  <div className="space-y-3">
+                    <div className="font-display font-extrabold text-sm sm:text-base text-[#13294b]">
+                      {activeSmmStep.title}
+                    </div>
+
+                    {activeSmmStep.id === 'visual' ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {activeSmmStep.options.map((opt) => {
+                          const selected = smmPicks[activeSmmStep.id] === opt.id;
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => {
+                                soundEngine.playSelectTick();
+                                setSmmPicks((prev) => ({ ...prev, [activeSmmStep.id]: opt.id }));
+                              }}
+                              className={`rounded-2xl overflow-hidden border-2 text-left transition-all flex flex-col ${
+                                selected
+                                  ? 'border-[#13294b] ring-2 ring-[#ffd66b] shadow-sm'
+                                  : 'border-[#13294b]/12 opacity-85 hover:opacity-100'
+                              }`}
+                            >
+                              <img
+                                src={SMM_VISUAL_PREVIEWS[opt.id] ?? MEDIA.w3SmmCards}
+                                alt={opt.label}
+                                referrerPolicy="no-referrer"
+                                className="w-full aspect-[4/3] object-cover"
+                              />
+                              <div
+                                className={`p-3 text-xs font-bold leading-snug flex-1 ${
+                                  selected ? 'bg-[#13294b] text-white' : 'bg-[#f4f7fc] text-[#13294b]'
                                 }`}
                               >
                                 {opt.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="space-y-2.5">
+                        {activeSmmStep.options.map((opt) => {
+                          const selected = smmPicks[activeSmmStep.id] === opt.id;
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => {
+                                soundEngine.playSelectTick();
+                                setSmmPicks((prev) => ({ ...prev, [activeSmmStep.id]: opt.id }));
+                              }}
+                              className={`w-full p-4 rounded-2xl border-2 text-left text-xs sm:text-sm font-bold transition-all ${
+                                selected
+                                  ? 'bg-[#13294b] text-white border-[#13294b] shadow-xs'
+                                  : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b] border-transparent'
+                              }`}
+                            >
+                              {opt.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-3 border-t border-[#13294b]/10 flex items-center justify-between gap-2">
+                    {smmStepIdx > 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => setSmmStepIdx((s) => s - 1)}
+                        className="min-h-[42px] px-4 rounded-xl bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b] text-xs font-extrabold inline-flex items-center gap-1"
+                      >
+                        <ArrowLeft className="w-4 h-4" /> Назад
+                      </button>
+                    ) : (
+                      <div />
+                    )}
+
+                    {smmStepIdx < SMM_CONSTRUCTOR_STEPS.length - 1 ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          soundEngine.playSelectTick();
+                          setSmmStepIdx((s) => s + 1);
+                        }}
+                        className="min-h-[42px] px-5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5"
+                      >
+                        Дальше <ArrowRight className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleCheckTask2}
+                        className="min-h-[44px] px-5 rounded-xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-xs sm:text-sm shadow-sm transition-colors"
+                      >
+                        Опубликовать пост ({smmMetrics.regs} регистраций) →
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* RIGHT 5 COLS: REALISTIC SMARTPHONE LIVE POST */}
-                <div className="lg:col-span-5 flex flex-col items-center space-y-4">
-                  <div className="w-full max-w-[350px] rounded-[36px] bg-[#101828] p-3.5 shadow-2xl border-4 border-[#273552] text-white">
-                    <div className="w-24 h-4 rounded-full bg-black/70 mx-auto mb-3" />
+                <div className="lg:col-span-5 flex flex-col items-center space-y-3">
+                  <div className="w-full max-w-[355px] rounded-[34px] bg-[#0f172a] p-3 shadow-2xl border-4 border-[#273552] text-white">
+                    {/* Phone Status Bar */}
+                    <div className="flex items-center justify-between px-3 pb-2 text-[10px] font-mono-tabular text-white/75">
+                      <span>18:30</span>
+                      <span className="w-16 h-3 rounded-full bg-black/75" />
+                      <span>5G · 98%</span>
+                    </div>
+
                     <div className="rounded-[24px] bg-white text-[#13294b] overflow-hidden">
                       {/* Account Header */}
-                      <div className="px-3.5 py-2.5 flex items-center gap-2.5 border-b border-[#13294b]/10">
-                        <div className="w-8 h-8 rounded-full bg-[#c41e2e] text-white font-display font-extrabold text-xs flex items-center justify-center">
-                          БН
-                        </div>
-                        <div className="leading-tight">
-                          <div className="text-xs font-extrabold">Библиотека · БГИИК</div>
-                          <div className="text-[10px] text-[#13294b]/60">Белгород · Анонс «Библионочи»</div>
+                      <div className="px-3.5 py-2.5 flex items-center justify-between border-b border-[#13294b]/10">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-[#c41e2e] text-white font-display font-extrabold text-xs flex items-center justify-center">
+                            БН
+                          </div>
+                          <div className="leading-tight">
+                            <div className="text-xs font-extrabold inline-flex items-center gap-1">
+                              <span>Библиотека · БГИИК</span>
+                              <CheckCircle2 className="w-3 h-3 text-[#135c75]" />
+                            </div>
+                            <div className="text-[10px] text-[#13294b]/60">
+                              {activeTiming?.preview}
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -843,20 +1089,23 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         src={SMM_VISUAL_PREVIEWS[smmPicks.visual] ?? MEDIA.w3SmmCards}
                         alt="Превью поста в смартфоне"
                         referrerPolicy="no-referrer"
-                        className="w-full aspect-[4/3] object-cover"
+                        className="w-full aspect-[16/10] object-cover"
                       />
 
                       {/* Live Likes / Comments / Registrations */}
                       <div className="p-3.5 space-y-2.5">
-                        <div className="flex items-center justify-between text-xs font-extrabold">
+                        <div className="flex items-center justify-between text-xs font-extrabold font-mono-tabular">
                           <span className="inline-flex items-center gap-1 text-[#c41e2e]">
-                            <Heart className="w-4 h-4 fill-current" /> {smmMetrics.likes}
+                            <Heart className="w-4 h-4 fill-current" />{' '}
+                            <AnimatedNumber value={smmMetrics.likes} />
                           </span>
                           <span className="inline-flex items-center gap-1 text-[#135c75]">
-                            <MessageCircle className="w-4 h-4" /> {smmMetrics.comments}
+                            <MessageCircle className="w-4 h-4" />{' '}
+                            <AnimatedNumber value={smmMetrics.comments} />
                           </span>
                           <span className="inline-flex items-center gap-1 text-[#157a4f]">
-                            <Users className="w-4 h-4" /> {smmMetrics.regs} записей
+                            <Users className="w-4 h-4" />{' '}
+                            <AnimatedNumber value={smmMetrics.regs} /> записей
                           </span>
                         </div>
 
@@ -867,21 +1116,25 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           {activeVisual?.preview} · {activeCta?.preview}
                         </div>
 
+                        <div className="rounded-xl bg-[#135c75] text-white text-center py-2 text-[11px] font-extrabold">
+                          Записаться на «Библионочь»
+                        </div>
+
                         {/* Goal Progress Bar */}
                         <div className="pt-2 border-t border-[#13294b]/10 space-y-1">
                           <div className="flex justify-between text-[11px] font-extrabold">
                             <span>Цель: 400+ регистраций</span>
                             <span
-                              className={
+                              className={`font-mono-tabular ${
                                 smmMetrics.regs >= 400 ? 'text-[#157a4f]' : 'text-[#c41e2e]'
-                              }
+                              }`}
                             >
                               {smmMetrics.regs} / 400
                             </span>
                           </div>
-                          <div className="h-2.5 rounded-full bg-[#e9edf5] overflow-hidden">
+                          <div className="h-2 rounded-full bg-[#e9edf5] overflow-hidden">
                             <div
-                              className="h-full rounded-full transition-all duration-200"
+                              className="h-full rounded-full transition-all duration-300"
                               style={{
                                 width: `${Math.min(100, (smmMetrics.regs / 400) * 100)}%`,
                                 backgroundColor: smmMetrics.regs >= 400 ? '#157a4f' : '#e59c2d',
@@ -892,20 +1145,12 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       </div>
                     </div>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={handleCheckTask2}
-                    className="w-full max-w-[350px] min-h-[50px] rounded-2xl bg-[#157a4f] hover:bg-[#116440] text-white font-display font-extrabold text-sm shadow-lg"
-                  >
-                    Опубликовать пост ({smmMetrics.regs} регистраций) →
-                  </button>
                 </div>
               </div>
             </>
           )}
 
-          {/* ============ TASK 3: LIVE MESSENGER COMMENT THREAD ============ */}
+          {/* ============ TASK 3: COMMUNITY MODERATION INBOX + CHAT THREAD ============ */}
           {taskIdx === 3 && (
             <>
               <MissionBanner
@@ -925,71 +1170,111 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
               />
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                {/* LEFT 4 COLS: POST PREVIEW + PROGRESS */}
+                {/* LEFT 4 COLS: POST PREVIEW + DIALOG INBOX */}
                 <div className="lg:col-span-4 bg-white rounded-3xl overflow-hidden border border-[#13294b]/12 shadow-md">
-                  <img
-                    src={MEDIA.w3SmmCards}
-                    alt="Анонс Библионочи"
-                    referrerPolicy="no-referrer"
-                    className="w-full aspect-[4/3] object-cover"
-                  />
-                  <div className="p-4 space-y-3">
-                    <div className="font-display font-extrabold text-sm text-[#13294b]">
-                      Анонс «Библионочи» · Комментарии
+                  <div className="relative aspect-[16/9]">
+                    <img
+                      src={MEDIA.w3SmmCards}
+                      alt="Анонс Библионочи"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#13294b]/85 via-transparent to-transparent" />
+                    <div className="absolute bottom-2.5 left-3.5 right-3.5 text-white font-display font-extrabold text-xs">
+                      Анонс «Библионочи» · Комментарии ({Object.keys(resolvedChats).length}/4)
                     </div>
-                    <div className="space-y-1.5">
-                      {COMMUNITY_COMMENTS.map((c, idx) => {
-                        const done = Boolean(resolvedChats[c.id]);
-                        const active = chatIdx === idx;
-                        return (
-                          <div
-                            key={c.id}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between ${
-                              done
+                  </div>
+
+                  <div className="p-3.5 space-y-2">
+                    {COMMUNITY_COMMENTS.map((c, idx) => {
+                      const done = Boolean(resolvedChats[c.id]);
+                      const active = chatIdx === idx;
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setChatIdx(idx);
+                            setChatWarning(null);
+                          }}
+                          className={`w-full p-2.5 rounded-2xl text-left flex items-center justify-between gap-2.5 transition-all ${
+                            active
+                              ? 'bg-[#13294b] text-white shadow-xs'
+                              : done
                                 ? 'bg-[#e9f7ef] text-[#157a4f]'
-                                : active
-                                  ? 'bg-[#13294b] text-white'
-                                  : 'bg-[#f4f7fc] text-[#13294b]/60'
-                            }`}
-                          >
-                            <span>
-                              {idx + 1}. {c.author}
+                                : 'bg-[#f4f7fc] text-[#13294b] hover:bg-[#e7eef9]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span
+                              className={`w-8 h-8 rounded-full font-display font-extrabold text-xs flex items-center justify-center shrink-0 ${
+                                active
+                                  ? 'bg-[#ffd66b] text-[#13294b]'
+                                  : done
+                                    ? 'bg-[#157a4f] text-white'
+                                    : 'bg-[#13294b]/12 text-[#13294b]'
+                              }`}
+                            >
+                              {c.author[0]}
                             </span>
-                            {done ? <CheckCircle2 className="w-4 h-4" /> : active ? 'Сейчас' : 'Ждёт'}
+                            <div className="min-w-0">
+                              <div className="text-xs font-extrabold truncate">{c.author}</div>
+                              <div
+                                className={`text-[10px] truncate ${
+                                  active ? 'text-white/70' : 'text-current/70'
+                                }`}
+                              >
+                                {c.tag}
+                              </div>
+                            </div>
                           </div>
-                        );
-                      })}
-                    </div>
+                          {done ? (
+                            <CheckCircle2 className="w-4 h-4 shrink-0" />
+                          ) : active ? (
+                            <span className="w-2 h-2 rounded-full bg-[#ffd66b] shrink-0" />
+                          ) : null}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
-                {/* RIGHT 8 COLS: LIVE CHAT THREAD */}
+                {/* RIGHT 8 COLS: REALISTIC COMMENT THREAD */}
                 <div className="lg:col-span-8 bg-white rounded-3xl p-5 sm:p-6 border border-[#13294b]/12 shadow-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#13294b]/10 pb-3">
-                    <div className="font-display font-extrabold text-base text-[#13294b]">
-                      Комментарий {chatIdx + 1} из {COMMUNITY_COMMENTS.length}
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#13294b]/10 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-9 h-9 rounded-full bg-[#c41e2e] text-white font-display font-extrabold text-sm flex items-center justify-center">
+                        {currentComment.author[0]}
+                      </span>
+                      <div>
+                        <div className="font-display font-extrabold text-sm text-[#13294b]">
+                          {currentComment.author} · {currentComment.role}
+                        </div>
+                        <div className="text-[11px] font-bold text-[#135c75]">
+                          {currentComment.tag}
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-xs font-bold text-[#135c75]">
-                      {currentComment.role} · {currentComment.tag}
+                    <span className="font-mono-tabular text-xs font-bold text-[#13294b]/60">
+                      Обращение {chatIdx + 1} / {COMMUNITY_COMMENTS.length}
                     </span>
                   </div>
 
-                  {/* Guest Message Bubble */}
-                  <div className="rounded-2xl bg-[#f4f7fc] border border-[#13294b]/10 p-4 space-y-1.5">
-                    <div className="text-xs font-extrabold text-[#c41e2e]">{currentComment.author}</div>
-                    <div className="text-sm sm:text-base font-bold text-[#13294b] leading-relaxed">
-                      {currentComment.text}
-                    </div>
+                  {/* Guest Comment Bubble */}
+                  <div className="rounded-2xl rounded-tl-sm bg-[#f4f7fc] border border-[#13294b]/10 p-4 text-sm sm:text-base font-bold text-[#13294b] leading-relaxed">
+                    {currentComment.text}
                   </div>
 
-                  {/* If resolved, show your reply & instant guest reaction */}
+                  {/* Resolved Official Reply + Guest Reaction */}
                   {resolvedChats[currentComment.id] && (
                     <div className="space-y-2.5 animate-card-in">
-                      <div className="rounded-2xl bg-[#13294b] text-white p-4 ml-6 text-sm font-semibold">
-                        <div className="text-[11px] font-extrabold text-[#ffd66b] mb-1">
-                          Твой ответ (Библиотека):
+                      <div className="rounded-2xl rounded-tr-sm bg-[#13294b] text-white p-4 ml-6 sm:ml-10 text-sm font-semibold shadow-sm">
+                        <div className="text-[11px] font-extrabold text-[#ffd66b] mb-1 inline-flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Библиотека · БГИИК (Официальный ответ)
                         </div>
-                        {resolvedChats[currentComment.id].reply}
+                        <div>{resolvedChats[currentComment.id].reply}</div>
                       </div>
                       <div className="rounded-2xl bg-[#e9f7ef] border border-[#157a4f]/30 text-[#157a4f] p-3.5 text-sm font-extrabold">
                         {resolvedChats[currentComment.id].guestReaction}
@@ -998,7 +1283,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   )}
 
                   {chatWarning && (
-                    <div className="rounded-xl bg-[#fde8ea] border border-[#c41e2e]/30 px-4 py-3 text-xs sm:text-sm font-bold text-[#c41e2e]">
+                    <div className="rounded-xl bg-[#fde8ea] border border-[#c41e2e]/30 px-4 py-3 text-xs sm:text-sm font-bold text-[#c41e2e] animate-stage-shake">
                       {chatWarning}
                     </div>
                   )}

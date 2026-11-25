@@ -30,7 +30,7 @@ function getWorkshopKey(wId: WorkshopId): 'w1' | 'w2' | 'w3' {
 export function App() {
   const [save, setSave] = useState<KnigogradSave>(() => loadKnigogradSave());
   const [route, setRoute] = useState<ScreenRoute>({ view: 'hub' });
-  const [hubMode, setHubMode] = useState<'3d' | '2d'>('3d');
+  const [hubMode, setHubMode] = useState<'3d' | '2d'>('2d');
   const [playerPos, setPlayerPos] = useState<PlayerWorldPos>({ x: 0, z: 5.1, rotY: Math.PI });
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const [muted, setMuted] = useState<boolean>(() => soundEngine.isMuted());

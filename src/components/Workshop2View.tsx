@@ -1244,7 +1244,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
             </>
           )}
 
-          {/* ============ TASK 2: INDESIGN-STYLE MAGAZINE PAGE STUDIO ============ */}
+          {/* ============ TASK 2: INTERACTIVE NEWSPAPER & MAGAZINE PAGE STUDIO ============ */}
           {taskIdx === 2 && (
             <>
               <MissionBanner
@@ -1264,7 +1264,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
               />
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                {/* LEFT 7 COLS: DARK WORKBENCH ARTBOARD + RULERS + GRID */}
+                {/* LEFT 7 COLS: REALISTIC NEWSPAPER/MAGAZINE ARTBOARD (CLICKABLE ZONES!) */}
                 <div className="lg:col-span-7 rounded-3xl bg-[#1a2436] p-4 sm:p-5 border border-[#2d3b55] shadow-2xl space-y-3">
                   {/* Artboard Top Toolbar */}
                   <div className="flex flex-wrap items-center justify-between gap-2 text-white/80 text-xs">
@@ -1272,7 +1272,9 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                       <span className="px-2 py-0.5 rounded bg-[#c41e2e] text-white font-bold text-[10px]">
                         InLayout Pro
                       </span>
-                      <span className="text-[11px] text-white/65">Стр_08_Макет.indd · A4</span>
+                      <span className="text-[11px] text-white/75">
+                        Полоса № 08 · Кликни по любому блоку на полосе, чтобы настроить его
+                      </span>
                     </div>
                     <button
                       type="button"
@@ -1288,125 +1290,311 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                     </button>
                   </div>
 
-                  {/* Top Ruler */}
+                  {/* Top Millimeter Ruler */}
                   <div className="hidden sm:flex justify-between px-4 text-[9px] font-mono-tabular text-white/40 border-b border-white/10 pb-1">
                     {[0, 30, 60, 90, 120, 150, 180, 210].map((mm) => (
                       <span key={mm}>{mm} мм</span>
                     ))}
                   </div>
 
-                  {/* Paper Sheet With Trim Marks & Optional Column Grid */}
-                  <div className="relative bg-white rounded-xl p-5 sm:p-6 shadow-xl min-h-[380px] flex flex-col justify-between overflow-hidden">
+                  {/* Authentic Newspaper/Magazine Sheet */}
+                  <div className="relative bg-[#fbfaf6] rounded-xl p-5 sm:p-6 shadow-xl min-h-[430px] flex flex-col justify-between overflow-hidden border border-[#d6d1c4]">
                     {showLayoutGrid && (
                       <div
-                        className="pointer-events-none absolute inset-x-5 inset-y-4 grid grid-cols-2 gap-6 z-10"
+                        className="pointer-events-none absolute inset-x-5 inset-y-4 grid grid-cols-12 gap-3 z-10"
                         aria-hidden="true"
                       >
-                        <div className="border border-dashed border-[#38bdf8]/55 bg-[#38bdf8]/[0.03] rounded" />
-                        <div className="border border-dashed border-[#38bdf8]/55 bg-[#38bdf8]/[0.03] rounded" />
+                        <div className="col-span-6 border border-dashed border-[#38bdf8]/45 bg-[#38bdf8]/[0.02] rounded" />
+                        <div className="col-span-6 border border-dashed border-[#38bdf8]/45 bg-[#38bdf8]/[0.02] rounded" />
                       </div>
                     )}
 
-                    <div className="relative z-0 space-y-4">
-                      <div className="flex items-center justify-between border-b border-[#13294b]/12 pb-2 text-xs font-mono-tabular font-bold text-[#c41e2e]">
-                        <span>ЖУРНАЛ «КУЛЬТУРА» · МАСТЕРСКАЯ</span>
-                        <span>СТР. 8</span>
+                    <div className="relative z-0 space-y-3.5">
+                      {/* Newspaper / Magazine Running Head & Masthead */}
+                      <div className="border-b-2 border-[#13294b] pb-2 flex flex-wrap items-baseline justify-between gap-2">
+                        <div className="flex items-baseline gap-2.5">
+                          <span className="font-display font-extrabold text-base tracking-tight text-[#13294b]">
+                            КУЛЬТУРА
+                          </span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#c41e2e]">
+                            РУБРИКА: ПЕЧАТНАЯ МАСТЕРСКАЯ
+                          </span>
+                        </div>
+                        <span className="font-mono-tabular text-[11px] font-extrabold text-[#13294b]/70">
+                          ВЫПУСК № 01 · ПОЛОСА 08
+                        </span>
                       </div>
 
+                      {/* Clickable Headline Zone (Step 0) */}
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          soundEngine.playSelectTick();
+                          setLayoutStep(0);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') setLayoutStep(0);
+                        }}
+                        className={`rounded-xl p-2.5 -mx-1 transition-all border-2 ${
+                          layoutStep === 0
+                            ? 'border-[#c41e2e] bg-[#fff4d4]/45 shadow-xs'
+                            : 'border-transparent hover:border-[#13294b]/20'
+                        }`}
+                        title="Нажми, чтобы выбрать заголовок полосы"
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#c41e2e] mb-0.5">
+                          <span>1. Заголовок полосы · Автор: Мария Соколова</span>
+                          <span className="font-mono-tabular">
+                            {layoutHeadline === 'strong' ? '✓ В тон статьи' : 'Нажми для смены'}
+                          </span>
+                        </div>
+                        <h3 className="font-display font-extrabold text-lg sm:text-2xl leading-tight text-[#13294b]">
+                          {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
+                        </h3>
+                      </div>
+
+                      {/* Layout Body Area (Step 1: Photo, Step 2: Grid Preset, Step 3: Caption) */}
                       {layoutPreset === 'textover' && (
-                        <div className="relative rounded-xl overflow-hidden aspect-[4/3] max-h-[310px] w-full p-4 flex flex-col justify-end">
+                        <div
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            const pId = e.dataTransfer.getData('text/plain') as 'print' | 'music' | 'arch';
+                            if (pId === 'print' || pId === 'music' || pId === 'arch') {
+                              soundEngine.playPaperSlide();
+                              setLayoutPhoto(pId);
+                            }
+                          }}
+                          className="relative rounded-xl overflow-hidden aspect-[16/10] w-full p-4 flex flex-col justify-end border-2 border-[#c41e2e]/40"
+                        >
                           <img
                             src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
                             alt="Иллюстрация статьи"
                             referrerPolicy="no-referrer"
-                            className="absolute inset-0 w-full h-full object-cover"
+                            onClick={() => setLayoutStep(1)}
+                            className="absolute inset-0 w-full h-full object-cover cursor-pointer"
                           />
-                          <div className="relative bg-black/35 p-3.5 rounded-xl text-white">
-                            <h3 className="font-display font-extrabold text-base leading-snug">
-                              {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
-                            </h3>
-                            <p className="mt-1.5 text-[10px] leading-snug text-white/90">
+                          <div
+                            onClick={() => setLayoutStep(2)}
+                            className="relative bg-black/45 p-3.5 rounded-xl text-white cursor-pointer"
+                          >
+                            <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#ffd66b] mb-1">
+                              ⚠ Раскладка «Текст поверх фото» — низкий контраст текста
+                            </div>
+                            <p className="text-[11px] leading-snug text-white/90">
                               Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
                               Плакаты печатали в три цвета и за день получили шесть экземпляров.
+                              Шелкография позволяет печатать плотным, насыщенным слоем краски.
                             </p>
-                            {layoutCaption !== 'none' && (
-                              <div className="mt-1.5 text-[10px] text-white/80">
-                                {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
-                              </div>
-                            )}
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setLayoutStep(3);
+                              }}
+                              className="mt-2 pt-1.5 border-t border-white/20 text-[10px] text-[#ffd66b] font-bold"
+                            >
+                              4. Подпись: {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
+                            </div>
                           </div>
                         </div>
                       )}
 
                       {layoutPreset === 'giant' && (
                         <div className="space-y-3">
-                          <figure className="space-y-1">
+                          <div
+                            onClick={() => setLayoutStep(1)}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              const pId = e.dataTransfer.getData('text/plain') as 'print' | 'music' | 'arch';
+                              if (pId === 'print' || pId === 'music' || pId === 'arch') {
+                                soundEngine.playPaperSlide();
+                                setLayoutPhoto(pId);
+                              }
+                            }}
+                            className={`rounded-xl overflow-hidden border-2 cursor-pointer ${
+                              layoutStep === 1 ? 'border-[#c41e2e]' : 'border-transparent'
+                            }`}
+                          >
                             <img
                               src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
                               alt="Иллюстрация статьи"
                               referrerPolicy="no-referrer"
-                              className="w-full aspect-[4/3] max-h-44 object-cover rounded-xl"
+                              className="w-full aspect-[16/9] max-h-40 object-cover"
                             />
-                            {layoutCaption !== 'none' && (
-                              <figcaption className="text-xs text-[#13294b]/65">
-                                {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
-                              </figcaption>
-                            )}
-                          </figure>
-                          <h3 className="font-display font-extrabold text-xl leading-tight text-[#13294b]">
-                            {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
-                          </h3>
-                          <p className="text-lg leading-snug text-[#13294b]/85">
-                            Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
-                            Плакаты печатали в три цвета и за день получили шесть экземпляров.
-                          </p>
+                          </div>
+                          <div
+                            onClick={() => setLayoutStep(3)}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer border ${
+                              layoutStep === 3
+                                ? 'bg-[#fff4d4] border-[#c41e2e] text-[#13294b]'
+                                : 'bg-white border-[#13294b]/15 text-[#13294b]/75'
+                            }`}
+                          >
+                            4. Подпись: {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
+                          </div>
+                          <div
+                            onClick={() => setLayoutStep(2)}
+                            className="p-2.5 rounded-xl border border-dashed border-[#c41e2e]/50 bg-[#fde8ea]/40 cursor-pointer"
+                          >
+                            <div className="text-[10px] font-extrabold uppercase text-[#c41e2e] mb-1">
+                              ⚠ Слишком крупный кегль на всю ширину полосы (строка длиннее нормы ГОСТ)
+                            </div>
+                            <p className="text-lg leading-snug text-[#13294b]">
+                              Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
+                              Плакаты печатали в три цвета и за день получили шесть экземпляров.
+                            </p>
+                          </div>
                         </div>
                       )}
 
                       {layoutPreset === 'columns' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-                          <div className="space-y-2.5">
-                            <h3 className="font-display font-extrabold text-lg sm:text-xl leading-snug text-[#13294b]">
-                              {LAYOUT_HEADLINES.find((h) => h.id === layoutHeadline)?.text}
-                            </h3>
-                            <p className="text-xs sm:text-sm text-[#13294b]/85 leading-relaxed">
-                              Художница нарисовала эскиз, а трафареты сделала вместе с мастером.
+                        <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 items-start">
+                          {/* Left 6 Cols: Newspaper Article Columns with Drop Cap & Pull-Quote */}
+                          <div
+                            onClick={() => setLayoutStep(2)}
+                            className={`sm:col-span-6 space-y-2.5 p-2 rounded-xl border-2 cursor-pointer transition-all ${
+                              layoutStep === 2
+                                ? 'border-[#c41e2e] bg-[#fff4d4]/30'
+                                : 'border-transparent hover:border-[#13294b]/15'
+                            }`}
+                            title="3. Модульная двухколонная вёрстка"
+                          >
+                            <p className="text-xs sm:text-[13px] text-[#13294b]/90 leading-relaxed text-justify">
+                              <span className="float-left font-display font-extrabold text-3xl leading-none mr-2 mt-0.5 text-[#c41e2e]">
+                                Х
+                              </span>
+                              удожница нарисовала эскиз, а трафареты сделала вместе с мастером.
                               Плакаты печатали в три цвета и за день получили шесть экземпляров.
                             </p>
-                            <p className="text-xs sm:text-sm text-[#13294b]/85 leading-relaxed">
+                            <blockquote className="border-l-2 border-[#c41e2e] pl-2.5 py-0.5 text-[11px] font-extrabold italic text-[#13294b]">
+                              «Печатали в три цвета — получилось ровно шесть авторских оттисков»
+                            </blockquote>
+                            <p className="text-xs sm:text-[13px] text-[#13294b]/90 leading-relaxed text-justify">
                               Шелкография позволяет печатать плотным, насыщенным слоем краски.
                               Открытие выставки прошло в 19:00 и стало дебютом студии.
                             </p>
                           </div>
-                          <figure className="space-y-2">
-                            <img
-                              src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
-                              alt="Иллюстрация статьи"
-                              referrerPolicy="no-referrer"
-                              className="w-full aspect-[4/3] object-cover rounded-xl shadow-sm"
-                            />
-                            {layoutCaption !== 'none' && (
-                              <figcaption className="text-xs font-semibold text-[#13294b]/70">
+
+                          {/* Right 6 Cols: Photo Frame + Credit Caption + Issue Teaser Box */}
+                          <div className="sm:col-span-6 space-y-2.5">
+                            <div
+                              onClick={() => setLayoutStep(1)}
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                const pId = e.dataTransfer.getData('text/plain') as 'print' | 'music' | 'arch';
+                                if (pId === 'print' || pId === 'music' || pId === 'arch') {
+                                  soundEngine.playPaperSlide();
+                                  setLayoutPhoto(pId);
+                                }
+                              }}
+                              className={`relative rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${
+                                layoutStep === 1
+                                  ? 'border-[#c41e2e] ring-2 ring-[#ffd66b]'
+                                  : 'border-[#13294b]/15 hover:border-[#13294b]/40'
+                              }`}
+                              title="2. Главное фото полосы (кликни или перетащи фото справа)"
+                            >
+                              <img
+                                src={LAYOUT_PHOTOS.find((p) => p.id === layoutPhoto)?.img}
+                                alt="Иллюстрация статьи"
+                                referrerPolicy="no-referrer"
+                                className="w-full aspect-[4/3] object-cover"
+                              />
+                              <span className="absolute top-1.5 right-1.5 px-2 py-0.5 rounded bg-black/65 text-white font-mono-tabular text-[9px] font-bold">
+                                2. Иллюстрация
+                              </span>
+                            </div>
+
+                            {/* Clickable Photo Caption Bar */}
+                            <div
+                              onClick={() => setLayoutStep(3)}
+                              className={`px-2.5 py-1.5 rounded-lg border-2 text-[11px] font-bold cursor-pointer transition-all flex items-center justify-between gap-2 ${
+                                layoutStep === 3
+                                  ? 'border-[#c41e2e] bg-[#fff4d4]'
+                                  : layoutCaption === 'good'
+                                    ? 'border-[#157a4f]/35 bg-[#e9f7ef] text-[#157a4f]'
+                                    : 'border-[#13294b]/15 bg-white text-[#13294b]/75'
+                              }`}
+                              title="4. Подпись и автор фотографии"
+                            >
+                              <span className="truncate">
                                 {LAYOUT_CAPTIONS.find((c) => c.id === layoutCaption)?.text}
-                              </figcaption>
-                            )}
-                          </figure>
+                              </span>
+                              <span className="font-mono-tabular text-[9px] uppercase shrink-0">
+                                4. Подпись
+                              </span>
+                            </div>
+
+                            {/* Secondary Editorial Teaser Block (Like in a Real Magazine Issue) */}
+                            <div className="rounded-lg bg-[#13294b]/[0.04] border border-[#13294b]/12 p-2 flex items-center gap-2.5">
+                              <img
+                                src={MEDIA.studioMusic}
+                                alt="Анонс стр. 14"
+                                className="w-11 h-9 rounded object-cover shrink-0"
+                              />
+                              <div className="min-w-0 leading-tight">
+                                <div className="text-[9px] font-extrabold uppercase tracking-wider text-[#135c75]">
+                                  Далее в номере · Стр. 14
+                                </div>
+                                <div className="text-[11px] font-bold text-[#13294b] truncate">
+                                  За кулисами вечернего фестиваля
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
 
-                    <div className="pt-3 mt-4 border-t border-[#13294b]/10 flex items-center justify-between text-[11px] text-[#13294b]/55">
-                      <span>Так будет выглядеть страница 8 в журнале «Культура»</span>
-                      <span className="font-mono-tabular">300 DPI · CMYK</span>
+                    {/* Newspaper Folio Footer */}
+                    <div className="pt-2.5 mt-3 border-t border-[#13294b]/15 flex items-center justify-between text-[10px] font-mono-tabular font-bold text-[#13294b]/60">
+                      <span>08 · ЖУРНАЛ «КУЛЬТУРА» · ИЗДАТЕЛЬСКОЕ ДЕЛО БИД</span>
+                      <span>ГОСТ Р 7.0.4 · 300 DPI · CMYK</span>
                     </div>
                   </div>
                 </div>
 
-                {/* RIGHT 5 COLS: PROPERTIES INSPECTOR */}
+                {/* RIGHT 5 COLS: PROPERTIES INSPECTOR & LIVE PREFLIGHT CHECKLIST */}
                 <aside className="lg:col-span-5 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
+                  {/* Live Technical Quality Meters */}
+                  <div className="rounded-2xl bg-[#f4f7fc] p-3 border border-[#13294b]/10 grid grid-cols-2 gap-2 text-[11px] font-bold">
+                    <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-white">
+                      <span className="text-[#13294b]/70">Заголовок:</span>
+                      <span className={layoutHeadline === 'strong' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                        {layoutHeadline === 'strong' ? '✓ Точный' : 'Черновик'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-white">
+                      <span className="text-[#13294b]/70">Снимок:</span>
+                      <span className={layoutPhoto === 'print' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                        {layoutPhoto === 'print' ? '✓ По теме' : 'Другая тема'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-white">
+                      <span className="text-[#13294b]/70">Сетка:</span>
+                      <span className={layoutPreset === 'columns' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                        {layoutPreset === 'columns' ? '✓ 2 колонки' : 'Трудно читать'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-white">
+                      <span className="text-[#13294b]/70">Автор фото:</span>
+                      <span className={layoutCaption === 'good' ? 'text-[#157a4f]' : 'text-[#c41e2e]'}>
+                        {layoutCaption === 'good' ? '✓ Указан' : 'Не указан'}
+                      </span>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-1.5">
                     {LAYOUT_STEPS.map((st) => {
                       const active = layoutStep === st.idx;
+                      const stepOk =
+                        (st.idx === 0 && layoutHeadline === 'strong') ||
+                        (st.idx === 1 && layoutPhoto === 'print') ||
+                        (st.idx === 2 && layoutPreset === 'columns') ||
+                        (st.idx === 3 && layoutCaption === 'good');
                       return (
                         <button
                           key={st.label}
@@ -1415,13 +1603,16 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             soundEngine.playSelectTick();
                             setLayoutStep(st.idx);
                           }}
-                          className={`min-h-[38px] px-3 rounded-xl text-xs font-extrabold transition-colors text-left ${
+                          className={`min-h-[38px] px-3 rounded-xl text-xs font-extrabold transition-colors text-left flex items-center justify-between gap-1 ${
                             active
                               ? 'bg-[#c41e2e] text-white'
-                              : 'bg-[#f4f7fc] text-[#13294b]/75 hover:bg-[#e6edf8]'
+                              : stepOk
+                                ? 'bg-[#e9f7ef] text-[#157a4f]'
+                                : 'bg-[#f4f7fc] text-[#13294b]/75 hover:bg-[#e6edf8]'
                           }`}
                         >
-                          {st.label}
+                          <span className="truncate">{st.label}</span>
+                          {stepOk && <Check className="w-3.5 h-3.5 shrink-0" />}
                         </button>
                       );
                     })}
@@ -1460,23 +1651,29 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                           <button
                             key={p.id}
                             type="button"
+                            draggable
+                            onDragStart={(e) => e.dataTransfer.setData('text/plain', p.id)}
                             onClick={() => {
                               soundEngine.playSelectTick();
                               setLayoutPhoto(p.id);
                             }}
-                            className={`w-full p-2.5 rounded-2xl border-2 flex items-center gap-3 text-left transition-all ${
+                            className={`w-full p-2.5 rounded-2xl border-2 flex items-center justify-between gap-3 text-left transition-all cursor-grab active:cursor-grabbing ${
                               layoutPhoto === p.id
                                 ? 'border-[#c41e2e] bg-[#13294b] text-white'
                                 : 'border-transparent bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b]'
                             }`}
                           >
-                            <img
-                              src={p.img}
-                              alt={p.label}
-                              referrerPolicy="no-referrer"
-                              className="w-20 aspect-[4/3] object-cover rounded-xl shrink-0"
-                            />
-                            <span className="text-sm font-extrabold">{p.label}</span>
+                            <div className="flex items-center gap-3 min-w-0">
+                              <img
+                                src={p.img}
+                                alt={p.label}
+                                draggable={false}
+                                referrerPolicy="no-referrer"
+                                className="w-20 aspect-[4/3] object-cover rounded-xl shrink-0"
+                              />
+                              <span className="text-sm font-extrabold truncate">{p.label}</span>
+                            </div>
+                            <GripVertical className="w-4 h-4 opacity-50 shrink-0" />
                           </button>
                         ))}
                       </div>
@@ -1671,7 +1868,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
 
                 {/* RIGHT 9 COLS: PRE-PRESS PROOFING SHEET + CORRECTION OPTIONS */}
                 <div className="lg:col-span-9 bg-white rounded-3xl p-5 sm:p-6 border border-[#13294b]/12 shadow-md space-y-5">
-                  {/* Press Proof Sheet Frame with Subtle Crop Marks */}
+                  {/* Press Proof Sheet Frame with Crop Marks */}
                   <div className="relative rounded-2xl bg-[#f5f7fb] p-4 sm:p-5 border border-[#13294b]/15">
                     {proofPage === 0 && (
                       <div className="relative rounded-xl overflow-hidden bg-[#13294b] text-white min-h-[240px] p-6 flex flex-col justify-between">
@@ -1686,7 +1883,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             КУЛЬТУРА · № 01
                           </span>
                           <span className="px-4 py-1.5 rounded-xl font-mono-tabular text-base font-extrabold border-2 bg-white text-[#13294b] border-[#ffd66b] shadow">
-                            {fixedDefects.age}
+                            {fixedDefects.age} ✎
                           </span>
                         </div>
                         <div className="relative space-y-1">
@@ -1700,13 +1897,18 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
 
                     {proofPage === 1 && (
                       <div className="bg-white rounded-xl p-5 border border-[#13294b]/10 space-y-4">
-                        <div className="border-b border-[#13294b]/10 pb-2.5">
-                          <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e]">
-                            Журнал «Культура» · № 01
+                        <div className="border-b border-[#13294b]/10 pb-2.5 flex items-center justify-between">
+                          <div>
+                            <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e]">
+                              Журнал «Культура» · № 01
+                            </div>
+                            <h3 className="font-display font-extrabold text-xl text-[#13294b] mt-1">
+                              Содержание номера
+                            </h3>
                           </div>
-                          <h3 className="font-display font-extrabold text-xl text-[#13294b] mt-1">
-                            Содержание номера
-                          </h3>
+                          <span className="px-2.5 py-1 rounded border border-[#13294b]/20 font-mono-tabular text-[10px] font-bold text-[#13294b]/60">
+                            КОНТРОЛЬНЫЙ ОТТИСК
+                          </span>
                         </div>
                         <div className="divide-y divide-[#13294b]/10">
                           <div className="py-3 flex items-center justify-between gap-4">
@@ -1717,7 +1919,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                               <div className="text-xs text-[#13294b]/65">Мария Соколова · Главная статья</div>
                             </div>
                             <span className="px-3.5 py-1.5 rounded-xl font-mono-tabular text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b]">
-                              {fixedDefects.page}
+                              {fixedDefects.page} ✎
                             </span>
                           </div>
                           <div className="py-3 flex items-center justify-between gap-4">
@@ -1756,8 +1958,9 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             referrerPolicy="no-referrer"
                             className="w-full aspect-[4/3] object-cover rounded-xl shadow-sm"
                           />
-                          <div className="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b]">
-                            {fixedDefects.author}
+                          <div className="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b] flex items-center justify-between">
+                            <span>{fixedDefects.author}</span>
+                            <span>✎</span>
                           </div>
                         </div>
                       </div>
@@ -1772,8 +1975,9 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             referrerPolicy="no-referrer"
                             className="w-full aspect-[4/3] object-cover rounded-xl shadow-sm"
                           />
-                          <div className="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b]">
-                            {fixedDefects.caption}
+                          <div className="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold border-2 bg-[#fff8d6] border-[#e59c2d] text-[#13294b] flex items-center justify-between">
+                            <span>{fixedDefects.caption}</span>
+                            <span>✎</span>
                           </div>
                         </div>
                         <div className="space-y-2">

@@ -87,6 +87,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
 
   /* ---- Task 2: Tabbed SMM Studio + Realistic Smartphone ---- */
   const [smmStepIdx, setSmmStepIdx] = useState(0);
+  const [smmCardSlide, setSmmCardSlide] = useState(0);
   const [smmPicks, setSmmPicks] = useState<Record<string, string>>({
     hook: 'dry',
     visual: 'wall',
@@ -908,7 +909,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
             </>
           )}
 
-          {/* ============ TASK 2: TABBED SMM STUDIO + REALISTIC SMARTPHONE ============ */}
+          {/* ============ TASK 2: INTERACTIVE SOCIAL MEDIA STUDIO + SWIPEABLE SMARTPHONE CAROUSEL ============ */}
           {taskIdx === 2 && (
             <>
               <MissionBanner
@@ -928,11 +929,41 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
               />
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                {/* LEFT 7 COLS: TABBED SMM STUDIO CONTROLS */}
+                {/* LEFT 7 COLS: SOCIAL MEDIA CONTENT STUDIO + ANALYTICS FUNNEL */}
                 <div className="lg:col-span-7 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
+                  {/* Live SMM Funnel Metrics Strip */}
+                  <div className="rounded-2xl bg-[#f4f7fc] p-3 border border-[#13294b]/10 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-bold">
+                    <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
+                      <span className="text-[#13294b]/65">1. Заголовок:</span>
+                      <span className={smmPicks.hook === 'best' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                        {smmPicks.hook === 'best' ? '✓ Цепляет' : 'Слабый'}
+                      </span>
+                    </div>
+                    <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
+                      <span className="text-[#13294b]/65">2. Визуал:</span>
+                      <span className={smmPicks.visual === 'best' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                        {smmPicks.visual === 'best' ? '✓ Карточки' : 'Сплошной'}
+                      </span>
+                    </div>
+                    <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
+                      <span className="text-[#13294b]/65">3. Призыв:</span>
+                      <span className={smmPicks.cta === 'best' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                        {smmPicks.cta === 'best' ? '✓ Ссылка' : 'Без кнопки'}
+                      </span>
+                    </div>
+                    <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
+                      <span className="text-[#13294b]/65">4. Посев:</span>
+                      <span className={smmPicks.timing === 'best' ? 'text-[#157a4f]' : 'text-[#c41e2e]'}>
+                        {smmPicks.timing === 'best' ? '✓ За 5 дней' : 'Поздно'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 4 Step Tabs */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                     {SMM_CONSTRUCTOR_STEPS.map((st, idx) => {
                       const isCurrent = smmStepIdx === idx;
+                      const isBest = smmPicks[st.id] === 'best';
                       return (
                         <button
                           key={st.id}
@@ -941,21 +972,29 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                             soundEngine.playSelectTick();
                             setSmmStepIdx(idx);
                           }}
-                          className={`min-h-[38px] px-2.5 rounded-xl text-xs font-extrabold transition-all truncate ${
+                          className={`min-h-[38px] px-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center justify-between gap-1 ${
                             isCurrent
                               ? 'bg-[#13294b] text-white shadow-xs'
-                              : 'bg-[#f4f7fc] text-[#13294b]/75 hover:bg-[#e5eefb]'
+                              : isBest
+                                ? 'bg-[#e9f7ef] text-[#157a4f]'
+                                : 'bg-[#f4f7fc] text-[#13294b]/75 hover:bg-[#e5eefb]'
                           }`}
                         >
-                          {st.title}
+                          <span className="truncate">{st.title}</span>
+                          {isBest && <Check className="w-3.5 h-3.5 shrink-0" />}
                         </button>
                       );
                     })}
                   </div>
 
                   <div className="space-y-3">
-                    <div className="font-display font-extrabold text-sm sm:text-base text-[#13294b]">
-                      {activeSmmStep.title}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="font-display font-extrabold text-sm sm:text-base text-[#13294b]">
+                        {activeSmmStep.title}
+                      </div>
+                      <span className="text-[11px] font-bold text-[#135c75]">
+                        Можно нажимать прямо на блоки в смартфоне →
+                      </span>
                     </div>
 
                     {activeSmmStep.id === 'visual' ? (
@@ -969,6 +1008,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                               onClick={() => {
                                 soundEngine.playSelectTick();
                                 setSmmPicks((prev) => ({ ...prev, [activeSmmStep.id]: opt.id }));
+                                setSmmCardSlide(0);
                               }}
                               className={`rounded-2xl overflow-hidden border-2 text-left transition-all flex flex-col ${
                                 selected
@@ -1032,18 +1072,19 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       <div />
                     )}
 
-                    {smmStepIdx < SMM_CONSTRUCTOR_STEPS.length - 1 ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundEngine.playSelectTick();
-                          setSmmStepIdx((s) => s + 1);
-                        }}
-                        className="min-h-[42px] px-5 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-1.5"
-                      >
-                        Дальше <ArrowRight className="w-4 h-4" />
-                      </button>
-                    ) : (
+                    <div className="flex items-center gap-2">
+                      {smmStepIdx < SMM_CONSTRUCTOR_STEPS.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundEngine.playSelectTick();
+                            setSmmStepIdx((s) => s + 1);
+                          }}
+                          className="min-h-[42px] px-4 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs font-extrabold inline-flex items-center gap-1.5"
+                        >
+                          Дальше <ArrowRight className="w-4 h-4" />
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={handleCheckTask2}
@@ -1051,48 +1092,142 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       >
                         Опубликовать пост ({smmMetrics.regs} регистраций) →
                       </button>
-                    )}
+                    </div>
                   </div>
                 </div>
 
-                {/* RIGHT 5 COLS: REALISTIC SMARTPHONE LIVE POST */}
+                {/* RIGHT 5 COLS: INTERACTIVE SMARTPHONE FEED WITH SWIPEABLE SMM CARDS */}
                 <div className="lg:col-span-5 flex flex-col items-center space-y-3">
-                  <div className="w-full max-w-[355px] rounded-[34px] bg-[#0f172a] p-3 shadow-2xl border-4 border-[#273552] text-white">
+                  <div className="w-full max-w-[365px] rounded-[34px] bg-[#0f172a] p-3 shadow-2xl border-4 border-[#273552] text-white">
                     {/* Phone Status Bar */}
                     <div className="flex items-center justify-between px-3 pb-2 text-[10px] font-mono-tabular text-white/75">
                       <span>18:30</span>
                       <span className="w-16 h-3 rounded-full bg-black/75" />
-                      <span>5G · 98%</span>
+                      <span>VK / TG · 5G</span>
                     </div>
 
                     <div className="rounded-[24px] bg-white text-[#13294b] overflow-hidden">
-                      {/* Account Header */}
-                      <div className="px-3.5 py-2.5 flex items-center justify-between border-b border-[#13294b]/10">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-[#c41e2e] text-white font-display font-extrabold text-xs flex items-center justify-center">
+                      {/* Clickable Account Header & Timing (Step 3) */}
+                      <button
+                        type="button"
+                        onClick={() => setSmmStepIdx(3)}
+                        className={`w-full px-3.5 py-2.5 flex items-center justify-between border-b text-left transition-colors ${
+                          smmStepIdx === 3
+                            ? 'bg-[#fff4d4]/60 border-[#c41e2e]'
+                            : 'border-[#13294b]/10 hover:bg-[#f4f7fc]'
+                        }`}
+                        title="4. Время и площадка размещения"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-8 h-8 rounded-full bg-[#c41e2e] text-white font-display font-extrabold text-xs flex items-center justify-center shrink-0">
                             БН
                           </div>
-                          <div className="leading-tight">
+                          <div className="leading-tight min-w-0">
                             <div className="text-xs font-extrabold inline-flex items-center gap-1">
                               <span>Библиотека · БГИИК</span>
                               <CheckCircle2 className="w-3 h-3 text-[#135c75]" />
                             </div>
-                            <div className="text-[10px] text-[#13294b]/60">
+                            <div className="text-[10px] text-[#135c75] font-bold truncate">
                               {activeTiming?.preview}
                             </div>
                           </div>
                         </div>
+                        <span className="font-mono-tabular text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-[#13294b]/10 text-[#13294b] shrink-0">
+                          Шаг 4
+                        </span>
+                      </button>
+
+                      {/* Clickable Visual Block: Multi-Slide SMM Carousel vs Wall of Text (Step 1) */}
+                      <div
+                        onClick={() => setSmmStepIdx(1)}
+                        className={`relative cursor-pointer border-b-2 transition-all ${
+                          smmStepIdx === 1 ? 'border-[#c41e2e]' : 'border-transparent'
+                        }`}
+                        title="2. Визуальное оформление поста"
+                      >
+                        {smmPicks.visual === 'best' ? (
+                          <div className="relative aspect-[16/10] bg-[#13294b] overflow-hidden">
+                            <img
+                              src={
+                                smmCardSlide === 0
+                                  ? MEDIA.w3SmmCards
+                                  : smmCardSlide === 1
+                                    ? MEDIA.sceneFestivalStage
+                                    : MEDIA.sceneFestivalComics
+                              }
+                              alt="Карточка анонса Библионочи"
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f3a]/90 via-[#0d1f3a]/25 to-transparent" />
+                            <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                              <span className="px-2 py-0.5 rounded bg-[#c41e2e] text-white font-mono-tabular text-[9px] font-extrabold">
+                                КАРТОЧКА {smmCardSlide + 1} / 3
+                              </span>
+                              <div
+                                className="flex items-center gap-1"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {[0, 1, 2].map((idx) => (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => {
+                                      soundEngine.playSelectTick();
+                                      setSmmCardSlide(idx);
+                                    }}
+                                    className={`px-2 py-0.5 rounded text-[9px] font-mono-tabular font-extrabold transition-colors ${
+                                      smmCardSlide === idx
+                                        ? 'bg-[#ffd66b] text-[#13294b]'
+                                        : 'bg-black/55 text-white/80 hover:bg-black/80'
+                                    }`}
+                                  >
+                                    {idx + 1}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="absolute bottom-2.5 left-3 right-3 text-white">
+                              <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#ffd66b]">
+                                {smmCardSlide === 0
+                                  ? 'Слайд 1 · Афиша события'
+                                  : smmCardSlide === 1
+                                    ? 'Слайд 2 · 18:30 Главный зал'
+                                    : 'Слайд 3 · 19:30 Интерактивные зоны'}
+                              </div>
+                              <div className="font-display font-extrabold text-xs leading-snug">
+                                {smmCardSlide === 0
+                                  ? 'Библионочь в пятницу · Вход свободный!'
+                                  : smmCardSlide === 1
+                                    ? 'Командный книжный квиз и встреча с автором'
+                                    : 'Фотозона, печать открыток и буккроссинг'}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative aspect-[16/10] bg-[#e5e9f0] p-3.5 overflow-hidden flex flex-col justify-between">
+                            <div className="flex items-center justify-between">
+                              <span className="px-2 py-0.5 rounded bg-[#c41e2e] text-white text-[9px] font-extrabold">
+                                ⚠ СПЛОШНОЙ ТЕКСТ БЕЗ КАРТОЧЕК
+                              </span>
+                              <span className="font-mono-tabular text-[9px] font-extrabold text-[#13294b]/60">
+                                Шаг 2
+                              </span>
+                            </div>
+                            <p className="text-[9px] leading-tight text-[#13294b]/75 font-mono-tabular line-clamp-6">
+                              ПОЛОЖЕНИЕ О ПРОВЕДЕНИИ КУЛЬТУРНО-МАССОВОГО МЕРОПРИЯТИЯ. Доводим до
+                              сведения всех заинтересованных лиц регламент проведения вечерней
+                              программы согласно утверждённому плану работы отдела на текущий
+                              квартал без иллюстраций и разбивки на абзацы...
+                            </p>
+                            <div className="text-[10px] font-extrabold text-[#c41e2e]">
+                              Нажми, чтобы заменить на яркую карусель карточек →
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Real Post Photo */}
-                      <img
-                        src={SMM_VISUAL_PREVIEWS[smmPicks.visual] ?? MEDIA.w3SmmCards}
-                        alt="Превью поста в смартфоне"
-                        referrerPolicy="no-referrer"
-                        className="w-full aspect-[16/10] object-cover"
-                      />
-
-                      {/* Live Likes / Comments / Registrations */}
+                      {/* Post Body & Engagement Metrics */}
                       <div className="p-3.5 space-y-2.5">
                         <div className="flex items-center justify-between text-xs font-extrabold font-mono-tabular">
                           <span className="inline-flex items-center gap-1 text-[#c41e2e]">
@@ -1109,16 +1244,51 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           </span>
                         </div>
 
-                        <div className="text-xs font-extrabold text-[#13294b] leading-snug">
-                          {activeHook?.preview}
-                        </div>
-                        <div className="text-[11px] text-[#13294b]/75 leading-snug">
-                          {activeVisual?.preview} · {activeCta?.preview}
-                        </div>
+                        {/* Clickable Hook Text (Step 0) */}
+                        <button
+                          type="button"
+                          onClick={() => setSmmStepIdx(0)}
+                          className={`w-full text-left p-2 rounded-xl border transition-colors ${
+                            smmStepIdx === 0
+                              ? 'bg-[#fff4d4]/70 border-[#c41e2e]'
+                              : 'bg-[#f8fafd] border-transparent hover:border-[#13294b]/15'
+                          }`}
+                          title="1. Заголовок анонса"
+                        >
+                          <div className="text-xs font-extrabold text-[#13294b] leading-snug">
+                            {activeHook?.preview}
+                          </div>
+                          <div className="text-[10px] font-bold text-[#135c75] mt-1">
+                            #Библионочь #БГИИК #КафедраБИД #Книгоград
+                          </div>
+                        </button>
 
-                        <div className="rounded-xl bg-[#135c75] text-white text-center py-2 text-[11px] font-extrabold">
-                          Записаться на «Библионочь»
-                        </div>
+                        {/* Clickable Call-to-Action Button (Step 2) */}
+                        <button
+                          type="button"
+                          onClick={() => setSmmStepIdx(2)}
+                          className={`w-full text-left p-2 rounded-xl border transition-colors space-y-1.5 ${
+                            smmStepIdx === 2
+                              ? 'bg-[#fff4d4]/70 border-[#c41e2e]'
+                              : 'bg-[#f8fafd] border-transparent hover:border-[#13294b]/15'
+                          }`}
+                          title="3. Призыв к действию"
+                        >
+                          <div className="text-[11px] text-[#13294b]/80 leading-snug">
+                            {activeCta?.preview}
+                          </div>
+                          <div
+                            className={`rounded-lg text-center py-1.5 text-[11px] font-extrabold ${
+                              smmPicks.cta === 'best'
+                                ? 'bg-[#157a4f] text-white'
+                                : 'bg-[#e2e8f0] text-[#13294b]/60'
+                            }`}
+                          >
+                            {smmPicks.cta === 'best'
+                              ? 'Записаться на «Библионочь» (свободный вход) →'
+                              : 'Кнопка регистрации не прикреплена'}
+                          </div>
+                        </button>
 
                         {/* Goal Progress Bar */}
                         <div className="pt-2 border-t border-[#13294b]/10 space-y-1">

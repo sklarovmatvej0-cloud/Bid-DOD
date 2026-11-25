@@ -162,7 +162,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                       className="min-h-[42px] px-4 rounded-xl bg-[#fff4d4] hover:bg-[#ffe9ad] text-sm font-extrabold text-[#13294b] inline-flex items-center gap-1.5 transition-colors whitespace-nowrap"
                     >
                       <ArrowLeft className="w-4 h-4" />
-                      В 3D-комнаты
+                      На главную
                     </button>
                   )}
                   <button

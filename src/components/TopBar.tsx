@@ -83,7 +83,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] active:scale-[0.98] text-xs sm:text-sm font-display font-extrabold text-[#13294b] transition-all whitespace-nowrap shrink-0 shadow-sm"
           >
             <ArrowLeft className="w-4 h-4 shrink-0" />
-            <span>К 3D-комнатам</span>
+            <span>На главную</span>
           </button>
         )}
 
@@ -91,7 +91,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           type="button"
           onClick={() => onNavigate({ view: 'hub' })}
           className="flex items-center gap-2.5 text-left group min-h-[40px] pr-2 rounded-lg hover:bg-white/8 transition-colors px-1.5 whitespace-nowrap shrink-0"
-          title="Вернуться к 3D-комнатам"
+          title="Вернуться на главную страницу"
         >
           <span className="w-9 h-9 rounded-lg bg-[#c41e2e] flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
             <BookOpen className="w-5 h-5 text-white" />

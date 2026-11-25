@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-label="Декоративные светящиеся вывески">
+<defs><linearGradient id="night" x2="1" y2="1"><stop stop-color="#14152f"/><stop offset="1" stop-color="#44264b"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="1200" height="650" fill="url(#night)"/><path d="M0 570V170L330 96V650M330 650V47L760 110V650M760 650V190L1200 70V650" fill="none" stroke="#5b5376" stroke-width="24" opacity=".6"/>
+<g filter="url(#glow)" fill="none"><rect x="130" y="195" width="440" height="154" rx="18" stroke="#ff7494" stroke-width="8"/><text x="350" y="300" font-family="Arial" font-weight="800" font-size="78" fill="#ff9dca" text-anchor="middle">OPEN</text><circle cx="870" cy="296" r="125" stroke="#65e6ef" stroke-width="10"/><path d="M815 296L865 355L946 236" stroke="#65e6ef" stroke-width="12"/></g>
+</svg>

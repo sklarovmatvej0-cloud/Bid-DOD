@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-label="Крупный план букв на вывеске пекарни">
+<defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#eee0be"/><stop offset="1" stop-color="#b49c7b"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity=".24"/></filter></defs>
+<rect width="1200" height="650" fill="#cfc3af"/><rect x="55" y="18" width="1090" height="610" rx="18" fill="url(#g)"/><path d="M55 190H1145M55 440H1145" stroke="#9f8f7e" stroke-width="10" opacity=".46"/>
+<rect x="115" y="110" width="970" height="250" rx="19" fill="#184550" stroke="#e7d3aa" stroke-width="13" filter="url(#shadow)"/><text x="600" y="265" text-anchor="middle" font-size="118" font-weight="800" letter-spacing="16" fill="#fbe5bb" font-family="Arial,sans-serif">ПЕКАРНЯ</text>
+<rect x="120" y="416" width="960" height="171" fill="#42656a" rx="10"/><path d="M120 445H1080M370 416V587M770 416V587" stroke="#c8d0ca" stroke-width="14"/><path d="M150 555Q275 480 340 540M395 545Q550 475 750 528M800 544Q950 465 1050 535" stroke="#f1c88b" stroke-width="16" fill="none" opacity=".64"/>
+</svg>

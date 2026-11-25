@@ -162,6 +162,12 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
   const [dockCollapsed, setDockCollapsed] = useState(false);
   const [hasMovedOnce, setHasMovedOnce] = useState(false);
   const [currentZone, setCurrentZone] = useState<'lobby' | 'w1' | 'w2' | 'w3'>('lobby');
+  const [playerRadar, setPlayerRadar] = useState<{ x: number; z: number; yaw: number }>({
+    x: initialPlayerPos?.x ?? 0,
+    z: initialPlayerPos?.z ?? 5.1,
+    yaw: 0,
+  });
+  const [hoveredStationTitle, setHoveredStationTitle] = useState<string | null>(null);
   const [nearbyStation, setNearbyStation] = useState<{
     id: string;
     workshop: WorkshopId;
@@ -310,6 +316,43 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
     hoverRing.visible = false;
     scene.add(hoverRing);
 
+    // Expanding floor click ripple for crisp tactile feedback without audio
+    const clickRippleMat = new THREE.MeshBasicMaterial({
+      color: '#ffd66b',
+      transparent: true,
+      opacity: 0,
+      side: THREE.DoubleSide,
+    });
+    const clickRipple = new THREE.Mesh(new THREE.RingGeometry(0.2, 0.3, 28), clickRippleMat);
+    clickRipple.rotation.x = -Math.PI / 2;
+    clickRipple.position.y = 0.052;
+    clickRipple.visible = false;
+    scene.add(clickRipple);
+    let rippleProgress = 1;
+
+    // Gentle floating warm light motes in the hall (skipped on software GL)
+    let motePoints: THREE.Points | null = null;
+    if (!isSoftwareGl) {
+      const moteCount = 72;
+      const motePositions = new Float32Array(moteCount * 3);
+      for (let i = 0; i < moteCount; i++) {
+        motePositions[i * 3] = (Math.random() - 0.5) * 26;
+        motePositions[i * 3 + 1] = 0.9 + Math.random() * 3.4;
+        motePositions[i * 3 + 2] = -8 + Math.random() * 14;
+      }
+      const moteGeo = new THREE.BufferGeometry();
+      moteGeo.setAttribute('position', new THREE.BufferAttribute(motePositions, 3));
+      const moteMat = new THREE.PointsMaterial({
+        color: '#fff4d2',
+        size: 0.08,
+        transparent: true,
+        opacity: 0.48,
+        depthWrite: false,
+      });
+      motePoints = new THREE.Points(moteGeo, moteMat);
+      scene.add(motePoints);
+    }
+
     // Restore player starting position
     const startX = initialPosRef.current?.x ?? 0;
     const startZ = initialPosRef.current?.z ?? 5.1;
@@ -343,6 +386,8 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
     let walkQueue: THREE.Vector3[] = [];
     let pendingOpenStation: WorldStation | null = null;
     let activeNearId: string | null = null;
+    let hoveredStationId: string | null = null;
+    let lastRadarPush = 0;
     let lastZone: 'lobby' | 'w1' | 'w2' | 'w3' = getZoneOf(startX, startZ);
     setCurrentZone(lastZone);
 
@@ -354,6 +399,7 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
         const arr = st.workshop === 1 ? s.w1 : st.workshop === 2 ? s.w2 : s.w3;
         const done = Boolean(arr[st.taskIdx]?.completed);
         const isNear = st.id === nearId;
+        const isHovered = st.id === hoveredStationId;
 
         const prev = spriteStates.get(st.id);
         if (!prev || prev.completed !== done || prev.isNear !== isNear) {
@@ -361,13 +407,14 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
           updateStationLabelSprite(st, done, isNear);
         }
 
-        const ringColor = isNear ? '#ffd66b' : done ? '#22c55e' : st.accentHex;
+        const ringColor = isNear || isHovered ? '#ffd66b' : done ? '#22c55e' : st.accentHex;
         st.ringMat.color.set(ringColor);
         st.ringMat.emissive.set(ringColor);
-        st.ringMat.emissiveIntensity = isNear ? 1.3 : done ? 0.65 : 0.55;
+        st.ringMat.emissiveIntensity = isNear ? 1.45 : isHovered ? 1.15 : done ? 0.65 : 0.55;
+        st.ringMesh.scale.setScalar(isHovered || isNear ? 1.16 : 1);
         st.beaconMat.color.set(done ? '#22c55e' : st.accentHex);
-        st.beaconMat.emissive.set(isNear ? '#ffd66b' : done ? '#22c55e' : st.accentHex);
-        st.beaconMat.emissiveIntensity = isNear ? 1.25 : 0.7;
+        st.beaconMat.emissive.set(isNear || isHovered ? '#ffd66b' : done ? '#22c55e' : st.accentHex);
+        st.beaconMat.emissiveIntensity = isNear ? 1.35 : isHovered ? 1.1 : 0.7;
       }
 
       // Dynamic room progress rewards
@@ -549,9 +596,21 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
       raycaster.setFromCamera(_mouseNdc, camera);
       const stationHover = raycaster.intersectObjects(world.stationClickables, false);
       if (stationHover.length > 0) {
+        const stId = (stationHover[0].object.userData?.stationId as string | undefined) ?? null;
+        if (stId !== hoveredStationId) {
+          hoveredStationId = stId;
+          syncStationVisuals(activeNearId);
+          const stObj = stId ? world.stations.find((s) => s.id === stId) : null;
+          setHoveredStationTitle(stObj ? `${stObj.roomName} · ${stObj.title}` : null);
+        }
         renderer.domElement.style.cursor = 'pointer';
         hoverRing.visible = false;
         return;
+      }
+      if (hoveredStationId !== null) {
+        hoveredStationId = null;
+        syncStationVisuals(activeNearId);
+        setHoveredStationTitle(null);
       }
       renderer.domElement.style.cursor = 'grab';
       const floorHits = raycaster.intersectObjects(world.floorClickables, false);
@@ -611,6 +670,10 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
         setWalkingToLabel(null);
         destRing.position.set(safe.x, 0.05, safe.z);
         destRing.visible = true;
+        clickRipple.position.set(safe.x, 0.052, safe.z);
+        clickRipple.scale.setScalar(0.8);
+        clickRipple.visible = true;
+        rippleProgress = 0;
       }
     };
 
@@ -895,6 +958,38 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
         destRing.rotation.z = elapsed * 2.2;
       }
 
+      if (clickRipple.visible) {
+        rippleProgress += dt * 2.4;
+        if (rippleProgress >= 1) {
+          clickRipple.visible = false;
+        } else {
+          clickRipple.scale.setScalar(0.8 + rippleProgress * 2.1);
+          clickRippleMat.opacity = (1 - rippleProgress) * 0.75;
+        }
+      }
+
+      if (motePoints) {
+        motePoints.rotation.y = Math.sin(elapsed * 0.08) * 0.06;
+        motePoints.position.y = Math.sin(elapsed * 0.65) * 0.14;
+      }
+
+      // Gentle fairy light twinkle in Workshop 3 (Biblio-night)
+      for (let f = 0; f < world.decor.w3FairyMats.length; f++) {
+        const fMat = world.decor.w3FairyMats[f];
+        fMat.emissiveIntensity = 0.75 + Math.sin(elapsed * 2.8 + f * 0.9) * 0.35;
+      }
+
+      // Subtle pulse on current target station ring
+      if (targetSt && targetSt.id !== activeNearId && targetSt.id !== hoveredStationId) {
+        targetSt.ringMesh.scale.setScalar(1 + Math.sin(elapsed * 4.2) * 0.08);
+      }
+
+      // Throttled player position sync for top-right mini-map
+      if (now - lastRadarPush > 110) {
+        lastRadarPush = now;
+        setPlayerRadar({ x: pPos.x, z: pPos.z, yaw: camYaw });
+      }
+
       renderer.render(scene, camera);
 
       if (isSoftwareGl) {
@@ -1033,6 +1128,141 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
             </button>
           </div>
         </div>
+
+        {hoveredStationTitle && (
+          <div className="mt-2 inline-flex items-center gap-2 rounded-xl bg-[#13294b]/95 text-[#ffd66b] px-3 py-1.5 text-xs font-extrabold border border-[#ffd66b]/45 shadow-lg animate-card-in">
+            <MousePointerClick className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{hoveredStationTitle}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Top-Right Interactive Mini-Map Radar */}
+      <div className="pointer-events-auto hidden md:block absolute top-3.5 right-3.5 z-10 w-[224px] rounded-2xl bg-[#13294b]/94 text-white p-2.5 border border-white/15 shadow-lg">
+        <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#ffd66b] mb-1.5 px-1">
+          <span>План Книгограда</span>
+          <span className="text-white/65">клик → идти</span>
+        </div>
+        {(() => {
+          const toX = (wx: number) => ((wx + 14.5) / 29) * 200;
+          const toY = (wz: number) => ((wz + 9.5) / 16.5) * 114;
+          const radarStations: { id: string; w: WorkshopId; t: number; x: number; z: number; color: string }[] = [
+            { id: 'w1-0', w: 1, t: 0, x: -8.0, z: 2.3, color: '#38bdf8' },
+            { id: 'w1-1', w: 1, t: 1, x: -12.2, z: -4.15, color: '#38bdf8' },
+            { id: 'w1-2', w: 1, t: 2, x: -10.7, z: 1.3, color: '#38bdf8' },
+            { id: 'w1-3', w: 1, t: 3, x: -7.6, z: -3.65, color: '#38bdf8' },
+            { id: 'w2-0', w: 2, t: 0, x: -1.1, z: -3.7, color: '#fb7185' },
+            { id: 'w2-1', w: 2, t: 1, x: -1.1, z: -6.9, color: '#fb7185' },
+            { id: 'w2-2', w: 2, t: 2, x: 1.1, z: -6.9, color: '#fb7185' },
+            { id: 'w2-3', w: 2, t: 3, x: 1.1, z: -3.7, color: '#fb7185' },
+            { id: 'w3-0', w: 3, t: 0, x: 7.2, z: -3.75, color: '#facc15' },
+            { id: 'w3-1', w: 3, t: 1, x: 11.6, z: -2.85, color: '#facc15' },
+            { id: 'w3-2', w: 3, t: 2, x: 8.2, z: 2.55, color: '#facc15' },
+            { id: 'w3-3', w: 3, t: 3, x: 10.85, z: 2.55, color: '#facc15' },
+          ];
+          const px = toX(playerRadar.x);
+          const py = toY(playerRadar.z);
+          return (
+            <svg viewBox="0 0 200 114" className="w-full h-auto rounded-xl bg-[#0c1b33] border border-white/10">
+              {/* Clickable Room Zones */}
+              <rect
+                x="4"
+                y="6"
+                width="62"
+                height="102"
+                rx="6"
+                fill={currentZone === 'w1' ? 'rgba(19, 92, 117, 0.5)' : 'rgba(255,255,255,0.05)'}
+                stroke="rgba(125,211,252,0.35)"
+                className="cursor-pointer hover:fill-[#135c75]/55 transition-colors"
+                onClick={() => controllerRef.current?.walkToRoom('w1')}
+              />
+              <rect
+                x="69"
+                y="6"
+                width="62"
+                height="48"
+                rx="6"
+                fill={currentZone === 'w2' ? 'rgba(196, 30, 46, 0.45)' : 'rgba(255,255,255,0.05)'}
+                stroke="rgba(251,113,133,0.35)"
+                className="cursor-pointer hover:fill-[#c41e2e]/50 transition-colors"
+                onClick={() => controllerRef.current?.walkToRoom('w2')}
+              />
+              <rect
+                x="69"
+                y="57"
+                width="62"
+                height="51"
+                rx="6"
+                fill={currentZone === 'lobby' ? 'rgba(255, 214, 107, 0.2)' : 'rgba(255,255,255,0.04)'}
+                stroke="rgba(255,255,255,0.18)"
+                className="cursor-pointer hover:fill-white/12 transition-colors"
+                onClick={() => controllerRef.current?.walkToRoom('lobby')}
+              />
+              <rect
+                x="134"
+                y="6"
+                width="62"
+                height="102"
+                rx="6"
+                fill={currentZone === 'w3' ? 'rgba(234, 179, 8, 0.25)' : 'rgba(255,255,255,0.05)'}
+                stroke="rgba(250,204,21,0.35)"
+                className="cursor-pointer hover:fill-[#ffd66b]/25 transition-colors"
+                onClick={() => controllerRef.current?.walkToRoom('w3')}
+              />
+
+              {/* Zone Micro Labels */}
+              <text x="35" y="101" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="7.5" fontWeight="700">
+                1. БИД
+              </text>
+              <text x="100" y="16" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="7.5" fontWeight="700">
+                2. Редакция
+              </text>
+              <text x="100" y="101" textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="7.5" fontWeight="700">
+                Холл
+              </text>
+              <text x="165" y="101" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="7.5" fontWeight="700">
+                3. Библионочь
+              </text>
+
+              {/* 12 Station Dots */}
+              {radarStations.map((rs) => {
+                const arr = getProgressArr(rs.w);
+                const done = Boolean(arr[rs.t]?.completed);
+                const isNext = nextObjective?.stationId === rs.id;
+                const sx = toX(rs.x);
+                const sy = toY(rs.z);
+                return (
+                  <g
+                    key={rs.id}
+                    className="cursor-pointer"
+                    onClick={() => controllerRef.current?.walkToStation(rs.id, true)}
+                  >
+                    {isNext && (
+                      <circle cx={sx} cy={sy} r="7" fill="none" stroke="#ffd66b" strokeWidth="1.5" opacity="0.85">
+                        <animate attributeName="r" values="4;8;4" dur="1.6s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.6s" repeatCount="indefinite" />
+                      </circle>
+                    )}
+                    <circle
+                      cx={sx}
+                      cy={sy}
+                      r="3.4"
+                      fill={done ? '#4ade80' : isNext ? '#ffd66b' : rs.color}
+                      stroke="#0c1b33"
+                      strokeWidth="1"
+                    />
+                  </g>
+                );
+              })}
+
+              {/* Player Marker + Camera Look Cone */}
+              <g transform={`translate(${px.toFixed(1)}, ${py.toFixed(1)}) rotate(${((-playerRadar.yaw * 180) / Math.PI).toFixed(1)})`}>
+                <path d="M 0 0 L -8 -15 A 16 16 0 0 1 8 -15 Z" fill="rgba(255,214,107,0.28)" />
+                <circle r="4.2" fill="#ffffff" stroke="#c41e2e" strokeWidth="1.8" />
+              </g>
+            </svg>
+          );
+        })()}
       </div>
 
       {/* Unified Bottom Stack (Perfectly Centered, Zero Overlap Between Prompt & Dock) */}

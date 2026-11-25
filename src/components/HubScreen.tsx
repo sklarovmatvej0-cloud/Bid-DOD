@@ -227,6 +227,16 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     <p className="text-sm text-[#13294b]/75 leading-relaxed">
                       {card.summary}
                     </p>
+                    <div className="grid grid-cols-4 gap-1.5 pt-1" aria-hidden="true">
+                      {prog.map((tp, i) => (
+                        <span
+                          key={i}
+                          className={`h-1.5 rounded-full transition-colors ${
+                            tp.completed ? 'bg-[#157a4f]' : 'bg-[#e6ebf4]'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
 

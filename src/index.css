@@ -87,27 +87,86 @@
   0%, 100% {
     transform: translate3d(0, 0, 0);
   }
+  20% {
+    transform: translate3d(-6px, 0, 0);
+  }
+  40% {
+    transform: translate3d(6px, 0, 0);
+  }
+  60% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  80% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+@keyframes biblikFloatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.8);
+  }
   25% {
-    transform: translate3d(-3px, 1px, 0);
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.95);
+  }
+}
+
+@keyframes coinPulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 214, 107, 0.75);
+    transform: scale(1);
+  }
+  40% {
+    box-shadow: 0 0 0 10px rgba(255, 214, 107, 0);
+    transform: scale(1.14);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 214, 107, 0);
+    transform: scale(1);
+  }
+}
+
+@keyframes waveBar {
+  0%, 100% {
+    transform: scaleY(0.35);
   }
   50% {
-    transform: translate3d(3px, -1px, 0);
-  }
-  75% {
-    transform: translate3d(-2px, 1px, 0);
+    transform: scaleY(1);
   }
 }
 
 .animate-card-in {
-  animation: cardEnter 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: cardEnter 190ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-stamp-pop {
-  animation: stampPop 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: stampPop 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-stage-shake {
-  animation: gentlePulseShake 170ms ease-out both;
+  animation: gentlePulseShake 260ms ease-out both;
+}
+
+.animate-biblik-float {
+  animation: biblikFloatUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-coin-pulse {
+  animation: coinPulseGlow 700ms ease-out;
+}
+
+.animate-wave-bar {
+  animation: waveBar 0.9s ease-in-out infinite;
+  transform-origin: center;
 }
 
 .desk-scroll::-webkit-scrollbar {
@@ -131,7 +190,10 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-card-in,
   .animate-stamp-pop,
-  .animate-stage-shake {
+  .animate-stage-shake,
+  .animate-biblik-float,
+  .animate-coin-pulse,
+  .animate-wave-bar {
     animation: none !important;
   }
 }

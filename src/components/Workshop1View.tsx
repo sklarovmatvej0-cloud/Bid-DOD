@@ -497,7 +497,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
   return (
     <div className="h-full flex flex-col overflow-hidden">
       {/* Compact Stepper */}
-      <div className="shrink-0 bg-white border-b border-[#13294b]/10 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2 overflow-x-auto">
+      <div className="shrink-0 bg-white border-b border-[#13294b]/10 px-4 sm:px-6 py-2 flex items-center justify-between gap-2 overflow-x-auto">
         <div className="flex items-center gap-1.5">
           {wsMeta.tasks.map((t, idx) => {
             const done = progress[idx].completed;
@@ -507,9 +507,9 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 key={t.title}
                 type="button"
                 onClick={() => onSelectTask(idx)}
-                className={`min-h-[38px] px-3.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+                className={`min-h-[36px] px-3.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all whitespace-nowrap ${
                   active
-                    ? 'bg-[#135c75] text-white'
+                    ? 'bg-[#135c75] text-white shadow-xs'
                     : done
                       ? 'bg-[#e9f7ef] text-[#157a4f]'
                       : 'bg-[#f2f5fa] text-[#13294b]/75 hover:bg-[#e5ebf6]'
@@ -524,7 +524,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
             <button
               type="button"
               onClick={onOpenShowcase}
-              className="min-h-[38px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
+              className="min-h-[36px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Готовая выставка
@@ -535,11 +535,11 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
 
       {/* Main Game Stage */}
       <div
-        className={`flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-5 ${
+        className={`flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-4 ${
           taskIdx === 3 ? 'bg-[#081c33] text-white' : ''
         }`}
       >
-        <div className="max-w-6xl mx-auto space-y-5 animate-card-in" key={`w1-t${taskIdx}`}>
+        <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w1-t${taskIdx}`}>
           {/* ============ TASK 0: ILLUSTRATED CATALOG SEARCH ============ */}
           {taskIdx === 0 && (
             <>
@@ -826,7 +826,9 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                     className={`rounded-2xl p-4 pb-0 shadow-inner transition-all ${
                       shelfOverZone === 'travel'
                         ? 'bg-[#194a33] ring-4 ring-[#86efac]'
-                        : 'bg-[#2d1c10]'
+                        : draggedShelfBookId
+                          ? 'bg-[#253a2d] ring-2 ring-dashed ring-[#86efac]/70'
+                          : 'bg-[#2d1c10]'
                     }`}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -925,7 +927,9 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                       ? 'bg-[#e9f7ef] border-[#157a4f]'
                       : shelfOverZone === 'reader'
                         ? 'bg-[#fff8d6] border-[#c41e2e] scale-[1.01]'
-                        : 'bg-white border-[#135c75]/45'
+                        : draggedShelfBookId
+                          ? 'bg-[#f4faff] border-[#135c75] ring-2 ring-[#7dd3fc]/60'
+                          : 'bg-white border-[#135c75]/45'
                   }`}
                 >
                   <img
@@ -992,32 +996,32 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
 
               <div className="rounded-3xl bg-[#eef3fa] p-5 sm:p-6 border border-[#13294b]/12 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
                 {/* LEFT: REAL BOOK WITH IMPRINT DATA */}
-                <div className="bg-white rounded-2xl p-5 shadow-lg border border-[#13294b]/10 flex flex-col sm:flex-row gap-5 items-center">
+                <div className="bg-[#fdfbf7] rounded-2xl p-5 shadow-lg border border-[#13294b]/15 flex flex-col sm:flex-row gap-5 items-center">
                   <img
                     src={MEDIA.oceanExpedition}
                     alt="Издание Экспедиция на дно океана"
                     className="w-40 aspect-[3/4] object-cover rounded-xl shadow-lg shrink-0"
                   />
                   <div className="space-y-2.5 text-sm">
-                    <div className="text-xs font-extrabold uppercase tracking-wider text-[#157a4f]">
+                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#135c75]">
                       Издание · выходные данные книги
                     </div>
                     <div className="font-display font-extrabold text-lg text-[#13294b] leading-snug">
                       Экспедиция на дно океана
                     </div>
-                    <div className="space-y-1.5 text-sm text-[#13294b]">
+                    <div className="space-y-1.5 text-sm text-[#13294b] pt-1 border-t border-[#13294b]/10">
                       <div>
                         <strong>Автор:</strong> Елена Крылова
                       </div>
                       <div>
                         <strong>Год издания:</strong>{' '}
-                        <span className="font-mono-tabular font-extrabold text-[#157a4f] bg-[#e9f7ef] px-2 py-0.5 rounded">
+                        <span className="font-mono-tabular font-extrabold text-[#13294b]">
                           2022
                         </span>
                       </div>
                       <div>
                         <strong>Предметная рубрика:</strong>{' '}
-                        <span className="font-extrabold text-[#157a4f] bg-[#e9f7ef] px-2 py-0.5 rounded">
+                        <span className="font-bold text-[#13294b]">
                           Глубоководные экспедиции
                         </span>
                       </div>
@@ -1231,7 +1235,11 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                           setDraggedOceanId(null);
                         }}
                         className={`rounded-2xl overflow-hidden border-2 transition-all ${
-                          isOver ? 'border-[#ffd66b] scale-[1.01]' : 'border-white/15'
+                          isOver
+                            ? 'border-[#ffd66b] scale-[1.015] shadow-lg'
+                            : draggedOceanId && placedIds.length < 2
+                              ? 'border-[#7dd3fc]/60'
+                              : 'border-white/15'
                         } bg-white/8`}
                       >
                         <div
@@ -1257,7 +1265,13 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                               return (
                                 <div
                                   key={slotIdx}
-                                  className="min-h-[82px] rounded-xl border-2 border-dashed border-white/25 bg-white/5 flex items-center justify-center text-center p-2 text-[11px] text-white/60 font-bold"
+                                  className={`min-h-[82px] rounded-xl border-2 border-dashed flex items-center justify-center text-center p-2 text-[11px] font-bold transition-colors ${
+                                    isOver
+                                      ? 'border-[#ffd66b] bg-[#ffd66b]/15 text-[#ffd66b]'
+                                      : draggedOceanId
+                                        ? 'border-[#7dd3fc]/60 bg-white/10 text-white/85'
+                                        : 'border-white/25 bg-white/5 text-white/60'
+                                  }`}
                                 >
                                   Перетащи обложку сюда
                                 </div>

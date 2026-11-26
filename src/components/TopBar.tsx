@@ -6,11 +6,13 @@ import { AnimatedNumber } from './VisualEffects';
 
 interface TopBarProps {
   route: ScreenRoute;
+  hubMode?: '3d' | '2d';
   save: KnigogradSave;
   totalBibliks: number;
   completedTasks: number;
   muted: boolean;
   onNavigate: (next: ScreenRoute) => void;
+  onReturnToMainHub?: () => void;
   onToggleMute: () => void;
   onResetProgress?: () => void;
 }
@@ -40,9 +42,11 @@ export const BiblikCoin: React.FC<{ size?: 'sm' | 'md' | 'lg'; pulse?: boolean }
 
 export const TopBar: React.FC<TopBarProps> = ({
   route,
+  hubMode = '2d',
   totalBibliks,
   completedTasks,
   onNavigate,
+  onReturnToMainHub,
   onResetProgress,
 }) => {
   const [confirmReset, setConfirmReset] = useState(false);
@@ -72,14 +76,22 @@ export const TopBar: React.FC<TopBarProps> = ({
       : null;
 
   const progressPct = Math.round((completedTasks / 12) * 100);
+  const showBackToMain = route.view !== 'hub' || hubMode === '3d';
+  const handleGoMain = () => {
+    if (onReturnToMainHub) {
+      onReturnToMainHub();
+    } else {
+      onNavigate({ view: 'hub' });
+    }
+  };
 
   return (
     <header className="relative shrink-0 h-16 bg-[#13294b] text-white border-b border-white/15 px-4 sm:px-6 flex items-center justify-between gap-4 z-30">
       <div className="flex items-center gap-3 min-w-0">
-        {route.view !== 'hub' && (
+        {showBackToMain && (
           <button
             type="button"
-            onClick={() => onNavigate({ view: 'hub' })}
+            onClick={handleGoMain}
             className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] active:scale-[0.98] text-xs sm:text-sm font-display font-extrabold text-[#13294b] transition-all whitespace-nowrap shrink-0 shadow-sm"
           >
             <ArrowLeft className="w-4 h-4 shrink-0" />
@@ -89,7 +101,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 
         <button
           type="button"
-          onClick={() => onNavigate({ view: 'hub' })}
+          onClick={handleGoMain}
           className="flex items-center gap-2.5 text-left group min-h-[40px] pr-2 rounded-lg hover:bg-white/8 transition-colors px-1.5 whitespace-nowrap shrink-0"
           title="Вернуться на главную страницу"
         >
@@ -101,9 +113,15 @@ export const TopBar: React.FC<TopBarProps> = ({
           </span>
         </button>
 
+        {route.view === 'hub' && hubMode === '3d' && (
+          <div className="hidden md:flex items-center gap-2 pl-3 border-l border-white/15 text-xs font-bold text-[#ffd66b]">
+            <span>3D-тур по Книгограду</span>
+          </div>
+        )}
+
         {activeWorkshopMeta && (
           <div className="hidden lg:flex items-center gap-2 pl-3 border-l border-white/15 text-xs sm:text-sm min-w-0">
-            <span className="text-white/75 whitespace-nowrap">{activeWorkshopMeta.title}</span>
+            <span className="text-white/75 whitespace-nowrap">{activeWorkshopMeta.shortTitle}</span>
             <span className="text-white/35">/</span>
             <span className="font-bold text-[#ffd66b] truncate">
               {route.view === 'workshop'

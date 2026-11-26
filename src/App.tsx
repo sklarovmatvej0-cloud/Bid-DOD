@@ -199,15 +199,24 @@ export function App() {
     setRoute({ view: 'hub' });
   }, [muted]);
 
+  const handleReturnToMainHub = useCallback(() => {
+    soundEngine.playSelectTick();
+    setFeedback(null);
+    setHubMode('2d');
+    setRoute({ view: 'hub' });
+  }, []);
+
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col studio-canvas text-[#13294b]">
       <TopBar
         route={route}
+        hubMode={hubMode}
         save={save}
         totalBibliks={totalBibliks}
         completedTasks={completedTasks}
         muted={muted}
         onNavigate={handleNavigate}
+        onReturnToMainHub={handleReturnToMainHub}
         onToggleMute={handleToggleMute}
         onResetProgress={handleResetProgress}
       />

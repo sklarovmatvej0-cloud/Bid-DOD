@@ -1038,10 +1038,10 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
     wId === 1 ? save.w1 : wId === 2 ? save.w2 : save.w3;
 
   const zoneTitleMap = {
-    lobby: 'Центральный холл «Книгограда»',
-    w1: 'Мастерская 1 · Библиотека',
-    w2: 'Мастерская 2 · Издательство и редакция',
-    w3: 'Мастерская 3 · Зал «Библионочи»',
+    lobby: 'Центральный холл кафедры БИД · «Книгоград»',
+    w1: 'Мастерская 1 · 51.02.03 / 51.03.06 БИД',
+    w2: 'Мастерская 2 · 42.03.03 Издательское дело',
+    w3: 'Мастерская 3 · 51.03.06 Креативный менеджмент (NEW)',
   };
 
   if (webglError) {
@@ -1483,10 +1483,10 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
                   <button
                     type="button"
                     onClick={onSwitchTo2D}
-                    className="min-h-[38px] px-3 rounded-xl bg-[#eef2f8] hover:bg-[#dfe7f4] text-[#13294b] text-xs font-bold inline-flex items-center gap-1.5 whitespace-nowrap"
+                    className="min-h-[38px] px-3.5 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] text-[#13294b] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap shadow-xs"
                   >
                     <LayoutGrid className="w-3.5 h-3.5" />
-                    <span>Карточки</span>
+                    <span>На главную</span>
                   </button>
                 </div>
               </div>

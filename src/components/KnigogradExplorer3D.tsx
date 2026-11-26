@@ -88,6 +88,12 @@ function buildWalkPath(
     } else if (startZone === 'w2') {
       pts.push(new THREE.Vector3(0, 0, -1.65));
       pts.push(new THREE.Vector3(0, 0, 0.2));
+      if (endZone === 'lobby' && toZ > 2.1) {
+        pts.push(new THREE.Vector3(1.85, 0, 2.2));
+      }
+    } else if (startZone === 'lobby' && endZone === 'w2' && fromZ > 1.8 && Math.abs(fromX) < 1.8) {
+      // Sidestep cleanly around the central circular atrium bench/tree at (0, 2.1)
+      pts.push(new THREE.Vector3(fromX >= 0 ? 1.85 : -1.85, 0, 2.2));
     }
 
     // Route neatly around the center atrium bench if crossing East <-> West
@@ -822,12 +828,34 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
         world.player.bodyGroup.position.y = Math.sin(elapsed * 2.2) * 0.015;
       }
 
-      // Friendly Mentor NPC idle wave & head look
+      // Friendly Mentor NPC idle wave & active Working Staff typing/operating animation
       for (let i = 0; i < world.npcs.length; i++) {
         const npc = world.npcs[i];
-        npc.rightArm.rotation.z = 0.25 + Math.sin(elapsed * 3.0 + npc.phase) * 0.22;
-        npc.rightArm.rotation.x = -0.35 + Math.sin(elapsed * 2.2 + npc.phase) * 0.15;
-        npc.head.rotation.y = Math.sin(elapsed * 1.1 + npc.phase) * 0.22;
+        if (npc.mode === 'work') {
+          npc.rightArm.rotation.x = -0.68 + Math.sin(elapsed * 7.5 + npc.phase) * 0.14;
+          npc.rightArm.rotation.z = -0.08 + Math.cos(elapsed * 5.0 + npc.phase) * 0.06;
+          if (npc.leftArm) {
+            npc.leftArm.rotation.x = -0.64 + Math.cos(elapsed * 7.2 + npc.phase) * 0.14;
+            npc.leftArm.rotation.z = 0.08;
+          }
+          npc.head.rotation.y = Math.sin(elapsed * 1.6 + npc.phase) * 0.16;
+          npc.head.rotation.x = 0.12 + Math.sin(elapsed * 2.4 + npc.phase) * 0.04;
+        } else {
+          npc.rightArm.rotation.z = 0.25 + Math.sin(elapsed * 3.0 + npc.phase) * 0.22;
+          npc.rightArm.rotation.x = -0.35 + Math.sin(elapsed * 2.2 + npc.phase) * 0.15;
+          npc.head.rotation.y = Math.sin(elapsed * 1.1 + npc.phase) * 0.22;
+        }
+      }
+
+      // Live Printing Press Animation in Editorial Hall (spinning roller, sliding magazine sheets, status LED)
+      world.decor.w2PressRoller.rotation.x = elapsed * 4.2;
+      world.decor.w2PressLedMat.emissiveIntensity = 0.7 + Math.sin(elapsed * 6.5) * 0.65;
+      for (let sIdx = 0; sIdx < world.decor.w2PrintingSheets.length; sIdx++) {
+        const sheet = world.decor.w2PrintingSheets[sIdx];
+        const cycle = (elapsed * 0.55 + sIdx * 0.5) % 1;
+        // Sheet slides out from the press roller (x = 0.36) onto the magazine stack (x = -0.48)
+        sheet.position.x = THREE.MathUtils.lerp(0.36, -0.48, cycle);
+        sheet.position.y = 1.05 - cycle * 0.14 + Math.sin(cycle * Math.PI) * 0.03;
       }
 
       // Animate station beacons & check nearest station within interaction radius
@@ -1038,7 +1066,7 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
     wId === 1 ? save.w1 : wId === 2 ? save.w2 : save.w3;
 
   const zoneTitleMap = {
-    lobby: 'Центральный холл «Книгограда»',
+    lobby: 'Центральный холл «Инфополиса БИД»',
     w1: 'Мастерская 1 · Библиотека и инфоресурсы',
     w2: 'Мастерская 2 · Издательство и редакция',
     w3: 'Мастерская 3 · Зал «Библионочи»',
@@ -1140,7 +1168,7 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
       {/* Top-Right Interactive Mini-Map Radar */}
       <div className="pointer-events-auto hidden md:block absolute top-3.5 right-3.5 z-10 w-[224px] rounded-2xl bg-[#13294b]/94 text-white p-2.5 border border-white/15 shadow-lg">
         <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#ffd66b] mb-1.5 px-1">
-          <span>План Книгограда</span>
+          <span>План Инфополиса БИД</span>
           <span className="text-white/65">клик → идти</span>
         </div>
         {(() => {
@@ -1273,7 +1301,7 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
             <div className="space-y-0.5">
               <div className="text-xs font-extrabold text-[#ffd66b] inline-flex items-center gap-1.5">
                 <MousePointerClick className="w-4 h-4" />
-                <span>Как ходить по Книгограду:</span>
+                <span>Как ходить по Инфополису БИД:</span>
               </div>
               <div className="text-xs text-white/92 leading-snug">
                 <strong>Клик по полу/стенду</strong> — идти ·{' '}

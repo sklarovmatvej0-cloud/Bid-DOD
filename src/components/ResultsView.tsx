@@ -150,7 +150,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
 
   const rankTitle =
     totalBibliks >= 32
-      ? 'Главный профи Книгограда'
+      ? 'Главный профи Инфополиса БИД'
       : totalBibliks >= 22
         ? 'Уверенный специалист медиа и культуры'
         : totalBibliks >= 10

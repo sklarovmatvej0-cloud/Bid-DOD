@@ -102,20 +102,25 @@ export const TopBar: React.FC<TopBarProps> = ({
         <button
           type="button"
           onClick={handleGoMain}
-          className="flex items-center gap-2.5 text-left group min-h-[40px] pr-2 rounded-lg hover:bg-white/8 transition-colors px-1.5 whitespace-nowrap shrink-0"
+          className="flex items-center gap-2.5 text-left group min-h-[40px] pr-2 rounded-lg hover:bg-white/8 transition-colors px-1.5 min-w-0"
           title="Вернуться на главную страницу"
         >
           <span className="w-9 h-9 rounded-lg bg-[#c41e2e] flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
             <BookOpen className="w-5 h-5 text-white" />
           </span>
-          <span className="font-display font-extrabold text-sm sm:text-base tracking-tight text-white">
-            КНИГОГРАД · БИД · БГИИК
-          </span>
+          <div className="flex flex-col leading-tight min-w-0">
+            <span className="font-display font-extrabold text-xs sm:text-base tracking-tight text-white truncate">
+              ИНФОПОЛИС БИД · БГИИК
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#ffd66b] truncate">
+              Интерактивная игра · Кафедра БИД
+            </span>
+          </div>
         </button>
 
         {route.view === 'hub' && hubMode === '3d' && (
           <div className="hidden md:flex items-center gap-2 pl-3 border-l border-white/15 text-xs font-bold text-[#ffd66b]">
-            <span>3D-тур по Книгограду</span>
+            <span>3D-тур по Инфополису</span>
           </div>
         )}
 

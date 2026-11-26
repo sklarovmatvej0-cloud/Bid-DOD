@@ -51,9 +51,11 @@ export interface PlayerAvatarHandle {
 
 export interface NpcHandle {
   root: THREE.Group;
+  leftArm?: THREE.Group;
   rightArm: THREE.Group;
   head: THREE.Group;
   phase: number;
+  mode?: 'wave' | 'work' | 'read';
 }
 
 export interface KnigogradWorldHandles {
@@ -70,6 +72,9 @@ export interface KnigogradWorldHandles {
   decor: {
     w1ExhLight: THREE.PointLight;
     w2MagStack: THREE.Group;
+    w2PressRoller: THREE.Mesh;
+    w2PrintingSheets: THREE.Mesh[];
+    w2PressLedMat: THREE.MeshStandardMaterial;
     w3StageLight: THREE.PointLight;
     w3FairyMats: THREE.MeshStandardMaterial[];
   };
@@ -878,7 +883,7 @@ export function buildKnigogradWorld(
         bg: '#13294b',
         border: '#ffd66b',
         kicker: 'БГИИК · КАФЕДРА БИД',
-        title: 'КНИГОГРАД',
+        title: 'ИНФОПОЛИС БИД',
         width: 440,
         height: 120,
       }),
@@ -1310,26 +1315,55 @@ export function buildKnigogradWorld(
     labelY: 2.45,
   });
 
-  // Station W2-3: Pre-Print Proofing & Magazine Press
+  // Station W2-3: Pre-Print Proofing & Animated Live Magazine Printing Press
   const w2Press = new THREE.Group();
   w2Press.position.set(2.9, 0, -3.7);
-  w2Press.add(buildDesk(2.1, 1.12, 0.82, oakMat, darkMetalMat));
-  const pressBody = new THREE.Mesh(new THREE.BoxGeometry(0.84, 0.44, 0.68), darkMetalMat);
-  pressBody.position.set(0.42, 1.04, -0.08);
+  w2Press.add(buildDesk(2.2, 1.16, 0.82, oakMat, darkMetalMat));
+  const pressBody = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.48, 0.72), darkMetalMat);
+  pressBody.position.set(0.45, 1.06, -0.06);
   pressBody.castShadow = true;
-  const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.68, 14), brassMat);
+  const pressHood = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.16, 0.56), crimsonMat);
+  pressHood.position.set(0.45, 1.36, -0.08);
+  const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.7, 16), brassMat);
   roller.rotation.z = Math.PI / 2;
-  roller.position.set(0.42, 1.28, 0.05);
-  w2Press.add(pressBody, roller);
+  roller.position.set(0.45, 1.24, 0.16);
+
+  // Conveyor belt & blinking green status LED on printing press
+  const conveyorTray = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.04, 0.64), walnutMat);
+  conveyorTray.position.set(-0.22, 0.84, 0.06);
+  const w2PressLedMat = makeMat({
+    color: '#4ade80',
+    emissive: '#22c55e',
+    emissiveIntensity: 1.4,
+    roughness: 0.2,
+  });
+  const pressLed = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 10), w2PressLedMat);
+  pressLed.position.set(0.82, 1.38, 0.22);
+  w2Press.add(pressBody, pressHood, roller, conveyorTray, pressLed);
 
   const magTex = createScreenCanvasTexture(renderer, 'magazine', save.magazineHeadline);
+  const magCoverMat = makeMat({ map: magTex, roughness: 0.35 });
+
+  // Animated freshly printed magazine sheets sliding out of the press rollers!
+  const w2PrintingSheets: THREE.Mesh[] = [];
+  for (let s = 0; s < 2; s++) {
+    const sheet = new THREE.Mesh(
+      new THREE.BoxGeometry(0.44, 0.016, 0.56),
+      [paperMat, paperMat, magCoverMat, paperMat, paperMat, paperMat]
+    );
+    sheet.position.set(0.28 - s * 0.35, 1.02, 0.08);
+    sheet.castShadow = true;
+    w2Press.add(sheet);
+    w2PrintingSheets.push(sheet);
+  }
+
   const w2MagStack = new THREE.Group();
-  w2MagStack.position.set(-0.46, 0.82, 0.08);
+  w2MagStack.position.set(-0.56, 0.85, 0.08);
   for (let m = 0; m < 6; m++) {
     const issue = new THREE.Mesh(
       new THREE.BoxGeometry(0.48, 0.04, 0.62),
       m === 5
-        ? [paperMat, paperMat, makeMat({ map: magTex, roughness: 0.35 }), paperMat, paperMat, paperMat]
+        ? [paperMat, paperMat, magCoverMat, paperMat, paperMat, paperMat]
         : paperMat
     );
     issue.position.set(0, 0.02 + m * 0.042, 0);
@@ -1340,6 +1374,87 @@ export function buildKnigogradWorld(
   w2Press.add(w2MagStack);
   root.add(w2Press);
   addCollider(2.9, -3.7, 2.25, 1.25);
+
+  // Active co-workers working across the 3 halls (Publishing, Library, Media Studio)
+  // 1) Layout Designer working at the W2-2 Wide Monitor in Editorial
+  const workerLayout = buildCharacter({
+    jacketHex: '#1e3a5f',
+    pantsHex: '#334155',
+    hairHex: '#5c3a21',
+    accentHex: '#ffd66b',
+    scale: 0.98,
+  });
+  workerLayout.root.position.set(2.85, 0, -7.75);
+  workerLayout.root.rotation.y = 0; // Facing the layout monitor desk
+  root.add(workerLayout.root);
+  npcs.push({
+    root: workerLayout.root,
+    leftArm: workerLayout.leftArm,
+    rightArm: workerLayout.rightArm,
+    head: workerLayout.headGroup,
+    phase: 0.8,
+    mode: 'work',
+  });
+
+  // 2) Print Technician operating the Magazine Press at W2-3
+  const workerPress = buildCharacter({
+    jacketHex: '#991b1b',
+    pantsHex: '#1e293b',
+    hairHex: '#27272a',
+    accentHex: '#ffd66b',
+    scale: 0.98,
+  });
+  workerPress.root.position.set(3.4, 0, -4.65);
+  workerPress.root.rotation.y = -0.25; // Facing the printing press
+  root.add(workerPress.root);
+  npcs.push({
+    root: workerPress.root,
+    leftArm: workerPress.leftArm,
+    rightArm: workerPress.rightArm,
+    head: workerPress.headGroup,
+    phase: 2.1,
+    mode: 'work',
+  });
+
+  // 3) Bibliographer-Cataloger working at the Library Verification Desk W1-2
+  const workerCatalog = buildCharacter({
+    jacketHex: '#135c75',
+    pantsHex: '#1e293b',
+    hairHex: '#3b2416',
+    accentHex: '#38bdf8',
+    scale: 0.98,
+  });
+  workerCatalog.root.position.set(-13.1, 0, 1.3);
+  workerCatalog.root.rotation.y = Math.PI / 2; // Facing the catalog desk
+  root.add(workerCatalog.root);
+  npcs.push({
+    root: workerCatalog.root,
+    leftArm: workerCatalog.leftArm,
+    rightArm: workerCatalog.rightArm,
+    head: workerCatalog.headGroup,
+    phase: 3.4,
+    mode: 'work',
+  });
+
+  // 4) SMM Producer working at the Media & Ring-Light Studio Desk W3-2
+  const workerSmm = buildCharacter({
+    jacketHex: '#4f46e5',
+    pantsHex: '#1e293b',
+    hairHex: '#713f12',
+    accentHex: '#f43f5e',
+    scale: 0.98,
+  });
+  workerSmm.root.position.set(8.2, 0, 5.0);
+  workerSmm.root.rotation.y = Math.PI; // Facing the SMM monitor and ring light
+  root.add(workerSmm.root);
+  npcs.push({
+    root: workerSmm.root,
+    leftArm: workerSmm.leftArm,
+    rightArm: workerSmm.rightArm,
+    head: workerSmm.headGroup,
+    phase: 4.8,
+    mode: 'work',
+  });
 
   registerStation({
     workshop: 2,
@@ -1611,6 +1726,9 @@ export function buildKnigogradWorld(
     decor: {
       w1ExhLight,
       w2MagStack,
+      w2PressRoller: roller,
+      w2PrintingSheets,
+      w2PressLedMat,
       w3StageLight,
       w3FairyMats,
     },

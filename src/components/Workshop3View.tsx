@@ -314,8 +314,8 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
               <div className="absolute inset-0 bg-gradient-to-t from-[#13294b] via-[#13294b]/40 to-transparent" />
               <div className="absolute bottom-5 left-6 right-6 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <div className="text-xs font-extrabold uppercase tracking-widest text-[#ffd66b]">
-                    Готовый результат · Мастерская 3
+                  <div className="text-xs font-extrabold uppercase tracking-widest text-[#7dd3fc]">
+                    Готовый результат · Проф-трек 03
                   </div>
                   <h1 className="font-display font-extrabold text-2xl sm:text-4xl mt-1">
                     {save.festivalName}
@@ -332,7 +332,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   <button
                     type="button"
                     onClick={onOpenResults}
-                    className="min-h-[42px] px-5 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] text-[#13294b] text-xs sm:text-sm font-extrabold inline-flex items-center gap-2"
+                    className="min-h-[42px] px-5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 shadow-sm"
                   >
                     <Award className="w-4 h-4" />
                     Мои итоги и профиль
@@ -354,7 +354,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   referrerPolicy="no-referrer"
                   className="w-full aspect-[4/3] object-cover rounded-xl"
                 />
-                <div className="font-display font-bold text-sm text-[#ffd66b]">Главный зал</div>
+                <div className="font-display font-bold text-sm text-[#7dd3fc]">Главный зал</div>
                 <p className="text-xs text-white/80">Книжный квиз с ведущим и творческая встреча с автором</p>
               </div>
               <div className="rounded-2xl bg-white/10 p-4 space-y-2">
@@ -364,7 +364,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   referrerPolicy="no-referrer"
                   className="w-full aspect-[4/3] object-cover rounded-xl"
                 />
-                <div className="font-display font-bold text-sm text-[#ffd66b]">Интерактивные зоны</div>
+                <div className="font-display font-bold text-sm text-[#7dd3fc]">Интерактивные зоны</div>
                 <p className="text-xs text-white/80">Фотозона, мастер-класс по открыткам и буккроссинг</p>
               </div>
               <div className="rounded-2xl bg-white/10 p-4 space-y-2">
@@ -374,7 +374,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   referrerPolicy="no-referrer"
                   className="w-full aspect-[4/3] object-cover rounded-xl"
                 />
-                <div className="font-display font-bold text-sm text-[#ffd66b]">450+ регистраций</div>
+                <div className="font-display font-bold text-sm text-[#7dd3fc]">450+ регистраций</div>
                 <p className="text-xs text-white/80">Понятный анонс и доброжелательные ответы читателям</p>
               </div>
             </div>
@@ -429,7 +429,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
             <button
               type="button"
               onClick={onOpenShowcase}
-              className="min-h-[36px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
+              className="min-h-[36px] px-3.5 rounded-xl bg-[#e0f2fe] text-[#0369a1] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Готовая «Библионочь»
@@ -441,21 +441,21 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
       {/* Main Game Stage */}
       <div className="flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w3-t${taskIdx}`}>
-          {/* ============ TASK 0: AUDIENCE INSIGHTS + POSTER STUDIO ============ */}
+          {/* ============ TASK 0: AUDIENCE INSIGHTS + INTERACTIVE EVENT POSTER & TICKET STUDIO ============ */}
           {taskIdx === 0 && (
             <>
               <MissionBanner
                 image={MEDIA.sceneSmmFestival}
                 imageAlt="Планирование культурного проекта в отделе креативного менеджмента"
-                stepLabel="Мастерская 3 · Креативный менеджер · Шаг 1 из 4"
-                title="Концепция проекта: разработай формат и афишу акции «Библионочь»"
-                goal="Библиотека готовит главное культурное событие весны — вечернюю акцию «Библионочь» для молодёжи и жителей города. Твоя роль — креативный менеджер: изучи результаты опроса читателей ниже и выбери подходящий формат программы, понятное название для афиши и информационных партнёров."
+                stepLabel="Проф-трек 03 · Креативный менеджер · Шаг 1 из 4"
+                title="Концепция проекта: собери интерактивную афишу и программу «Библионочи»"
+                goal="Библиотека готовит главное культурное событие весны — вечернюю акцию «Библионочь» для молодёжи и жителей города. Твоя роль — креативный менеджер: изучи аналитику опроса читателей и настрой 3 ключевых блока на интерактивной городской афише справа (формат программы, название события и профильных партнёров)."
                 steps={[
-                  { text: 'Изучи аналитику опроса читателей и выбери формат акции', done: Boolean(conceptPicks.format) },
-                  { text: 'Подбери понятное название, которое сразу объясняет программу вечера', done: Boolean(conceptPicks.name) },
-                  { text: 'Выбери профильных партнёров и утверди макет афиши', done: Boolean(conceptPicks.partner) },
+                  { text: 'Изучи данные опроса читателей и выбери формат акции', done: Boolean(conceptPicks.format) },
+                  { text: 'Подбери название для главной афиши и электронного билета', done: Boolean(conceptPicks.name) },
+                  { text: 'Выбери профильных партнёров и утверди концепцию', done: Boolean(conceptPicks.partner) },
                 ]}
-                resultPreview="Готовая концепция и афиша культурного проекта, основанная на данных опроса."
+                resultPreview="Собрана городская афиша и электронный пригласительный билет «Библионочи»."
                 accentColor="#13294b"
                 onHint={handleHintClick}
               />
@@ -604,9 +604,10 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   </div>
                 </div>
 
-                {/* RIGHT 5 COLS: DESIGNER EVENT POSTER PREVIEW */}
+                {/* RIGHT 5 COLS: INTERACTIVE CITY BILLBOARD POSTER & DIGITAL GUEST PASS */}
                 <div className="lg:col-span-5 space-y-3">
-                  <div className="rounded-3xl overflow-hidden bg-gradient-to-b from-[#0d1f3a] via-[#13294b] to-[#1a345c] text-white shadow-2xl border-2 border-[#ffd66b]/45">
+                  <div className="rounded-3xl overflow-hidden bg-gradient-to-b from-[#0a192f] via-[#13294b] to-[#163760] text-white shadow-2xl border-2 border-[#38bdf8]/45">
+                    {/* Poster Visual Hero with Live Audience Match Indicator */}
                     <div className="relative aspect-[16/10] bg-[#0a182e]">
                       <img
                         src={
@@ -616,40 +617,116 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                               ? MEDIA.w3SmmTextwall
                               : MEDIA.sceneSmmFestival
                         }
-                        alt="Живой макет афиши Библионочи"
+                        alt="Интерактивный макет городской афиши Библионочи"
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-all duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f3a] via-[#0d1f3a]/30 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f] via-[#0a192f]/35 to-transparent" />
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
                         <span className="px-2.5 py-1 rounded-lg bg-[#c41e2e] text-white font-mono-tabular text-[10px] font-extrabold tracking-wider">
-                          АФИША СОБЫТИЯ · БГИИК
+                          ГОРОДСКАЯ АФИША · БГИИК
                         </span>
-                        <span className="px-2.5 py-1 rounded-lg bg-black/60 text-[#ffd66b] font-mono-tabular text-[10px] font-extrabold inline-flex items-center gap-1">
-                          <CalendarClock className="w-3 h-3" /> ПТ · 18:30
+                        <span className="px-2.5 py-1 rounded-lg bg-black/65 text-[#7dd3fc] font-mono-tabular text-[10px] font-extrabold inline-flex items-center gap-1 border border-[#7dd3fc]/30">
+                          <CalendarClock className="w-3 h-3" /> ПЯТНИЦА · 18:30
                         </span>
+                      </div>
+
+                      {/* Live Audience Fit Pill on Poster */}
+                      <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between gap-2">
+                        <div className="flex flex-wrap gap-1.5">
+                          {conceptPicks.format === 'fest' ? (
+                            <>
+                              <span className="px-2 py-0.5 rounded-md bg-[#0284c7]/90 text-white text-[10px] font-extrabold">
+                                18:30 Квиз
+                              </span>
+                              <span className="px-2 py-0.5 rounded-md bg-[#157a4f]/90 text-white text-[10px] font-extrabold">
+                                19:30 Мастер-классы
+                              </span>
+                              <span className="px-2 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-white text-[10px] font-extrabold">
+                                20:30 Буккроссинг
+                              </span>
+                            </>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-md bg-black/60 text-white/80 text-[10px] font-bold">
+                              Нажми на блоки афиши ниже для настройки
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
+                    {/* Interactive Clickable Poster Zones */}
                     <div className="p-5 space-y-3">
-                      <div className="font-display font-extrabold text-lg sm:text-xl text-[#ffd66b] leading-snug">
-                        {pickedName ? pickedName.label : '← Выбери название афиши'}
-                      </div>
-                      <div className="rounded-xl bg-white/10 border border-white/10 p-3 text-xs text-white/90 leading-relaxed">
-                        <strong className="text-[#7dd3fc]">Формат:</strong>{' '}
-                        {pickedFormat ? pickedFormat.label : 'ещё не выбран'}
-                      </div>
-                      <div className="rounded-xl bg-white/10 border border-white/10 p-3 text-xs text-white/90 leading-relaxed">
-                        <strong className="text-[#86efac]">Партнёры:</strong>{' '}
-                        {pickedPartner ? pickedPartner.label : 'ещё не выбраны'}
-                      </div>
-                      <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-white/70">
-                        <span className="inline-flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-[#ffd66b]" /> Библиотека БИД
-                        </span>
-                        <span className="font-mono-tabular text-[#ffd66b]">
-                          {Object.keys(conceptPicks).length}/3 элемента
-                        </span>
+                      {/* Clickable Zone 2: Poster Title */}
+                      <button
+                        type="button"
+                        onClick={() => setConceptStepIdx(1)}
+                        className={`w-full text-left rounded-2xl p-3 border-2 transition-all ${
+                          conceptStepIdx === 1
+                            ? 'bg-white/15 border-[#38bdf8]'
+                            : 'bg-white/6 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#7dd3fc] mb-0.5">
+                          <span>2. Заголовок афиши</span>
+                          <span>{pickedName?.isBest ? '✓ Ярко и понятно' : 'Изменить →'}</span>
+                        </div>
+                        <div className="font-display font-extrabold text-base sm:text-lg text-white leading-snug">
+                          {pickedName ? pickedName.label : '← Выбери название события'}
+                        </div>
+                      </button>
+
+                      {/* Clickable Zone 1: Event Format */}
+                      <button
+                        type="button"
+                        onClick={() => setConceptStepIdx(0)}
+                        className={`w-full text-left rounded-2xl p-3 border-2 transition-all ${
+                          conceptStepIdx === 0
+                            ? 'bg-white/15 border-[#38bdf8]'
+                            : 'bg-white/6 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#7dd3fc] mb-0.5">
+                          <span>1. Формат программы (по опросу 76% хотят интерактив)</span>
+                          <span>{pickedFormat?.isBest ? '✓ Совпадает с опросом' : 'Изменить →'}</span>
+                        </div>
+                        <div className="text-xs font-bold text-white/95 leading-relaxed">
+                          {pickedFormat ? pickedFormat.label : '← Выбери формат проведения'}
+                        </div>
+                      </button>
+
+                      {/* Clickable Zone 3: Event Partners */}
+                      <button
+                        type="button"
+                        onClick={() => setConceptStepIdx(2)}
+                        className={`w-full text-left rounded-2xl p-3 border-2 transition-all ${
+                          conceptStepIdx === 2
+                            ? 'bg-white/15 border-[#38bdf8]'
+                            : 'bg-white/6 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#86efac] mb-0.5">
+                          <span>3. Партнёры и призовой фонд</span>
+                          <span>{pickedPartner?.isBest ? '✓ Целевая аудитория' : 'Изменить →'}</span>
+                        </div>
+                        <div className="text-xs font-bold text-white/95 leading-relaxed">
+                          {pickedPartner ? pickedPartner.label : '← Выбери партнёров акции'}
+                        </div>
+                      </button>
+
+                      {/* Perforated Tear-Off Guest Ticket Stub */}
+                      <div className="pt-3 border-t-2 border-dashed border-white/20 flex items-center justify-between gap-3">
+                        <div className="space-y-0.5">
+                          <div className="text-[10px] font-mono-tabular uppercase tracking-wider text-[#7dd3fc] font-extrabold">
+                            ЭЛЕКТРОННЫЙ БИЛЕТ ГОСТЯ · ВХОД СВОБОДНЫЙ
+                          </div>
+                          <div className="text-xs font-bold text-white/85 inline-flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5 text-[#38bdf8]" /> Инфополис БИД · Главный холл
+                          </div>
+                        </div>
+                        <div className="px-3 py-1.5 rounded-xl bg-[#0284c7] text-white font-mono-tabular text-xs font-extrabold shrink-0">
+                          {Object.keys(conceptPicks).length}/3 готово
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -658,21 +735,21 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
             </>
           )}
 
-          {/* ============ TASK 1: COMMAND CENTER + GRANT BUDGET + TIMELINE ============ */}
+          {/* ============ TASK 1: COMMAND CENTER + GRANT BUDGET + INTERACTIVE ARCHITECTURAL FLOORPLAN ============ */}
           {taskIdx === 1 && (
             <>
               <MissionBanner
                 image={MEDIA.sceneFestivalStage}
                 imageAlt="Площадки и смета гранта библиотеки"
-                stepLabel="Мастерская 3 · Проектный менеджер · Шаг 2 из 4"
-                title="Смета проекта: распредели грант библиотеки 300 000 ₽ по 3 площадкам"
-                goal="Концепция утверждена! На проведение «Библионочи» библиотека получила целевой грант — 300 000 ₽. Твоя задача — выбрать наполнение для трёх площадок вечера (Главный зал, Интерактивные зоны, Навигация и призы), чтобы уложиться в бюджет гранта и обеспечить высокие показатели Настроения гостей (от 80%) и Порядка (от 80%)."
+                stepLabel="Проф-трек 03 · Проектный менеджер · Шаг 2 из 4"
+                title="Карта площадок и грант: оснасти 3 локации «Библионочи» на 300 000 ₽"
+                goal="На проведение «Библионочи» получен грант — 300 000 ₽. Перед тобой интерактивная схема трёх пространств библиотеки: Главный зал, Творческие зоны и Входная группа с навигацией. Выбери оснащение для каждой локации так, чтобы не превысить лимит 300 тыс. ₽ и вывести показатели Настроения гостей и Порядка минимум на 80%."
                 steps={[
-                  { text: 'Выбери программу для Главного зала', done: Boolean(budgetPicks.main) },
-                  { text: 'Выбери наполнение Интерактивных зон', done: Boolean(budgetPicks.zones) },
-                  { text: 'Настрой навигацию, волонтёров и призы', done: Boolean(budgetPicks.care) },
+                  { text: 'Оснасти Локацию 1 · Главный зал (18:30 — 20:00)', done: Boolean(budgetPicks.main) },
+                  { text: 'Оснасти Локацию 2 · Интерактивные зоны (19:00 — 21:30)', done: Boolean(budgetPicks.zones) },
+                  { text: 'Оснасти Локацию 3 · Навигация, волонтёры и призы', done: Boolean(budgetPicks.care) },
                 ]}
-                resultPreview="Грант библиотеки 300 тыс. ₽ распределён грамотно, оба показателя ≥ 80%."
+                resultPreview="Все 3 пространства на карте библиотеки оснащены в пределах гранта 300 тыс. ₽."
                 accentColor="#13294b"
                 onHint={handleHintClick}
               />
@@ -703,7 +780,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       className="h-full rounded-full transition-all duration-300"
                       style={{
                         width: `${Math.min(100, (budgetMetrics.cost / 300) * 100)}%`,
-                        backgroundColor: budgetMetrics.cost > 300 ? '#c41e2e' : '#135c75',
+                        backgroundColor: budgetMetrics.cost > 300 ? '#c41e2e' : '#0284c7',
                       }}
                     />
                   </div>
@@ -712,11 +789,11 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 <div className="rounded-2xl bg-white p-4 border-2 border-[#13294b]/10 shadow-xs">
                   <div className="flex items-center justify-between text-xs font-extrabold text-[#13294b]/75">
                     <span className="inline-flex items-center gap-1.5">
-                      <Flame className="w-4 h-4 text-[#e59c2d]" /> Настроение (нужно 80%+)
+                      <Flame className="w-4 h-4 text-[#c41e2e]" /> Настроение (нужно 80%+)
                     </span>
                     <span
                       className={`font-mono-tabular text-base ${
-                        budgetMetrics.vibe >= 80 ? 'text-[#157a4f]' : 'text-[#b76506]'
+                        budgetMetrics.vibe >= 80 ? 'text-[#157a4f]' : 'text-[#0284c7]'
                       }`}
                     >
                       <AnimatedNumber value={budgetMetrics.vibe} />%
@@ -727,7 +804,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       className="h-full rounded-full transition-all duration-300"
                       style={{
                         width: `${Math.min(100, budgetMetrics.vibe)}%`,
-                        backgroundColor: budgetMetrics.vibe >= 80 ? '#157a4f' : '#e59c2d',
+                        backgroundColor: budgetMetrics.vibe >= 80 ? '#157a4f' : '#0284c7',
                       }}
                     />
                   </div>
@@ -759,7 +836,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                {/* LEFT 7 COLS: ZONE MAP SELECTOR + PROGRAM OPTIONS (WITHOUT SPOILER NUMBERS!) */}
+                {/* LEFT 7 COLS: ZONE MAP SELECTOR + PROGRAM OPTIONS */}
                 <div className="lg:col-span-7 bg-white rounded-3xl p-5 border border-[#13294b]/12 shadow-md space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {EVENT_BUDGET_STEPS.map((zone, idx) => {
@@ -782,7 +859,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           }`}
                         >
                           <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider opacity-75">
-                            <span>Зона {idx + 1}</span>
+                            <span>Локация 0{idx + 1}</span>
                             {picked && <CheckCircle2 className="w-3.5 h-3.5" />}
                           </div>
                           <div className="text-xs font-extrabold mt-0.5 line-clamp-1">
@@ -801,14 +878,14 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       className="w-full sm:w-32 aspect-[4/3] object-cover rounded-xl shrink-0"
                     />
                     <div className="space-y-1">
-                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#135c75]">
-                        Площадка {activeZoneIdx + 1} из 3
+                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#0284c7]">
+                        Настройка пространства {activeZoneIdx + 1} из 3
                       </div>
                       <h3 className="font-display font-extrabold text-base text-[#13294b]">
                         {activeZone.title}
                       </h3>
                       <p className="text-xs text-[#13294b]/70">
-                        Выбери вариант программы и сверься со сметой гранта и показателями сверху.
+                        Выбери оснащение площадки — изменения сразу отобразятся на архитектурной схеме справа.
                       </p>
                     </div>
                   </div>
@@ -837,7 +914,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                             <span
                               className={`font-mono-tabular text-xs font-extrabold px-2.5 py-1 rounded-lg shrink-0 ${
                                 selected
-                                  ? 'bg-[#ffd66b] text-[#13294b]'
+                                  ? 'bg-[#0284c7] text-white'
                                   : 'bg-white text-[#c41e2e] border border-[#13294b]/10'
                               }`}
                             >
@@ -857,19 +934,128 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   </div>
                 </div>
 
-                {/* RIGHT 5 COLS: LIVE EVENING SCHEDULE & GRANT LEDGER */}
+                {/* RIGHT 5 COLS: INTERACTIVE ARCHITECTURAL FLOORPLAN MAP + EVENING GRANT LEDGER */}
                 <aside className="lg:col-span-5 bg-[#13294b] text-white rounded-3xl p-5 border border-white/10 shadow-xl space-y-4">
                   <div className="flex items-center justify-between border-b border-white/12 pb-3">
-                    <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
-                      <Clock className="w-4 h-4" />
-                      <span>Смета и расписание вечера</span>
+                    <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#7dd3fc]">
+                      <MapPin className="w-4 h-4" />
+                      <span>Интерактивная карта площадок «Библионочи»</span>
                     </div>
-                    <span className="font-mono-tabular text-xs text-white/70">
-                      Остаток: {300 - budgetMetrics.cost} т.₽
+                    <span className="font-mono-tabular text-xs text-white/80">
+                      Остаток: <strong className="text-[#7dd3fc]">{300 - budgetMetrics.cost} т.₽</strong>
                     </span>
                   </div>
 
-                  <div className="space-y-2.5">
+                  {/* Interactive Visual Architectural Floorplan Blueprint */}
+                  <div className="rounded-2xl bg-[#0b182e] p-3 border border-[#38bdf8]/30 space-y-2.5">
+                    <div className="flex items-center justify-between text-[10px] font-mono-tabular text-[#7dd3fc]/85">
+                      <span>ПЛАН-СХЕМА ЭТАЖА БИБЛИОТЕКИ БИД</span>
+                      <span>ГОТОВНОСТЬ: {budgetMetrics.count}/3 ЗОН</span>
+                    </div>
+
+                    <div className="grid grid-cols-12 gap-2">
+                      {/* Floorplan Room 1: Main Hall Stage */}
+                      {(() => {
+                        const z0 = EVENT_BUDGET_STEPS[0];
+                        const p0 = z0.options.find((o) => o.id === budgetPicks[z0.id]);
+                        const active = activeZoneIdx === 0;
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => setActiveZoneIdx(0)}
+                            className={`col-span-7 rounded-xl p-2.5 text-left border-2 transition-all flex flex-col justify-between min-h-[104px] ${
+                              active
+                                ? 'bg-[#173661] border-[#38bdf8] shadow-md'
+                                : p0?.isBest
+                                  ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
+                                  : 'bg-white/5 border-white/15 hover:bg-white/10'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-1 text-[9px] font-mono-tabular font-extrabold">
+                              <span className="text-[#7dd3fc]">ЗАЛ 01 · СЦЕНА</span>
+                              <span className="px-1.5 py-0.5 rounded bg-black/40 text-white">
+                                {p0 ? `${p0.cost} т.₽` : '0 т.₽'}
+                              </span>
+                            </div>
+                            <div className="text-[11px] font-extrabold text-white leading-tight my-1">
+                              {p0 ? p0.timeLabel : 'Нажми, чтобы оснастить Главный зал'}
+                            </div>
+                            <div className="flex items-center gap-2 text-[9px] font-mono-tabular text-white/75">
+                              <span>⚡ Настроение +{p0 ? p0.vibe : 0}%</span>
+                            </div>
+                          </button>
+                        );
+                      })()}
+
+                      {/* Floorplan Room 2: Interactive Workshops Courtyard */}
+                      {(() => {
+                        const z1 = EVENT_BUDGET_STEPS[1];
+                        const p1 = z1.options.find((o) => o.id === budgetPicks[z1.id]);
+                        const active = activeZoneIdx === 1;
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => setActiveZoneIdx(1)}
+                            className={`col-span-5 rounded-xl p-2.5 text-left border-2 transition-all flex flex-col justify-between min-h-[104px] ${
+                              active
+                                ? 'bg-[#173661] border-[#38bdf8] shadow-md'
+                                : p1?.isBest
+                                  ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
+                                  : 'bg-white/5 border-white/15 hover:bg-white/10'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-1 text-[9px] font-mono-tabular font-extrabold">
+                              <span className="text-[#7dd3fc]">ЗАЛ 02 · АРТ-ЗОНЫ</span>
+                              <span className="px-1.5 py-0.5 rounded bg-black/40 text-white">
+                                {p1 ? `${p1.cost} т.₽` : '0 т.₽'}
+                              </span>
+                            </div>
+                            <div className="text-[11px] font-extrabold text-white leading-tight my-1">
+                              {p1 ? p1.timeLabel : 'Оснастить мастерские'}
+                            </div>
+                            <div className="text-[9px] font-mono-tabular text-white/75">
+                              🎨 Интерактив +{p1 ? p1.vibe : 0}%
+                            </div>
+                          </button>
+                        );
+                      })()}
+
+                      {/* Floorplan Room 3: Entrance Lobby, Wayfinding & Prize Desk */}
+                      {(() => {
+                        const z2 = EVENT_BUDGET_STEPS[2];
+                        const p2 = z2.options.find((o) => o.id === budgetPicks[z2.id]);
+                        const active = activeZoneIdx === 2;
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => setActiveZoneIdx(2)}
+                            className={`col-span-12 rounded-xl p-2.5 text-left border-2 transition-all flex items-center justify-between gap-3 ${
+                              active
+                                ? 'bg-[#173661] border-[#38bdf8] shadow-md'
+                                : p2?.isBest
+                                  ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
+                                  : 'bg-white/5 border-white/15 hover:bg-white/10'
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="text-[9px] font-mono-tabular font-extrabold text-[#7dd3fc]">
+                                ЛОКАЦИЯ 03 · ВХОДНОЙ ХОЛЛ, ГАРДЕРОБ, НАВИГАЦИЯ И ПРИЗЫ
+                              </div>
+                              <div className="text-[11px] font-extrabold text-white truncate mt-0.5">
+                                {p2 ? p2.timeLabel : 'Нажми, чтобы настроить навигацию, волонтёров и призы'}
+                              </div>
+                            </div>
+                            <span className="px-2 py-1 rounded-lg bg-black/40 font-mono-tabular text-[10px] font-extrabold text-[#7dd3fc] shrink-0">
+                              {p2 ? `${p2.cost} т.₽` : '0 т.₽'}
+                            </span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* Evening Timeline Summary */}
+                  <div className="space-y-2">
                     {EVENT_BUDGET_STEPS.map((zone, idx) => {
                       const picked = zone.options.find((o) => o.id === budgetPicks[zone.id]);
                       return (
@@ -877,19 +1063,19 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           key={zone.id}
                           type="button"
                           onClick={() => setActiveZoneIdx(idx)}
-                          className={`w-full text-left rounded-2xl p-3.5 border transition-all ${
+                          className={`w-full text-left rounded-2xl p-3 border transition-all ${
                             activeZoneIdx === idx
-                              ? 'bg-white/15 border-[#ffd66b]'
+                              ? 'bg-white/15 border-[#38bdf8]'
                               : 'bg-white/8 border-white/10 hover:bg-white/12'
                           }`}
                         >
                           <div className="flex items-center justify-between gap-2 text-[11px] font-bold text-[#7dd3fc]">
                             <span>{zone.title}</span>
-                            <span className="font-mono-tabular text-[#ffd66b]">
+                            <span className="font-mono-tabular text-white">
                               {picked ? `${picked.cost} т.₽` : '—'}
                             </span>
                           </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-white mt-1">
+                          <div className="text-xs font-extrabold text-white mt-0.5">
                             {picked ? picked.timeLabel : 'Программа не выбрана'}
                           </div>
                         </button>
@@ -915,7 +1101,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
               <MissionBanner
                 image={MEDIA.sceneSmmReels}
                 imageAlt="Подготовка анонса Библионочи в соцсетях"
-                stepLabel="Мастерская 3 · SMM-специалист · Шаг 3 из 4"
+                stepLabel="Проф-трек 03 · SMM-специалист · Шаг 3 из 4"
                 title="SMM-анонс: оформи пост о «Библионочи» для соцсетей библиотеки"
                 goal="Программа «Библионочи» готова — теперь о ней должны узнать читатели! Твоя роль — SMM-специалист библиотеки: собери публикацию для соцсетей из 4 элементов (цепляющий заголовок, визуальные карточки, призыв с кнопкой записи и время посева). Интерактивный экран смартфона справа показывает прогноз охвата: настрой пост так, чтобы прогноз составил от 400 записей гостей, и опубликуй анонс."
                 steps={[
@@ -935,19 +1121,19 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   <div className="rounded-2xl bg-[#f4f7fc] p-3 border border-[#13294b]/10 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-bold">
                     <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
                       <span className="text-[#13294b]/65">1. Заголовок:</span>
-                      <span className={smmPicks.hook === 'best' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                      <span className={smmPicks.hook === 'best' ? 'text-[#157a4f]' : 'text-[#c41e2e]'}>
                         {smmPicks.hook === 'best' ? '✓ Цепляет' : 'Слабый'}
                       </span>
                     </div>
                     <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
                       <span className="text-[#13294b]/65">2. Визуал:</span>
-                      <span className={smmPicks.visual === 'best' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                      <span className={smmPicks.visual === 'best' ? 'text-[#157a4f]' : 'text-[#c41e2e]'}>
                         {smmPicks.visual === 'best' ? '✓ Карточки' : 'Сплошной'}
                       </span>
                     </div>
                     <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
                       <span className="text-[#13294b]/65">3. Призыв:</span>
-                      <span className={smmPicks.cta === 'best' ? 'text-[#157a4f]' : 'text-[#b76506]'}>
+                      <span className={smmPicks.cta === 'best' ? 'text-[#157a4f]' : 'text-[#c41e2e]'}>
                         {smmPicks.cta === 'best' ? '✓ Ссылка' : 'Без кнопки'}
                       </span>
                     </div>
@@ -1012,7 +1198,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                               }}
                               className={`rounded-2xl overflow-hidden border-2 text-left transition-all flex flex-col ${
                                 selected
-                                  ? 'border-[#13294b] ring-2 ring-[#ffd66b] shadow-sm'
+                                  ? 'border-[#13294b] ring-2 ring-[#38bdf8] shadow-sm'
                                   : 'border-[#13294b]/12 opacity-85 hover:opacity-100'
                               }`}
                             >
@@ -1113,7 +1299,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         onClick={() => setSmmStepIdx(3)}
                         className={`w-full px-3.5 py-2.5 flex items-center justify-between border-b text-left transition-colors ${
                           smmStepIdx === 3
-                            ? 'bg-[#fff4d4]/60 border-[#c41e2e]'
+                            ? 'bg-[#f0f7ff] border-[#0284c7]'
                             : 'border-[#13294b]/10 hover:bg-[#f4f7fc]'
                         }`}
                         title="4. Время и площадка размещения"
@@ -1141,7 +1327,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       <div
                         onClick={() => setSmmStepIdx(1)}
                         className={`relative cursor-pointer border-b-2 transition-all ${
-                          smmStepIdx === 1 ? 'border-[#c41e2e]' : 'border-transparent'
+                          smmStepIdx === 1 ? 'border-[#0284c7]' : 'border-transparent'
                         }`}
                         title="2. Визуальное оформление поста"
                       >
@@ -1178,7 +1364,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                                     }}
                                     className={`px-2 py-0.5 rounded text-[9px] font-mono-tabular font-extrabold transition-colors ${
                                       smmCardSlide === idx
-                                        ? 'bg-[#ffd66b] text-[#13294b]'
+                                        ? 'bg-[#0284c7] text-white'
                                         : 'bg-black/55 text-white/80 hover:bg-black/80'
                                     }`}
                                   >
@@ -1188,7 +1374,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                               </div>
                             </div>
                             <div className="absolute bottom-2.5 left-3 right-3 text-white">
-                              <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#ffd66b]">
+                              <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                                 {smmCardSlide === 0
                                   ? 'Слайд 1 · Афиша события'
                                   : smmCardSlide === 1
@@ -1250,7 +1436,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           onClick={() => setSmmStepIdx(0)}
                           className={`w-full text-left p-2 rounded-xl border transition-colors ${
                             smmStepIdx === 0
-                              ? 'bg-[#fff4d4]/70 border-[#c41e2e]'
+                              ? 'bg-[#f0f7ff] border-[#0284c7]'
                               : 'bg-[#f8fafd] border-transparent hover:border-[#13294b]/15'
                           }`}
                           title="1. Заголовок анонса"
@@ -1259,7 +1445,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                             {activeHook?.preview}
                           </div>
                           <div className="text-[10px] font-bold text-[#135c75] mt-1">
-                            #Библионочь #БГИИК #КафедраБИД #Книгоград
+                            #Библионочь #БГИИК #КафедраБИД #ИнфополисБИД
                           </div>
                         </button>
 
@@ -1269,7 +1455,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           onClick={() => setSmmStepIdx(2)}
                           className={`w-full text-left p-2 rounded-xl border transition-colors space-y-1.5 ${
                             smmStepIdx === 2
-                              ? 'bg-[#fff4d4]/70 border-[#c41e2e]'
+                              ? 'bg-[#f0f7ff] border-[#0284c7]'
                               : 'bg-[#f8fafd] border-transparent hover:border-[#13294b]/15'
                           }`}
                           title="3. Призыв к действию"
@@ -1307,7 +1493,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                               className="h-full rounded-full transition-all duration-300"
                               style={{
                                 width: `${Math.min(100, (smmMetrics.regs / 400) * 100)}%`,
-                                backgroundColor: smmMetrics.regs >= 400 ? '#157a4f' : '#e59c2d',
+                                backgroundColor: smmMetrics.regs >= 400 ? '#157a4f' : '#0284c7',
                               }}
                             />
                           </div>
@@ -1326,7 +1512,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
               <MissionBanner
                 image={MEDIA.sceneFestivalComics}
                 imageAlt="Общение с читателями в комментариях к Библионочи"
-                stepLabel="Мастерская 3 · Комьюнити-менеджер · Шаг 4 из 4"
+                stepLabel="Проф-трек 03 · Комьюнити-менеджер · Шаг 4 из 4"
                 title="Работа с аудиторией: ответь на 4 комментария читателей под анонсом"
                 goal="Анонс «Библионочи» опубликован в соцсетях библиотеки! Под постом сразу появились комментарии подписчиков: организационный вопрос о билетах, замечание о гардеробе, благодарность с фото и слух о платном входе. Ответь каждому читателю грамотно, вежливо и с опорой на факты от лица библиотеки."
                 steps={[
@@ -1380,7 +1566,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                             <span
                               className={`w-8 h-8 rounded-full font-display font-extrabold text-xs flex items-center justify-center shrink-0 ${
                                 active
-                                  ? 'bg-[#ffd66b] text-[#13294b]'
+                                  ? 'bg-[#0284c7] text-white'
                                   : done
                                     ? 'bg-[#157a4f] text-white'
                                     : 'bg-[#13294b]/12 text-[#13294b]'
@@ -1402,7 +1588,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           {done ? (
                             <CheckCircle2 className="w-4 h-4 shrink-0" />
                           ) : active ? (
-                            <span className="w-2 h-2 rounded-full bg-[#ffd66b] shrink-0" />
+                            <span className="w-2 h-2 rounded-full bg-[#38bdf8] shrink-0" />
                           ) : null}
                         </button>
                       );
@@ -1440,7 +1626,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                   {resolvedChats[currentComment.id] && (
                     <div className="space-y-2.5 animate-card-in">
                       <div className="rounded-2xl rounded-tr-sm bg-[#13294b] text-white p-4 ml-6 sm:ml-10 text-sm font-semibold shadow-sm">
-                        <div className="text-[11px] font-extrabold text-[#ffd66b] mb-1 inline-flex items-center gap-1">
+                        <div className="text-[11px] font-extrabold text-[#7dd3fc] mb-1 inline-flex items-center gap-1">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           Библиотека · БГИИК (Официальный ответ)
                         </div>
@@ -1472,7 +1658,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           className="w-full p-4 rounded-2xl bg-[#f7f9fd] hover:bg-[#13294b] hover:text-white border-2 border-[#13294b]/12 hover:border-[#13294b] text-left text-xs sm:text-sm font-bold transition-all flex items-center justify-between gap-3 group"
                         >
                           <span>{opt.label}</span>
-                          <Send className="w-4 h-4 shrink-0 text-[#135c75] group-hover:text-[#ffd66b]" />
+                          <Send className="w-4 h-4 shrink-0 text-[#135c75] group-hover:text-[#7dd3fc]" />
                         </button>
                       ))}
                     </div>

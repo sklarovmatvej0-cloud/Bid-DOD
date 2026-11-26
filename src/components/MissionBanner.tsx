@@ -91,7 +91,7 @@ export const MissionBanner: React.FC<MissionBannerProps> = ({
                 onClick={onHint}
                 className={`min-h-[36px] px-3 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
                   dark
-                    ? 'bg-white/12 hover:bg-white/22 text-[#ffd66b]'
+                    ? 'bg-white/12 hover:bg-white/22 text-[#7dd3fc]'
                     : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b]'
                 }`}
               >

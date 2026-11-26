@@ -79,8 +79,8 @@ const CompetencyRadar: React.FC<{
       {/* Filled data polygon */}
       <polygon
         points={polyStr}
-        fill="rgba(255, 214, 107, 0.34)"
-        stroke="#ffd66b"
+        fill="rgba(56, 189, 248, 0.32)"
+        stroke="#7dd3fc"
         strokeWidth="2.5"
         strokeLinejoin="round"
       />
@@ -95,7 +95,7 @@ const CompetencyRadar: React.FC<{
               cy={p.y}
               r="5"
               fill={colors[idx]}
-              stroke="#ffd66b"
+              stroke="#7dd3fc"
               strokeWidth="2.5"
             />
             <text
@@ -113,7 +113,7 @@ const CompetencyRadar: React.FC<{
               x={labelPos.x}
               y={labelPos.y + (idx === 0 ? 8 : 18)}
               textAnchor="middle"
-              fill="#ffd66b"
+              fill="#7dd3fc"
               fontSize="10"
               fontWeight="800"
               fontFamily="JetBrains Mono, monospace"
@@ -169,7 +169,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         {/* Top Score & Career Rank Certificate Card */}
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#13294b] via-[#17335c] to-[#0f223d] text-white p-6 sm:p-8 shadow-xl border border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
           <div className="lg:col-span-6 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-[#ffd66b]/30 text-[11px] font-bold uppercase tracking-widest text-[#ffd66b]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-[#7dd3fc]/30 text-[11px] font-bold uppercase tracking-widest text-[#7dd3fc]">
               Личный профиль абитуриента · БГИИК · Кафедра БИД
             </div>
             <h1 className="font-display font-extrabold text-2xl sm:text-3xl leading-tight">
@@ -177,19 +177,19 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
             </h1>
             <p className="text-sm text-white/85 leading-relaxed">
               {completedTasks === 0
-                ? 'Пройди хотя бы несколько заданий в мастерских, чтобы собрать библики и увидеть, какая профессия кафедры БИД тебе ближе всего.'
+                ? 'Пройди хотя бы несколько заданий в проф-треках, чтобы собрать библики и увидеть, какая профессия кафедры БИД тебе ближе всего.'
                 : `Ты выполнил ${completedTasks} из 12 практических заданий и заработал ${totalBibliks} из 36 библиков. Ниже — подробный разбор твоих сильных сторон и рекомендации направлений.`}
             </p>
 
-            <div className="inline-flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-3.5 border border-[#ffd66b]/35 mt-2">
+            <div className="inline-flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-3.5 border border-[#7dd3fc]/35 mt-2">
               <BiblikCoin size="lg" pulse={completedTasks > 0} />
               <div>
-                <div className="font-mono-tabular font-extrabold text-3xl text-[#ffd66b] leading-none">
+                <div className="font-mono-tabular font-extrabold text-3xl text-[#7dd3fc] leading-none">
                   <AnimatedNumber value={totalBibliks} />
                   <span className="text-base text-white/60 font-semibold"> / 36</span>
                 </div>
                 <div className="text-xs font-semibold text-white/80 mt-1">
-                  золотых библиков · {completedTasks}/12 заданий
+                  библиков · {completedTasks}/12 заданий
                 </div>
               </div>
             </div>
@@ -208,14 +208,14 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
                 <div key={ws.id} className="rounded-xl bg-white/8 px-3 py-2 border border-white/10">
                   <div className="flex items-center justify-between text-[11px] font-extrabold">
                     <span className="text-white/90 truncate">{ws.shortTitle}</span>
-                    <span className="font-mono-tabular text-[#ffd66b]">{bibliks} б.</span>
+                    <span className="font-mono-tabular text-[#7dd3fc]">{bibliks} б.</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-white/15 overflow-hidden mt-1.5">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${(bibliks / 12) * 100}%`,
-                        backgroundColor: done === 4 ? '#4ade80' : '#ffd66b',
+                        backgroundColor: done === 4 ? '#4ade80' : '#38bdf8',
                       }}
                     />
                   </div>
@@ -225,7 +225,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           </div>
         </section>
 
-        {/* Breakdown Across 3 Workshops */}
+        {/* Breakdown Across 3 Tracks */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {workshopStats.map(({ ws, done, bibliks }) => {
             const isTop = completedTasks > 0 && bestWorkshop.ws.id === ws.id;
@@ -233,7 +233,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
               <div
                 key={ws.id}
                 className={`studio-card rounded-2xl p-5 flex flex-col justify-between gap-4 transition-transform hover:-translate-y-0.5 ${
-                  isTop ? 'ring-2 ring-[#e59c2d]' : ''
+                  isTop ? 'ring-2 ring-[#0284c7]' : ''
                 }`}
               >
                 <div className="space-y-3">
@@ -245,7 +245,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
                       {ws.code}
                     </span>
                     {isTop && (
-                      <span className="text-xs font-extrabold text-[#b76506] inline-flex items-center gap-1 bg-[#fff4d4] px-2.5 py-0.5 rounded-full">
+                      <span className="text-xs font-extrabold text-[#0284c7] inline-flex items-center gap-1 bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">
                         <Sparkles className="w-3.5 h-3.5" />
                         Твой лучший результат
                       </span>
@@ -259,7 +259,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold text-[#13294b]/75">
                       <span>Выполнено: {done} из 4</span>
-                      <span className="font-mono-tabular text-[#b76506]">{bibliks} / 12 Б</span>
+                      <span className="font-mono-tabular text-[#135c75]">{bibliks} / 12 Б</span>
                     </div>
                     <div className="h-2.5 rounded-full bg-[#e6ebf4] overflow-hidden">
                       <div
@@ -367,8 +367,8 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
               </ul>
             </div>
 
-            <div className="rounded-2xl bg-[#fff8e6] border border-[#e59c2d]/40 p-5 space-y-3 text-xs sm:text-sm text-[#13294b]">
-              <div className="text-xs font-extrabold uppercase tracking-wider text-[#8a4d03]">
+            <div className="rounded-2xl bg-[#f0f7ff] border border-[#0284c7]/25 p-5 space-y-3 text-xs sm:text-sm text-[#13294b]">
+              <div className="text-xs font-extrabold uppercase tracking-wider text-[#0284c7]">
                 Поступление и практика
               </div>
               <div>

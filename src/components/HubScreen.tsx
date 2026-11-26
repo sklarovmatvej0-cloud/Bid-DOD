@@ -37,21 +37,21 @@ const WORKSHOP_CARDS: Record<
 > = {
   1: {
     img: MEDIA.sceneLibraryDesk,
-    roleBadge: 'Роль 1 · Специалист по информационным ресурсам',
+    roleBadge: 'Трек 01 · Специалист по информационным ресурсам',
     summary:
-      'Выполни запрос читателя в электронном каталоге, проверь расстановку фонда на стеллаже, сверь карточку с книгой и собери мультимедийную выставку.',
+      'Выполни запрос читателя в электронном каталоге, проверь систематическую расстановку фонда, сверь библиографическую запись и собери мультимедийную выставку.',
   },
   2: {
     img: MEDIA.sceneEditorDesk,
-    roleBadge: 'Роль 2 · Редактор-издатель',
+    roleBadge: 'Трек 02 · Редактор-издатель',
     summary:
-      'Отбери авторские статьи в номер журнала «Культура», проверь факты по аудиозаписи интервью, сверстай полосу и проверь макет перед печатью.',
+      'Сформируй макет выпуска журнала «Культура», сверь текст репортажа с записью интервью куратора выставки, сверстай журнальный разворот и подпиши номер в печать.',
   },
   3: {
     img: MEDIA.sceneSmmFestival,
-    roleBadge: 'Роль 3 · Креативный менеджер проектов',
+    roleBadge: 'Трек 03 · Креативный менеджер проектов',
     summary:
-      'Разработай концепцию и афишу акции «Библионочь» по опросу гостей, распредели грант 300 000 ₽ по площадкам, оформи SMM-анонс и ответь читателям.',
+      'Разработай концепцию и интерактивную афишу «Библионочи» по опросу аудитории, распредели грант 300 000 ₽ по локациям зала, запусти SMM-кампанию и ответь читателям.',
   },
 };
 
@@ -82,10 +82,10 @@ export const HubScreen: React.FC<HubScreenProps> = ({
     <div className="h-full overflow-y-auto desk-scroll px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-6xl mx-auto space-y-6 animate-card-in">
         {/* 1. CLEAN HOOK-FIRST HERO BANNER («ИНФОПОЛИС БИД») */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f223d] via-[#13294b] to-[#1d3f72] text-white px-6 py-7 sm:px-8 sm:py-9 shadow-2xl border border-white/15">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0c1d36] via-[#13294b] to-[#164265] text-white px-6 py-7 sm:px-8 sm:py-9 shadow-2xl border border-white/15">
           {/* Animated Ambient Background Orbs */}
           <div
-            className="pointer-events-none absolute -top-20 -right-16 w-72 h-72 rounded-full bg-[#ffd66b]/15 blur-3xl animate-hero-float"
+            className="pointer-events-none absolute -top-20 -right-16 w-72 h-72 rounded-full bg-[#38bdf8]/20 blur-3xl animate-hero-float"
             aria-hidden="true"
           />
           <div
@@ -97,13 +97,13 @@ export const HubScreen: React.FC<HubScreenProps> = ({
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-7 items-center">
             <div className="lg:col-span-7 space-y-4">
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#ffd66b]">
+                <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                   <Sparkles className="w-4 h-4 shrink-0" />
                   <span>Попробуй себя в мире профессий «Инфополис БИД»</span>
                 </div>
                 <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight text-white">
                   Информация управляет миром.{' '}
-                  <span className="text-[#ffd66b]">А кто управляет информацией?</span>
+                  <span className="text-[#7dd3fc]">А кто управляет информацией?</span>
                 </h1>
               </div>
 
@@ -114,19 +114,19 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               </p>
 
               {/* Prominent Call-to-Action Block + Primary 3D Tour Button */}
-              <div className="rounded-2xl bg-white/10 border border-[#ffd66b]/45 p-4 sm:p-5 space-y-3.5">
-                <div className="font-display font-extrabold text-sm sm:text-base text-[#ffd66b] leading-snug">
+              <div className="rounded-2xl bg-white/10 border border-[#7dd3fc]/35 p-4 sm:p-5 space-y-3.5">
+                <div className="font-display font-extrabold text-sm sm:text-base text-white leading-snug">
                   Твоим идеям пора получить профессию — исследуй 3D-залы «Инфополиса БИД» или выбери
-                  мастерскую ниже!
+                  проф-трек ниже!
                 </div>
                 {onSwitchTo3D && (
                   <div className="flex flex-wrap items-center gap-3">
                     <button
                       type="button"
                       onClick={onSwitchTo3D}
-                      className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#ffd66b] via-[#ffca42] to-[#f5b019] hover:brightness-105 active:scale-[0.99] text-[#13294b] font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all animate-tour-glow"
+                      className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#c41e2e] via-[#dc2638] to-[#e11d48] hover:brightness-110 active:scale-[0.99] text-white font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all shadow-lg"
                     >
-                      <Box className="w-5 h-5 text-[#c41e2e] shrink-0" />
+                      <Box className="w-5 h-5 text-white shrink-0" />
                       <span>Открыть 3D-тур по Инфополису БИД</span>
                       <ArrowRight className="w-5 h-5 shrink-0" />
                     </button>
@@ -141,7 +141,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                 <button
                   type="button"
                   onClick={onSwitchTo3D}
-                  className="group w-full relative rounded-2xl overflow-hidden border-2 border-[#ffd66b]/65 shadow-2xl text-left block transition-transform hover:-translate-y-0.5"
+                  className="group w-full relative rounded-2xl overflow-hidden border-2 border-[#7dd3fc]/55 shadow-2xl text-left block transition-transform hover:-translate-y-0.5"
                 >
                   <img
                     src={MEDIA.studioRoom}
@@ -155,14 +155,14 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                   </div>
                   <div className="absolute bottom-3.5 left-4 right-4 flex items-center justify-between gap-3 text-white">
                     <div>
-                      <div className="font-display font-extrabold text-sm sm:text-base text-[#ffd66b]">
+                      <div className="font-display font-extrabold text-sm sm:text-base text-[#7dd3fc]">
                         Виртуальный 3D-мир «Инфополис БИД»
                       </div>
                       <div className="text-xs text-white/90 mt-0.5">
                         Холл · Библиотека · Редакция и типография · Зал «Библионочи»
                       </div>
                     </div>
-                    <span className="w-10 h-10 rounded-xl bg-[#ffd66b] text-[#13294b] flex items-center justify-center font-extrabold text-base shrink-0 shadow">
+                    <span className="w-10 h-10 rounded-xl bg-[#0284c7] text-white flex items-center justify-center font-extrabold text-base shrink-0 shadow">
                       →
                     </span>
                   </div>
@@ -170,23 +170,23 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               )}
 
               <div className="grid grid-cols-3 gap-2.5">
-                <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
-                  <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
+                <div className="rounded-2xl bg-white/10 border border-white/12 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#7dd3fc] font-mono-tabular">
                     3
                   </div>
-                  <div className="text-[11px] font-bold text-white/80">мастерские</div>
+                  <div className="text-[11px] font-bold text-white/85">проф-трека</div>
                 </div>
-                <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
-                  <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
+                <div className="rounded-2xl bg-white/10 border border-white/12 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#7dd3fc] font-mono-tabular">
                     12
                   </div>
-                  <div className="text-[11px] font-bold text-white/80">заданий</div>
+                  <div className="text-[11px] font-bold text-white/85">заданий</div>
                 </div>
-                <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
-                  <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
+                <div className="rounded-2xl bg-white/10 border border-white/12 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#7dd3fc] font-mono-tabular">
                     36
                   </div>
-                  <div className="text-[11px] font-bold text-white/80">макс. библиков</div>
+                  <div className="text-[11px] font-bold text-white/85">макс. библиков</div>
                 </div>
               </div>
             </div>
@@ -201,12 +201,12 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                 <Compass className="w-5 h-5" />
               </div>
               <h2 className="font-display font-extrabold text-base text-[#13294b]">
-                1. Выбери роль и мастерскую
+                1. Выбери роль и проф-трек
               </h2>
             </div>
             <p className="text-sm text-[#13294b]/75 leading-relaxed">
-              Заходи в 3D-тур или открывай любую из 3 мастерских ниже. В каждой тебя ждут 4 рабочих
-              задания и готовый итоговый проект.
+              Заходи в 3D-тур или открывай любой из 3 профессиональных треков ниже. В каждом тебя
+              ждут 4 практических кейса и готовый итоговый проект.
             </p>
           </div>
 
@@ -230,7 +230,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               </li>
               <li className="flex items-center justify-between gap-2">
                 <span>С подсказкой или от 2 ошибок</span>
-                <strong className="font-mono-tabular text-[#9c5a08]">+1 библик</strong>
+                <strong className="font-mono-tabular text-[#13294b]">+1 библик</strong>
               </li>
             </ul>
           </div>
@@ -246,20 +246,20 @@ export const HubScreen: React.FC<HubScreenProps> = ({
             </div>
             <p className="text-sm text-[#13294b]/75 leading-relaxed">
               После прохождения игра покажет диаграмму твоих результатов и подскажет, какое
-              направление на кафедре БИД подходит именно тебе.
+              направление или профиль на кафедре БИД подходит именно тебе.
             </p>
           </div>
         </section>
 
-        {/* 3. THREE WORKSHOPS TO PLAY */}
+        {/* 3. THREE PROFESSIONAL TRACKS TO PLAY */}
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
             <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#13294b]">
-              Выбери мастерскую для прохождения
+              Выбери профессиональный трек
             </h2>
             <p className="text-sm text-[#13294b]/70">
-              Проходить мастерские можно в любом порядке — прогресс и заработанные библики
-              сохраняются автоматически.
+              Проходить треки можно в любом порядке — прогресс и заработанные библики сохраняются
+              автоматически.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -267,9 +267,9 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               <button
                 type="button"
                 onClick={onSwitchTo3D}
-                className="min-h-[42px] px-4 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] text-[#13294b] text-xs sm:text-sm font-display font-extrabold inline-flex items-center gap-2 shadow-sm whitespace-nowrap"
+                className="min-h-[42px] px-4 rounded-xl bg-[#13294b] hover:bg-[#1e3d6e] text-white text-xs sm:text-sm font-display font-extrabold inline-flex items-center gap-2 shadow-sm whitespace-nowrap"
               >
-                <Box className="w-4 h-4 text-[#c41e2e]" />
+                <Box className="w-4 h-4 text-[#7dd3fc]" />
                 <span>Открыть 3D-тур</span>
               </button>
             )}
@@ -288,7 +288,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
           </div>
         </div>
 
-        {/* 3 Workshop Cards (Clean visual without cluttering codes on top of images) */}
+        {/* 3 Career Track Cards */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {WORKSHOPS.map((ws) => {
             const prog = getTasksProgress(ws.id);
@@ -312,8 +312,8 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
-                      <span className="text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
-                        Мастерская {ws.id}
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-[#7dd3fc]">
+                        Проф-трек 0{ws.id}
                       </span>
                       <span className="font-mono-tabular text-xs font-extrabold">
                         {doneCount} из 4 заданий · {wsBibliks} Б
@@ -338,7 +338,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                       </p>
                     </div>
 
-                    {/* Direct 4-Stage List inside each Workshop Card */}
+                    {/* Direct 4-Stage List inside each Track Card */}
                     <div className="space-y-1.5 pt-2 border-t border-[#13294b]/10">
                       {ws.tasks.map((task, idx) => {
                         const isDone = prog[idx]?.completed;
@@ -382,9 +382,9 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     style={{ backgroundColor: ws.accentBg }}
                   >
                     {doneCount === 0
-                      ? 'Начать мастерскую'
+                      ? 'Запустить проф-трек'
                       : doneCount === 4
-                        ? 'Открыть ещё раз'
+                        ? 'Пройти ещё раз'
                         : `Продолжить (шаг ${nextTaskIdx + 1})`}
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -410,19 +410,19 @@ export const HubScreen: React.FC<HubScreenProps> = ({
             <div>
               <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e] inline-flex items-center gap-1.5">
                 <GraduationCap className="w-4 h-4" />
-                <span>Образовательные программы кафедры БИД · От СПО до аспирантуры</span>
+                <span>Образовательные программы кафедры БИД · СПО, ВО и Аспирантура</span>
               </div>
               <h2 className="font-display font-extrabold text-lg sm:text-2xl text-[#13294b] mt-0.5">
-                Куда поступать и чему научат на кафедре
+                Направления подготовки и профили кафедры БИД
               </h2>
             </div>
-            <div className="text-xs font-bold text-[#135c75] bg-[#f4f7fc] px-3 py-1.5 rounded-xl border border-[#13294b]/10">
-              Выбери ступень обучения, чтобы увидеть вступительные испытания, практику и профессии
+            <div className="text-xs font-bold text-[#135c75] bg-[#f0f7ff] px-3.5 py-2 rounded-xl border border-[#0284c7]/20">
+              БИД представлена на уровнях СПО (<strong className="font-mono-tabular">51.02.03</strong>) и ВО (<strong className="font-mono-tabular">51.03.06</strong>, включая профиль «Креативный менеджмент в БИД»)
             </div>
           </div>
 
-          {/* 5 Program Tabs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+          {/* 6 Program Tabs (СПО БИД, Базовое ВО БИД, Профиль Креативный менеджмент в БИД, Издательское дело, Магистратура, Аспирантура) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2.5">
             {DEPARTMENT_PROGRAMS.map((prog) => {
               const active = prog.id === activeProgram.id;
               return (
@@ -439,28 +439,46 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                   <div className="flex items-center justify-between gap-1">
                     <span
                       className={`font-mono-tabular text-[11px] font-extrabold px-2 py-0.5 rounded-md ${
-                        active ? 'bg-[#ffd66b] text-[#13294b]' : 'bg-white text-[#135c75]'
+                        active ? 'bg-[#0284c7] text-white' : 'bg-white text-[#135c75]'
                       }`}
                     >
                       {prog.code}
                     </span>
-                    {prog.isNew && (
+                    {prog.isNew ? (
                       <span className="px-1.5 py-0.5 rounded bg-[#c41e2e] text-white font-mono-tabular text-[9px] font-extrabold uppercase">
-                        NEW!
+                        ПРОФИЛЬ NEW!
+                      </span>
+                    ) : (
+                      <span
+                        className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ${
+                          active ? 'bg-white/15 text-[#7dd3fc]' : 'bg-[#13294b]/8 text-[#13294b]/70'
+                        }`}
+                      >
+                        {prog.id === 'spo-bid'
+                          ? 'СПО'
+                          : prog.id === 'bak-bid-base'
+                            ? 'ВО · БАЗА'
+                            : prog.id === 'bak-pub'
+                              ? 'ВО'
+                              : prog.id === 'mag-bid'
+                                ? 'МАГИСТР.'
+                                : 'АСПИРАНТ.'}
                       </span>
                     )}
                   </div>
                   <div>
                     <div className="text-xs font-extrabold leading-snug line-clamp-2">
-                      {prog.id === 'bak-bid'
-                        ? 'Креативный менеджмент в БИД'
-                        : prog.id === 'bak-pub'
-                          ? 'Издательское дело'
-                          : prog.id === 'spo-bid'
-                            ? 'СПО · БИД'
-                            : prog.id === 'mag-bid'
-                              ? 'Магистратура БИД'
-                              : 'Аспирантура 5.10.4'}
+                      {prog.id === 'spo-bid'
+                        ? 'СПО · Библиотечно-информационная деятельность'
+                        : prog.id === 'bak-bid-base'
+                          ? 'ВО · Библиотечно-информационная деятельность'
+                          : prog.id === 'bak-bid'
+                            ? 'Профиль «Креативный менеджмент в БИД»'
+                            : prog.id === 'bak-pub'
+                              ? 'ВО · Издательское дело'
+                              : prog.id === 'mag-bid'
+                                ? 'Магистратура БИД'
+                                : 'Аспирантура 5.10.4'}
                     </div>
                     <div
                       className={`text-[10px] mt-0.5 truncate ${
@@ -491,7 +509,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                   </span>
                   {activeProgram.isNew && (
                     <span className="px-2 py-0.5 rounded-lg bg-[#c41e2e] text-white text-[11px] font-extrabold">
-                      NEW!!! Новый профиль кафедры
+                      NEW! Профиль направления 51.03.06 БИД
                     </span>
                   )}
                 </div>
@@ -516,7 +534,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                   className="min-h-[42px] px-4 rounded-xl text-white font-display font-extrabold text-xs sm:text-sm inline-flex items-center gap-2 shadow-sm shrink-0"
                   style={{ backgroundColor: activeProgram.accentHex }}
                 >
-                  <span>Попробовать в Мастерской {activeProgram.linkedWorkshop}</span>
+                  <span>Попробовать в Проф-треке 0{activeProgram.linkedWorkshop}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               )}
@@ -594,7 +612,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
           {/* Full-Width Styled Block: Научная и практическая база кафедры БИД */}
           <div className="rounded-2xl bg-gradient-to-br from-[#0f223d] via-[#13294b] to-[#1b3a69] text-white p-5 sm:p-6 space-y-4 border border-white/10 shadow-md">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#ffd66b]">
+              <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                 <FlaskConical className="w-4 h-4 shrink-0" />
                 <span>Научная и практическая база кафедры БИД БГИИК</span>
               </div>
@@ -617,7 +635,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     className="rounded-2xl bg-white/10 hover:bg-white/14 transition-colors border border-white/15 p-4 flex flex-col justify-between gap-2.5"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="px-2.5 py-0.5 rounded-lg bg-[#ffd66b]/20 border border-[#ffd66b]/40 text-[#ffd66b] font-mono-tabular text-[10px] font-extrabold">
+                      <span className="px-2.5 py-0.5 rounded-lg bg-[#38bdf8]/20 border border-[#7dd3fc]/40 text-[#7dd3fc] font-mono-tabular text-[10px] font-extrabold">
                         0{idx + 1} · {badges[idx] ?? 'Наука и практика'}
                       </span>
                     </div>

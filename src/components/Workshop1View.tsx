@@ -399,7 +399,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <button
                 type="button"
                 onClick={onNextWorkshop}
-                className="min-h-[44px] px-5 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] text-[#13294b] text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 whitespace-nowrap"
+                className="min-h-[44px] px-5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 whitespace-nowrap shadow-sm"
               >
                 Дальше: Редактор-издатель
                 <ArrowRight className="w-4 h-4" />
@@ -524,7 +524,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
             <button
               type="button"
               onClick={onOpenShowcase}
-              className="min-h-[36px] px-3.5 rounded-xl bg-[#fff4d4] text-[#8a4d03] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
+              className="min-h-[36px] px-3.5 rounded-xl bg-[#e0f2fe] text-[#0369a1] text-xs font-extrabold inline-flex items-center gap-1.5 whitespace-nowrap"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Готовая выставка
@@ -546,7 +546,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <MissionBanner
                 image={MEDIA.sceneLibraryDesk}
                 imageAlt="Читатель у кафедры выдачи библиотеки"
-                stepLabel="Мастерская 1 · Шаг 1 из 4"
+                stepLabel="Проф-трек 01 · Инфоресурсы БИД · Шаг 1 из 4"
                 title="Выполни запрос читателя в электронном каталоге"
                 goal="Читатель обратился к библиотекарю: «Помогите найти книгу Марины Мироновой 2023 года. Точное название не помню, но в ней подробно разбираются работа со шрифтом и композиция плакатов». Найди нужное издание среди 12 книг фонда."
                 steps={[
@@ -566,10 +566,10 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                     АБИС OPAC · КАТАЛОГ
                   </span>
                   <span className="font-semibold text-white/90">
-                    Запрос читателя: <strong className="text-[#ffd66b]">Марина Миронова · 2023 г. · шрифты и композиция плакатов</strong>
+                    Запрос читателя: <strong className="text-[#7dd3fc]">Марина Миронова · 2023 г. · шрифты и композиция плакатов</strong>
                   </span>
                 </div>
-                <span className="font-mono-tabular text-xs font-extrabold text-[#ffd66b]">
+                <span className="font-mono-tabular text-xs font-extrabold text-[#7dd3fc]">
                   Найдено записей: {filteredBooks.length} из {CATALOG_BOOKS.length}
                 </span>
               </div>
@@ -667,7 +667,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                   >
                     <div className="bg-[#13294b] text-white px-5 py-3 flex items-center justify-between text-xs font-extrabold">
                       <span>КАРТОЧКА ЭЛЕКТРОННОГО КАТАЛОГА · Шифр {openedBook.code}</span>
-                      <span className="font-mono-tabular text-[#ffd66b]">ГОСТ Р 7.0.100</span>
+                      <span className="font-mono-tabular text-[#7dd3fc]">ГОСТ Р 7.0.100</span>
                     </div>
                     <div className="p-5 flex gap-4 items-start">
                       <img
@@ -720,7 +720,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <MissionBanner
                 image={MEDIA.w1StepShelves}
                 imageAlt="Библиотекарь расставляет книги по отраслевым отделам фонда"
-                stepLabel="Мастерская 1 · Шаг 2 из 4"
+                stepLabel="Проф-трек 01 · Инфоресурсы БИД · Шаг 2 из 4"
                 title="Выдай заказанную книгу и проверь систематическую расстановку фонда"
                 goal="В библиотеке книги стоят по систематическому принципу — по отраслевым индексам ББК. Выдай читателю книгу, найденную на шаге 1, и проверь верхний стеллаж: 2 издания нарушают порядок расстановки и относятся к другому отраслевому отделу — перенеси их на нужный стеллаж."
                 steps={[
@@ -736,7 +736,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               {/* BBK Classification Legend Strip */}
               <div className="rounded-2xl bg-[#13294b] text-white px-4 py-3 text-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                  <span className="font-display font-extrabold text-[#ffd66b]">Памятка систематической расстановки ББК:</span>
+                  <span className="font-display font-extrabold text-[#7dd3fc]">Памятка систематической расстановки ББК:</span>
                   <span><strong className="font-mono-tabular text-[#7dd3fc]">85.12</strong> — Графический дизайн (верхний стеллаж)</span>
                   <span className="text-white/35">·</span>
                   <span><strong className="font-mono-tabular text-[#86efac]">26.8</strong> — География и путешествия (нижний стеллаж)</span>
@@ -748,7 +748,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
 
               {/* Helper banner if user clicked a book instead of dragging */}
               {selectedShelfBookId && (
-                <div className="rounded-2xl bg-[#ffd66b] text-[#13294b] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-md animate-card-in">
+                <div className="rounded-2xl bg-[#e0f2fe] border border-[#0284c7]/40 text-[#13294b] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-md animate-card-in">
                   <div className="text-sm font-extrabold inline-flex items-center gap-2">
                     <Hand className="w-4 h-4" />
                     Выбрано издание «
@@ -814,7 +814,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                               isRemoved
                                 ? 'opacity-15 scale-90 pointer-events-none'
                                 : isPicked
-                                  ? 'ring-4 ring-[#ffd66b] -translate-y-2 cursor-grab'
+                                  ? 'ring-4 ring-[#38bdf8] -translate-y-2 cursor-grab'
                                   : 'hover:-translate-y-1.5 cursor-grab active:cursor-grabbing'
                             }`}
                           >
@@ -825,7 +825,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                                 draggable={false}
                                 className="w-full aspect-square object-cover rounded-lg"
                               />
-                              <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-[#13294b] text-[#ffd66b] font-mono-tabular text-[10px] font-extrabold shadow">
+                              <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-[#13294b] text-[#7dd3fc] font-mono-tabular text-[10px] font-extrabold shadow">
                                 {book.code}
                               </span>
                             </div>
@@ -930,7 +930,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                             movedMisplacedIds.length === 0 ? 'col-span-2' : 'col-span-1'
                           } min-h-[118px] rounded-xl border-2 border-dashed border-[#86efac]/70 bg-[#157a4f]/20 flex flex-col items-center justify-center p-3 text-center text-[#d9f3e6]`}
                         >
-                          <ArrowDown className="w-5 h-5 mb-1 text-[#ffd66b]" />
+                          <ArrowDown className="w-5 h-5 mb-1 text-[#86efac]" />
                           <div className="text-xs font-extrabold leading-snug">
                             Перенеси сюда издания из этого отдела
                           </div>
@@ -960,7 +960,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                     foundTargetBook
                       ? 'bg-[#e9f7ef] border-[#157a4f]'
                       : shelfOverZone === 'reader'
-                        ? 'bg-[#fff8d6] border-[#c41e2e] scale-[1.01]'
+                        ? 'bg-[#e0f2fe] border-[#0284c7] scale-[1.01]'
                         : draggedShelfBookId
                           ? 'bg-[#f4faff] border-[#135c75] ring-2 ring-[#7dd3fc]/60'
                           : 'bg-white border-[#135c75]/45'
@@ -1009,7 +1009,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <MissionBanner
                 image={MEDIA.w1StepCatalog}
                 imageAlt="Сверка библиографической записи в электронном каталоге"
-                stepLabel="Мастерская 1 · Шаг 3 из 4"
+                stepLabel="Проф-трек 01 · Инфоресурсы БИД · Шаг 3 из 4"
                 title="Сверь библиографическую запись с самой книгой"
                 goal="Перед публикацией в электронном каталоге библиотекарь проверяет описание издания по титульному листу. В записи справа допущены 2 фактические ошибки — найди их и кликни по неверным полям, чтобы исправить."
                 steps={[
@@ -1195,7 +1195,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <MissionBanner
                 image={MEDIA.w1StepExhibition}
                 imageAlt="Виртуальная выставка Тайны океанских глубин"
-                stepLabel="Мастерская 1 · Шаг 4 из 4"
+                stepLabel="Проф-трек 01 · Инфоресурсы БИД · Шаг 4 из 4"
                 title="Отбери 6 изданий для виртуальной книжной выставки"
                 goal="В фонде 10 книг об океане, но выставка посвящена строго большим глубинам (4 книги о пляжах, рифах и дайвинге не подходят по теме). Читай аннотации слева и перетащи 6 нужных книг в 3 раздела справа."
                 steps={[
@@ -1220,7 +1220,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                       className="w-24 h-32 object-cover rounded-xl shadow-lg shrink-0"
                     />
                     <div className="flex-1 space-y-2">
-                      <div className="font-display font-extrabold text-base text-[#ffd66b]">
+                      <div className="font-display font-extrabold text-base text-[#7dd3fc]">
                         {inspectedOcean.title}
                       </div>
                       <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
@@ -1267,7 +1267,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                           }}
                           className={`group rounded-2xl p-2 text-left transition-all cursor-grab active:cursor-grabbing select-none border-2 ${
                             isSelected
-                              ? 'bg-white/18 border-[#ffd66b]'
+                              ? 'bg-white/18 border-[#7dd3fc]'
                               : isUsed
                                 ? 'bg-[#157a4f]/25 border-[#86efac]/50 opacity-75'
                                 : 'bg-white/8 border-white/10 hover:bg-white/15'
@@ -1315,7 +1315,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                         }}
                         className={`rounded-2xl overflow-hidden border-2 transition-all ${
                           isOver
-                            ? 'border-[#ffd66b] scale-[1.015] shadow-lg'
+                            ? 'border-[#38bdf8] scale-[1.015] shadow-lg'
                             : draggedOceanId && placedIds.length < 2
                               ? 'border-[#7dd3fc]/60'
                               : 'border-white/15'
@@ -1346,7 +1346,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                                   key={slotIdx}
                                   className={`min-h-[82px] rounded-xl border-2 border-dashed flex items-center justify-center text-center p-2 text-[11px] font-bold transition-colors ${
                                     isOver
-                                      ? 'border-[#ffd66b] bg-[#ffd66b]/15 text-[#ffd66b]'
+                                      ? 'border-[#38bdf8] bg-[#38bdf8]/15 text-[#7dd3fc]'
                                       : draggedOceanId
                                         ? 'border-[#7dd3fc]/60 bg-white/10 text-white/85'
                                         : 'border-white/25 bg-white/5 text-white/60'
@@ -1388,7 +1388,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                   <button
                     type="button"
                     onClick={handleCheckTask3}
-                    className="w-full min-h-[50px] rounded-2xl bg-[#ffd66b] hover:bg-[#ffca42] text-[#13294b] font-display font-extrabold text-sm inline-flex items-center justify-center gap-2 shadow-xl transition-colors"
+                    className="w-full min-h-[50px] rounded-2xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-display font-extrabold text-sm inline-flex items-center justify-center gap-2 shadow-xl transition-colors"
                   >
                     <Sparkles className="w-4 h-4" />
                     Проверить и открыть выставку ({totalPlacedOcean}/6) →

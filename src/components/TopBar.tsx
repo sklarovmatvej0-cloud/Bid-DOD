@@ -32,7 +32,7 @@ export const BiblikCoin: React.FC<{ size?: 'sm' | 'md' | 'lg'; pulse?: boolean }
     <span
       className={`${dims} ${
         pulse ? 'animate-coin-pulse' : ''
-      } inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#ffd66b] via-[#f0a92c] to-[#d07d12] border-[#b76506] text-[#13294b] font-display font-extrabold shadow-xs select-none`}
+      } inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#38bdf8] via-[#0284c7] to-[#135c75] border-[#7dd3fc] text-white font-display font-extrabold shadow-xs select-none`}
       aria-hidden="true"
     >
       Б
@@ -92,9 +92,9 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={handleGoMain}
-            className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] active:scale-[0.98] text-xs sm:text-sm font-display font-extrabold text-[#13294b] transition-all whitespace-nowrap shrink-0 shadow-sm"
+            className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 rounded-xl bg-white hover:bg-[#e0f2fe] active:scale-[0.98] text-xs sm:text-sm font-display font-extrabold text-[#13294b] transition-all whitespace-nowrap shrink-0 shadow-sm"
           >
-            <ArrowLeft className="w-4 h-4 shrink-0" />
+            <ArrowLeft className="w-4 h-4 shrink-0 text-[#c41e2e]" />
             <span>На главную</span>
           </button>
         )}
@@ -112,14 +112,14 @@ export const TopBar: React.FC<TopBarProps> = ({
             <span className="font-display font-extrabold text-xs sm:text-base tracking-tight text-white truncate">
               ИНФОПОЛИС БИД · БГИИК
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#ffd66b] truncate">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#7dd3fc] truncate">
               Интерактивная игра · Кафедра БИД
             </span>
           </div>
         </button>
 
         {route.view === 'hub' && hubMode === '3d' && (
-          <div className="hidden md:flex items-center gap-2 pl-3 border-l border-white/15 text-xs font-bold text-[#ffd66b]">
+          <div className="hidden md:flex items-center gap-2 pl-3 border-l border-white/15 text-xs font-bold text-[#7dd3fc]">
             <span>3D-тур по Инфополису</span>
           </div>
         )}
@@ -128,7 +128,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           <div className="hidden lg:flex items-center gap-2 pl-3 border-l border-white/15 text-xs sm:text-sm min-w-0">
             <span className="text-white/75 whitespace-nowrap">{activeWorkshopMeta.shortTitle}</span>
             <span className="text-white/35">/</span>
-            <span className="font-bold text-[#ffd66b] truncate">
+            <span className="font-bold text-[#7dd3fc] truncate">
               {route.view === 'workshop'
                 ? activeWorkshopMeta.tasks[route.task]?.title ?? ''
                 : 'Готовый результат'}
@@ -139,19 +139,19 @@ export const TopBar: React.FC<TopBarProps> = ({
 
       <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
         {/* Live Biblik Counter Badge */}
-        <div className="relative hidden sm:inline-flex items-center gap-2 min-h-[40px] px-3 rounded-xl bg-white/10 border border-[#ffd66b]/30">
+        <div className="relative hidden sm:inline-flex items-center gap-2 min-h-[40px] px-3 rounded-xl bg-white/10 border border-[#7dd3fc]/30">
           <BiblikCoin size="sm" pulse={coinPulse} />
           <div className="flex items-baseline gap-1 font-mono-tabular">
             <AnimatedNumber
               value={totalBibliks}
-              className="text-sm font-extrabold text-[#ffd66b]"
+              className="text-sm font-extrabold text-[#7dd3fc]"
             />
             <span className="text-[11px] font-semibold text-white/60">/ 36</span>
           </div>
           {biblikGain !== null && (
             <span
               key={`gain-${totalBibliks}`}
-              className="pointer-events-none absolute -bottom-7 right-1 px-2 py-0.5 rounded-lg bg-[#ffd66b] text-[#13294b] font-mono-tabular text-xs font-extrabold shadow-lg animate-biblik-float"
+              className="pointer-events-none absolute -bottom-7 right-1 px-2 py-0.5 rounded-lg bg-[#0284c7] text-white font-mono-tabular text-xs font-extrabold shadow-lg animate-biblik-float"
             >
               +{biblikGain} Б
             </span>
@@ -167,9 +167,9 @@ export const TopBar: React.FC<TopBarProps> = ({
               : 'bg-white/10 hover:bg-white/18 border-white/15 text-white'
           }`}
         >
-          <Award className="w-4 h-4 text-[#ffd66b]" />
+          <Award className="w-4 h-4 text-[#7dd3fc]" />
           <span>Итоги</span>
-          <span className="font-mono-tabular font-extrabold text-[#ffd66b]">
+          <span className="font-mono-tabular font-extrabold text-[#7dd3fc]">
             {completedTasks}/12
           </span>
         </button>
@@ -183,7 +183,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               title="Начать игру заново для нового участника"
               className="inline-flex items-center gap-1.5 min-h-[40px] px-3 rounded-xl bg-white/8 hover:bg-white/16 border border-white/15 text-xs font-bold text-white/85 hover:text-white transition-colors whitespace-nowrap"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-[#ffd66b]" />
+              <RotateCcw className="w-3.5 h-3.5 text-[#7dd3fc]" />
               <span className="hidden md:inline">Новый игрок</span>
             </button>
 
@@ -227,7 +227,7 @@ export const TopBar: React.FC<TopBarProps> = ({
         aria-hidden="true"
       >
         <div
-          className="h-full bg-gradient-to-r from-[#ffd66b] via-[#fbbf24] to-[#4ade80] transition-all duration-500 ease-out"
+          className="h-full bg-gradient-to-r from-[#38bdf8] via-[#2dd4bf] to-[#4ade80] transition-all duration-500 ease-out"
           style={{ width: `${progressPct}%` }}
         />
       </div>

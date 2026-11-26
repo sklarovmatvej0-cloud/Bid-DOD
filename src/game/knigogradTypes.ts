@@ -18,6 +18,7 @@ export interface FeedbackState {
   title: string;
   body: string;
   lesson?: string;
+  sticker?: string;
   bibliksAwarded?: number;
   alreadyDone?: boolean;
   nextActionLabel?: string;

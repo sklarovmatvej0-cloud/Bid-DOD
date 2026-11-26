@@ -73,3 +73,19 @@ export const MEDIA = {
   studioMusic: w2ArticleFestImg,
   studioArch: w2ArticleArchImg,
 } as const;
+
+export const STICKERS = {
+  bannerBid: pub('assets/stickers/banner_bid.png'),
+  heroBid: pub('assets/stickers/hero_bid.png'),
+  searchPro: pub('assets/stickers/search_pro.png'),
+  database: pub('assets/stickers/database.png'),
+  systematize: pub('assets/stickers/systematize.png'),
+  gost: pub('assets/stickers/gost.png'),
+  inResource: pub('assets/stickers/in_resource.png'),
+  sourceCheck: pub('assets/stickers/source_check.png'),
+  editing: pub('assets/stickers/editing.png'),
+  noFormat: pub('assets/stickers/no_format.png'),
+  ideas: pub('assets/stickers/ideas.png'),
+  content: pub('assets/stickers/content.png'),
+  vibe: pub('assets/stickers/vibe.png'),
+} as const;

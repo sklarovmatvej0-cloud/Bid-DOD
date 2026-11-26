@@ -97,23 +97,26 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                 журнала, запускай культурный проект и продвигай его в цифровой среде.
               </p>
 
-              {/* Single Prominent Primary CTA: Open 3D Tour */}
-              {onSwitchTo3D && (
-                <div className="pt-1 flex flex-wrap items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={onSwitchTo3D}
-                    className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#ffd66b] via-[#ffca42] to-[#f5b019] hover:brightness-105 active:scale-[0.99] text-[#13294b] font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all animate-tour-glow"
-                  >
-                    <Box className="w-5 h-5 text-[#c41e2e] shrink-0" />
-                    <span>Открыть 3D-тур по Книгограду</span>
-                    <ArrowRight className="w-5 h-5 shrink-0" />
-                  </button>
-                  <span className="text-xs text-white/80 font-semibold max-w-xs leading-snug">
-                    Гуляй по виртуальным залам в 3D-режиме или сразу выбирай любую мастерскую ниже
-                  </span>
+              {/* Prominent Call-to-Action Block + Primary 3D Tour Button */}
+              <div className="rounded-2xl bg-white/10 border border-[#ffd66b]/45 p-4 space-y-3">
+                <div className="font-display font-extrabold text-sm sm:text-base text-[#ffd66b] leading-snug">
+                  Твоим идеям пора получить профессию — исследуй 3D-залы «Книгограда» или выбери
+                  мастерскую ниже!
                 </div>
-              )}
+                {onSwitchTo3D && (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={onSwitchTo3D}
+                      className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#ffd66b] via-[#ffca42] to-[#f5b019] hover:brightness-105 active:scale-[0.99] text-[#13294b] font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all animate-tour-glow"
+                    >
+                      <Box className="w-5 h-5 text-[#c41e2e] shrink-0" />
+                      <span>Открыть 3D-тур по Книгограду</span>
+                      <ArrowRight className="w-5 h-5 shrink-0" />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Right Interactive 3D Preview Card + Game Stats */}

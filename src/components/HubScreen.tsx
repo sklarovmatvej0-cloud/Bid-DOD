@@ -1,5 +1,15 @@
 import React from 'react';
-import { ArrowRight, Award, Box, Check, CheckCircle2, Compass, Sparkles } from 'lucide-react';
+import {
+  ArrowRight,
+  Award,
+  BookOpen,
+  Box,
+  Check,
+  CheckCircle2,
+  Compass,
+  FileText,
+  Sparkles,
+} from 'lucide-react';
 import { MEDIA } from '../game/assets';
 import { WORKSHOPS } from '../game/knigogradData';
 import { KnigogradSave, ScreenRoute, WorkshopId } from '../game/knigogradTypes';
@@ -59,75 +69,129 @@ export const HubScreen: React.FC<HubScreenProps> = ({
   return (
     <div className="h-full overflow-y-auto desk-scroll px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-6xl mx-auto space-y-6 animate-card-in">
-        {/* 1. Main Welcome Hero: What this resource is and why it exists */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#13294b] via-[#17335c] to-[#0f223d] text-white px-6 py-6 sm:px-8 sm:py-8 shadow-xl border border-white/10">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="space-y-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-[#ffd66b]/35 text-[11px] font-extrabold uppercase tracking-widest text-[#ffd66b]">
-                БГИИК · Кафедра библиотечно-информационной деятельности · День открытых дверей
+        {/* 1. Animated Hero Banner with Original Clear Text & Primary 3D Tour CTA */}
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f223d] via-[#13294b] to-[#1d3f72] text-white px-6 py-7 sm:px-8 sm:py-8 shadow-2xl border border-white/15">
+          {/* Animated Ambient Background Orbs */}
+          <div
+            className="pointer-events-none absolute -top-20 -right-16 w-72 h-72 rounded-full bg-[#ffd66b]/15 blur-3xl animate-hero-float"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute -bottom-24 left-1/3 w-80 h-80 rounded-full bg-[#c41e2e]/20 blur-3xl animate-hero-float"
+            style={{ animationDelay: '1.8s' }}
+            aria-hidden="true"
+          />
+
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-7">
+            <div className="space-y-4 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-[#ffd66b]/40 text-xs font-extrabold uppercase tracking-widest text-[#ffd66b]">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>День открытых дверей БГИИК · Кафедра БИД</span>
               </div>
-              <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight">
+
+              <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight">
                 Профессиональная проба «Книгоград»
               </h1>
+
               <p className="text-sm sm:text-base text-white/90 leading-relaxed">
-                Хочешь узнать, чем занимаются специалисты, которые работают с информацией, готовят
-                печатные и электронные издания, разрабатывают и организуют мероприятия? Здесь ты
-                познакомишься с тремя профессиональными ролями и выполнишь практические задания,
-                связанные с направлениями подготовки кафедры БИД.
+                Попробуй себя в роли специалистов библиотеки, редакции и креативного менеджмента —
+                на реальных рабочих задачах.
               </p>
 
-              <div className="pt-1 flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() =>
-                    onNavigate({
-                      view: 'workshop',
-                      workshop: 1,
-                      task: getNextTaskIdx(1),
-                    })
-                  }
-                  className="min-h-[44px] px-5 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] text-[#13294b] font-display font-extrabold text-xs sm:text-sm inline-flex items-center gap-2 shadow-md transition-colors"
-                >
-                  <span>Начать с Мастерской 1</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-                {onSwitchTo3D && (
+              {/* 3 Animated Role Pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-xs font-bold text-[#7dd3fc]">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  1. Библиотека и каталоги
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-xs font-bold text-[#fda4af]">
+                  <FileText className="w-3.5 h-3.5" />
+                  2. Издательство и редакция
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-xs font-bold text-[#ffd66b]">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  3. Креативный менеджмент и SMM
+                </span>
+              </div>
+
+              {/* Single Prominent Primary CTA: Open 3D Tour */}
+              {onSwitchTo3D && (
+                <div className="pt-2 flex flex-wrap items-center gap-4">
                   <button
                     type="button"
                     onClick={onSwitchTo3D}
-                    className="min-h-[44px] px-4 rounded-xl bg-white/12 hover:bg-white/20 border border-white/20 text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 transition-colors"
+                    className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#ffd66b] via-[#ffca42] to-[#f5b019] hover:brightness-105 active:scale-[0.99] text-[#13294b] font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all animate-tour-glow"
                   >
-                    <Box className="w-4 h-4 text-[#ffd66b]" />
-                    <span>Открыть 3D-экскурсию по залам</span>
+                    <Box className="w-5 h-5 text-[#c41e2e] shrink-0" />
+                    <span>Открыть 3D-тур по Книгограду</span>
+                    <ArrowRight className="w-5 h-5 shrink-0" />
                   </button>
-                )}
-              </div>
+                  <span className="text-xs text-white/75 font-semibold max-w-xs leading-snug">
+                    Гуляй по виртуальным залам кафедры БИД или выбирай мастерскую в карточках ниже
+                  </span>
+                </div>
+              )}
             </div>
 
-            <div className="grid grid-cols-3 gap-3 shrink-0 lg:min-w-[330px]">
-              <div className="rounded-2xl bg-white/10 border border-white/10 px-4 py-3.5 text-center">
-                <div className="font-display font-extrabold text-2xl text-[#ffd66b] font-mono-tabular">
-                  3
+            {/* Right Interactive 3D Preview Card + Stats */}
+            <div className="shrink-0 lg:w-[360px] space-y-3">
+              {onSwitchTo3D && (
+                <button
+                  type="button"
+                  onClick={onSwitchTo3D}
+                  className="group w-full relative rounded-2xl overflow-hidden border-2 border-[#ffd66b]/60 shadow-xl text-left block transition-transform hover:-translate-y-0.5"
+                >
+                  <img
+                    src={MEDIA.studioRoom}
+                    alt="3D-тур по залам Книгограда"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f3a]/95 via-[#0d1f3a]/35 to-transparent" />
+                  <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-[#c41e2e] text-white font-mono-tabular text-[10px] font-extrabold uppercase tracking-wider inline-flex items-center gap-1 shadow">
+                    <Box className="w-3 h-3" /> Интерактивный 3D-режим
+                  </div>
+                  <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white">
+                    <div>
+                      <div className="font-display font-extrabold text-xs sm:text-sm text-[#ffd66b]">
+                        Виртуальный 3D-мир «Книгоград»
+                      </div>
+                      <div className="text-[11px] text-white/85">
+                        Холл · Библиотека · Редакция · Зал «Библионочи»
+                      </div>
+                    </div>
+                    <span className="w-8 h-8 rounded-xl bg-[#ffd66b] text-[#13294b] flex items-center justify-center font-extrabold shrink-0">
+                      →
+                    </span>
+                  </div>
+                </button>
+              )}
+
+              <div className="grid grid-cols-3 gap-2.5">
+                <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
+                    3
+                  </div>
+                  <div className="text-[11px] font-bold text-white/80">мастерские</div>
                 </div>
-                <div className="text-[11px] font-bold text-white/80 mt-0.5">мастерские</div>
-              </div>
-              <div className="rounded-2xl bg-white/10 border border-white/10 px-4 py-3.5 text-center">
-                <div className="font-display font-extrabold text-2xl text-[#ffd66b] font-mono-tabular">
-                  12
+                <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
+                    12
+                  </div>
+                  <div className="text-[11px] font-bold text-white/80">заданий</div>
                 </div>
-                <div className="text-[11px] font-bold text-white/80 mt-0.5">заданий</div>
-              </div>
-              <div className="rounded-2xl bg-white/10 border border-white/10 px-4 py-3.5 text-center">
-                <div className="font-display font-extrabold text-2xl text-[#ffd66b] font-mono-tabular">
-                  36
+                <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
+                    36
+                  </div>
+                  <div className="text-[11px] font-bold text-white/80">макс. библиков</div>
                 </div>
-                <div className="text-[11px] font-bold text-white/80 mt-0.5">макс. библиков</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 2. Three Clearly Separated Light Info Cards (How the Professional Trial Works) */}
+        {/* 2. Three Clearly Separated Light Info Cards (Easy to Scan at a Glance) */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl p-5 border border-[#13294b]/10 shadow-xs space-y-2.5">
             <div className="flex items-center gap-2.5">
@@ -189,13 +253,23 @@ export const HubScreen: React.FC<HubScreenProps> = ({
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
             <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#13294b]">
-              Три профессиональные роли — выбери мастерскую
+              Выбери мастерскую для прохождения
             </h2>
             <p className="text-sm text-[#13294b]/70">
-              Можно нажать сразу на конкретное задание внутри карточки или начать мастерскую по порядку.
+              Проходить мастерские можно в любом порядке — прогресс и заработанные библики сохраняются автоматически.
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {onSwitchTo3D && (
+              <button
+                type="button"
+                onClick={onSwitchTo3D}
+                className="min-h-[42px] px-4 rounded-xl bg-[#ffd66b] hover:bg-[#ffca42] text-[#13294b] text-xs sm:text-sm font-display font-extrabold inline-flex items-center gap-2 shadow-sm whitespace-nowrap"
+              >
+                <Box className="w-4 h-4 text-[#c41e2e]" />
+                <span>Открыть 3D-тур</span>
+              </button>
+            )}
             {completedTasks > 0 && (
               <button
                 type="button"
@@ -204,7 +278,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               >
                 <BiblikCoin size="sm" />
                 <span>
-                  Мои результаты ({completedTasks} из 12 · {totalBibliks} Б) →
+                  Посмотреть итоги ({completedTasks} из 12 · {totalBibliks} Б) →
                 </span>
               </button>
             )}
@@ -236,10 +310,10 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
                       <span className="text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
-                        Мастерская 0{ws.id}
+                        Мастерская {ws.id}
                       </span>
                       <span className="font-mono-tabular text-xs font-extrabold">
-                        {doneCount}/4 · {wsBibliks} Б
+                        {doneCount} из 4 заданий · {wsBibliks} Б
                       </span>
                     </div>
                   </div>

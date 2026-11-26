@@ -113,7 +113,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               ИНФОПОЛИС БИД · БГИИК
             </span>
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#7dd3fc] truncate">
-              Интерактивная игра · Кафедра БИД · Факультет СКИБД
+              Интерактивная игра · Кафедра БИД
             </span>
           </div>
         </button>

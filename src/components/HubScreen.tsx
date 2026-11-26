@@ -99,7 +99,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                   <Sparkles className="w-4 h-4 shrink-0" />
-                  <span>Кафедра библиотечно-информационной деятельности · Факультет СКИБД</span>
+                  <span>Кафедра библиотечно-информационной деятельности</span>
                 </div>
                 <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight text-white">
                   Информация управляет миром.{' '}
@@ -410,7 +410,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
             <div>
               <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e] inline-flex items-center gap-1.5">
                 <GraduationCap className="w-4 h-4" />
-                <span>Образовательные программы кафедры БИД · Факультет СКИБД</span>
+                <span>Образовательные программы кафедры БИД</span>
               </div>
               <h2 className="font-display font-extrabold text-lg sm:text-2xl text-[#13294b] mt-0.5">
                 Направления подготовки кафедры библиотечно-информационной деятельности

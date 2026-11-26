@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MEDIA } from '../game/assets';
+import { MEDIA, STICKERS } from '../game/assets';
 import { WORKSHOPS } from '../game/knigogradData';
 import { KnigogradSave, WorkshopId } from '../game/knigogradTypes';
 import {
@@ -853,9 +853,49 @@ export function buildKnigogradWorld(
     });
   };
 
-  buildZoneArch(-4.75, 2.2, Math.PI / 2, 'МАСТЕРСКАЯ 01 · БИД', 'БИБЛИОТЕКА', '#135c75', tealMat);
-  buildZoneArch(0, -1.65, 0, 'МАСТЕРСКАЯ 02 · ИЗДАТЕЛЬСТВО', 'РЕДАКЦИЯ', '#c41e2e', crimsonMat);
-  buildZoneArch(4.75, 2.2, -Math.PI / 2, 'МАСТЕРСКАЯ 03 · КРЕАТИВ', 'БИБЛИОНОЧЬ', '#13294b', navyMat);
+  buildZoneArch(-4.75, 2.2, Math.PI / 2, 'ПРОФ-ТРЕК 01 · БИД', 'БИБЛИОТЕКА', '#135c75', tealMat);
+  buildZoneArch(0, -1.65, 0, 'ПРОФ-ТРЕК 02 · ИЗДАТЕЛЬСТВО', 'РЕДАКЦИЯ', '#c41e2e', crimsonMat);
+  buildZoneArch(4.75, 2.2, -Math.PI / 2, 'ПРОФ-ТРЕК 03 · КРЕАТИВ', 'БИБЛИОНОЧЬ', '#13294b', navyMat);
+
+  // Framed Mascot Sticker Posters on 3D Hall Walls
+  const addStickerPoster = (
+    x: number,
+    y: number,
+    z: number,
+    rotY: number,
+    pw: number,
+    ph: number,
+    stickerUrl: string,
+    accentHex: string
+  ) => {
+    const pg = new THREE.Group();
+    pg.position.set(x, y, z);
+    pg.rotation.y = rotY;
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(pw + 0.14, ph + 0.14, 0.05),
+      makeMat({ color: accentHex, roughness: 0.45 })
+    );
+    const backing = new THREE.Mesh(
+      new THREE.PlaneGeometry(pw, ph),
+      makeMat({ color: '#ffffff', roughness: 0.7 })
+    );
+    backing.position.z = 0.028;
+    const tex = texLoader.load(stickerUrl);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const art = new THREE.Mesh(
+      new THREE.PlaneGeometry(pw - 0.12, ph - 0.12),
+      makeMat({ map: tex, transparent: true, roughness: 0.5 })
+    );
+    art.position.z = 0.032;
+    pg.add(frame, backing, art);
+    root.add(pg);
+  };
+
+  addStickerPoster(-7.2, 2.7, -6.72, 0, 1.35, 1.2, STICKERS.database, '#135c75');
+  addStickerPoster(-2.6, 2.7, -9.62, 0, 1.3, 1.15, STICKERS.editing, '#c41e2e');
+  addStickerPoster(12.2, 2.7, -6.72, 0, 1.35, 1.2, STICKERS.content, '#0284c7');
+  addStickerPoster(-3.1, 2.5, -1.46, 0, 1.25, 1.05, STICKERS.heroBid, '#13294b');
+  addStickerPoster(3.1, 2.5, -1.46, 0, 1.25, 1.05, STICKERS.vibe, '#13294b');
 
   /* ---- 4. CENTRAL ATRIUM (COZY FOYER WITH WELCOME BENCH, TREE, MENTOR & POSTERS) ---- */
   // Circular oak bench with lush centerpiece tree in atrium

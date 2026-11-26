@@ -416,9 +416,6 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                 Направления подготовки кафедры библиотечно-информационной деятельности
               </h2>
             </div>
-            <div className="text-xs font-bold text-[#135c75] bg-[#f0f7ff] px-3.5 py-2 rounded-xl border border-[#0284c7]/20">
-              БИД представлена на уровнях СПО (<strong className="font-mono-tabular">51.02.03</strong>) и ВО (<strong className="font-mono-tabular">51.03.06</strong>, включая профиль «Креативный менеджмент в БИД»)
-            </div>
           </div>
 
           {/* 6 Program Tabs (СПО БИД, Базовое ВО БИД, Профиль Креативный менеджмент в БИД, Издательское дело, Магистратура, Аспирантура) */}

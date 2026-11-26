@@ -8,6 +8,7 @@ import {
   RotateCcw,
   Sparkles,
 } from 'lucide-react';
+import { STICKERS } from '../game/assets';
 import { WORKSHOPS } from '../game/knigogradData';
 import { KnigogradSave, ScreenRoute, WorkshopId } from '../game/knigogradTypes';
 import { BiblikCoin } from './TopBar';
@@ -169,6 +170,13 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         {/* Top Score & Career Rank Certificate Card */}
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#13294b] via-[#17335c] to-[#0f223d] text-white p-6 sm:p-8 shadow-xl border border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
           <div className="lg:col-span-6 space-y-3">
+            <div className="inline-flex items-center gap-3 flex-wrap">
+              <img
+                src={STICKERS.bannerBid}
+                alt="БИД · Кафедра библиотечно-информационной деятельности · БГИИК"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-md"
+              />
+            </div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-[#7dd3fc]/30 text-[11px] font-bold uppercase tracking-widest text-[#7dd3fc]">
               Личный профиль абитуриента · БГИИК · Кафедра БИД
             </div>
@@ -295,6 +303,82 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
               </div>
             );
           })}
+        </section>
+
+        {/* Collectible Mascot Stickers Section */}
+        <section className="bg-white rounded-3xl p-5 sm:p-6 border border-[#13294b]/12 shadow-md space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e]">
+                Коллекция достижений · Маскот кафедры БИД
+              </div>
+              <h2 className="font-display font-extrabold text-lg sm:text-xl text-[#13294b]">
+                Стикерпак «Инфополис БИД»
+              </h2>
+            </div>
+            <span className="text-xs font-bold text-[#135c75] bg-[#f0f7ff] px-3 py-1.5 rounded-xl border border-[#0284c7]/20">
+              Открыто:{' '}
+              {workshopStats.filter((s) => s.done === 4).length + (completedTasks === 12 ? 1 : 0)} из 4
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                title: 'Это база. Данных',
+                hint: 'Пройди все 4 задания Трека 01',
+                unlocked: workshopStats[0].done === 4,
+                img: STICKERS.database,
+              },
+              {
+                title: 'Я не придираюсь. Я редактирую',
+                hint: 'Пройди все 4 задания Трека 02',
+                unlocked: workshopStats[1].done === 4,
+                img: STICKERS.editing,
+              },
+              {
+                title: 'Сейчас будет контент',
+                hint: 'Пройди все 4 задания Трека 03',
+                unlocked: workshopStats[2].done === 4,
+                img: STICKERS.content,
+              },
+              {
+                title: 'БИД · БГИИК (Супер-стикер)',
+                hint: 'Выполни все 12 заданий игры',
+                unlocked: completedTasks === 12,
+                img: STICKERS.heroBid,
+              },
+            ].map((st) => (
+              <div
+                key={st.title}
+                className={`rounded-2xl p-4 border-2 flex flex-col items-center text-center gap-2.5 transition-all ${
+                  st.unlocked
+                    ? 'bg-[#f0f7ff] border-[#0284c7]/40 shadow-sm'
+                    : 'bg-[#f6f8fc] border-dashed border-[#13294b]/15 opacity-75'
+                }`}
+              >
+                <div className="w-24 h-24 flex items-center justify-center">
+                  <img
+                    src={st.img}
+                    alt={st.title}
+                    className={`w-full h-full object-contain transition-all ${
+                      st.unlocked ? 'drop-shadow-md' : 'grayscale opacity-45'
+                    }`}
+                  />
+                </div>
+                <div className="font-display font-extrabold text-xs sm:text-sm text-[#13294b] leading-snug">
+                  {st.title}
+                </div>
+                <div
+                  className={`text-[11px] font-bold ${
+                    st.unlocked ? 'text-[#157a4f]' : 'text-[#13294b]/55'
+                  }`}
+                >
+                  {st.unlocked ? '✓ Стикер открыт' : st.hint}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Recommended Profile Card */}

@@ -94,7 +94,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
           {/* Body */}
           <div className="p-6 space-y-4">
             {isSuccess && (
-              <div className="flex items-center justify-between gap-4 rounded-xl bg-gradient-to-r from-[#fff8e6] to-[#fff2cc] border border-[#e59c2d]/40 px-4 py-3 animate-stamp-pop shadow-xs">
+              <div className="flex items-center justify-between gap-4 rounded-xl bg-gradient-to-r from-[#f0f7ff] to-[#e0f2fe] border border-[#0284c7]/30 px-4 py-3 animate-stamp-pop shadow-xs">
                 <div className="flex items-center gap-3">
                   <BiblikCoin size="lg" pulse />
                   <div>
@@ -107,7 +107,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                               : 'библика'
                           } в копилку!`}
                     </div>
-                    <div className="text-xs font-medium text-[#7b5110]">
+                    <div className="text-xs font-medium text-[#135c75]">
                       {feedback.alreadyDone
                         ? 'Отличная тренировка — библики за это задание уже начислены'
                         : feedback.bibliksAwarded === 3
@@ -125,8 +125,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                         key={n}
                         className={`w-3 h-3 rounded-full transition-transform ${
                           n <= (feedback.bibliksAwarded ?? 0)
-                            ? 'bg-[#e59c2d] scale-110 shadow-xs'
-                            : 'bg-[#e59c2d]/20'
+                            ? 'bg-[#0284c7] scale-110 shadow-xs'
+                            : 'bg-[#0284c7]/20'
                         }`}
                       />
                     ))}
@@ -135,9 +135,20 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
               </div>
             )}
 
-            <p className="text-sm sm:text-[15px] leading-relaxed text-[#13294b]">
-              {feedback.body}
-            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              {feedback.sticker && (
+                <div className="shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-[#f6f8fc] border border-[#13294b]/10 p-2 flex items-center justify-center animate-stamp-pop shadow-xs">
+                  <img
+                    src={feedback.sticker}
+                    alt="Реакция маскота БИД"
+                    className="w-full h-full object-contain drop-shadow-sm"
+                  />
+                </div>
+              )}
+              <p className="text-sm sm:text-[15px] leading-relaxed text-[#13294b] flex-1">
+                {feedback.body}
+              </p>
+            </div>
 
             {feedback.lesson && (
               <div className="rounded-xl bg-[#f3f6fc] border border-[#13294b]/10 p-4">
@@ -159,7 +170,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                     <button
                       type="button"
                       onClick={onBackToWorld}
-                      className="min-h-[42px] px-4 rounded-xl bg-[#fff4d4] hover:bg-[#ffe9ad] text-sm font-extrabold text-[#13294b] inline-flex items-center gap-1.5 transition-colors whitespace-nowrap"
+                      className="min-h-[42px] px-4 rounded-xl bg-[#f0f7ff] hover:bg-[#e0f2fe] text-sm font-extrabold text-[#13294b] inline-flex items-center gap-1.5 transition-colors whitespace-nowrap"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       На главную

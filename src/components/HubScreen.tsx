@@ -14,7 +14,7 @@ import {
   MapPin,
   Sparkles,
 } from 'lucide-react';
-import { MEDIA } from '../game/assets';
+import { MEDIA, STICKERS } from '../game/assets';
 import {
   DEPARTMENT_PROGRAMS,
   DEPARTMENT_RESEARCH_HIGHLIGHTS,
@@ -33,22 +33,25 @@ interface HubScreenProps {
 
 const WORKSHOP_CARDS: Record<
   WorkshopId,
-  { img: string; roleBadge: string; summary: string }
+  { img: string; sticker: string; roleBadge: string; summary: string }
 > = {
   1: {
     img: MEDIA.sceneLibraryDesk,
+    sticker: STICKERS.searchPro,
     roleBadge: 'Трек 01 · Специалист по информационным ресурсам',
     summary:
       'Профессиональный поиск и переработка информации, работа с электронным каталогом и фондом, сверка библиографической записи и создание мультимедийной выставки.',
   },
   2: {
     img: MEDIA.sceneEditorDesk,
+    sticker: STICKERS.editing,
     roleBadge: 'Трек 02 · Редактор-издатель',
     summary:
       'Редакторская подготовка авторских материалов, анализ и редактирование текста по стенограмме интервью, модульная вёрстка журнального разворота и выпуск издания.',
   },
   3: {
     img: MEDIA.sceneSmmFestival,
+    sticker: STICKERS.content,
     roleBadge: 'Трек 03 · Креативный менеджер проектов',
     summary:
       'Проектирование социокультурных проектов, управление бюджетом гранта и площадками, цифровое продвижение и развитие бренда учреждения культуры.',
@@ -311,6 +314,11 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                    <img
+                      src={card.sticker}
+                      alt="Стикер маскота БИД"
+                      className="absolute top-2.5 right-2.5 w-16 h-16 object-contain drop-shadow-lg pointer-events-none select-none"
+                    />
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
                       <span className="text-xs font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                         Проф-трек 0{ws.id}

@@ -99,7 +99,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                   <Sparkles className="w-4 h-4 shrink-0" />
-                  <span>Попробуй себя в мире профессий «Инфополис БИД»</span>
+                  <span>Кафедра библиотечно-информационной деятельности · Факультет СКИБД</span>
                 </div>
                 <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight text-white">
                   Информация управляет миром.{' '}
@@ -108,7 +108,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               </div>
 
               <p className="text-sm sm:text-base text-white/90 leading-relaxed">
-                Попробуй себя в трёх профессиях на реальных рабочих задачах: управляй
+                Попробуй себя в мире профессий «Инфополис БИД» на реальных рабочих задачах: управляй
                 информационными ресурсами и электронным каталогом, редактируй и верстай новый выпуск
                 журнала, запускай культурный проект и продвигай его в цифровой среде.
               </p>
@@ -410,10 +410,10 @@ export const HubScreen: React.FC<HubScreenProps> = ({
             <div>
               <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e] inline-flex items-center gap-1.5">
                 <GraduationCap className="w-4 h-4" />
-                <span>Образовательные программы кафедры БИД · СПО, ВО и Аспирантура</span>
+                <span>Образовательные программы кафедры БИД · Факультет СКИБД</span>
               </div>
               <h2 className="font-display font-extrabold text-lg sm:text-2xl text-[#13294b] mt-0.5">
-                Направления подготовки и профили кафедры БИД
+                Направления подготовки кафедры библиотечно-информационной деятельности
               </h2>
             </div>
             <div className="text-xs font-bold text-[#135c75] bg-[#f0f7ff] px-3.5 py-2 rounded-xl border border-[#0284c7]/20">

@@ -1,26 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ArrowRight,
   Award,
-  BookOpen,
   Box,
-  Briefcase,
   Check,
   CheckCircle2,
-  Clock,
   Compass,
-  FileText,
-  GraduationCap,
-  MapPin,
   Sparkles,
 } from 'lucide-react';
 import { MEDIA } from '../game/assets';
-import {
-  DEPARTMENT_PROGRAMS,
-  DEPARTMENT_RESEARCH_HIGHLIGHTS,
-  DEPARTMENT_SLOGANS,
-  WORKSHOPS,
-} from '../game/knigogradData';
+import { WORKSHOPS } from '../game/knigogradData';
 import { KnigogradSave, ScreenRoute, WorkshopId } from '../game/knigogradTypes';
 import { BiblikCoin } from './TopBar';
 
@@ -34,25 +23,25 @@ interface HubScreenProps {
 
 const WORKSHOP_CARDS: Record<
   WorkshopId,
-  { img: string; place: string; summary: string }
+  { img: string; roleBadge: string; summary: string }
 > = {
   1: {
     img: MEDIA.sceneLibraryDesk,
-    place: '51.02.03 (СПО) и 51.03.06 (Бакалавриат БИД)',
+    roleBadge: 'Роль 1 · Специалист по информационным ресурсам',
     summary:
-      'Профессиональный поиск, переработка и представление информации, работа со справочно-поисковым аппаратом библиотеки, фондом и мультимедийными ресурсами.',
+      'Выполни запрос читателя в электронном каталоге, проверь расстановку фонда на стеллаже, сверь карточку с книгой и собери мультимедийную выставку.',
   },
   2: {
     img: MEDIA.sceneEditorDesk,
-    place: '42.03.03 Издательское дело · Книгоиздательское дело',
+    roleBadge: 'Роль 2 · Редактор-издатель',
     summary:
-      'Сквозная подготовка издания: от отбора авторских заявок и аналитико-синтетической переработки текста до компьютерной вёрстки и выпуска.',
+      'Отбери авторские статьи в номер журнала «Культура», проверь факты по аудиозаписи интервью, сверстай полосу и проверь макет перед печатью.',
   },
   3: {
     img: MEDIA.sceneSmmFestival,
-    place: '51.03.06 Профиль «Креативный менеджмент в БИД» (NEW!)',
+    roleBadge: 'Роль 3 · Креативный менеджер проектов',
     summary:
-      'Новый профиль кафедры! Социокультурные проекты, развитие бренда учреждения культуры, распределение гранта и цифровое продвижение в медиа.',
+      'Разработай концепцию и афишу акции «Библионочь» по опросу гостей, распредели грант 300 000 ₽ по площадкам, оформи SMM-анонс и ответь читателям.',
   },
 };
 
@@ -63,10 +52,6 @@ export const HubScreen: React.FC<HubScreenProps> = ({
   onNavigate,
   onSwitchTo3D,
 }) => {
-  const [selectedProgramId, setSelectedProgramId] = useState<string>(DEPARTMENT_PROGRAMS[1].id);
-  const activeProgram =
-    DEPARTMENT_PROGRAMS.find((p) => p.id === selectedProgramId) ?? DEPARTMENT_PROGRAMS[0];
-
   const getTasksProgress = (wId: WorkshopId) => {
     if (wId === 1) return save.w1;
     if (wId === 2) return save.w2;
@@ -82,7 +67,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
   return (
     <div className="h-full overflow-y-auto desk-scroll px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-6xl mx-auto space-y-6 animate-card-in">
-        {/* 1. Animated Hero Banner Formulated on Official Department Booklet Materials */}
+        {/* 1. GAME-FIRST HERO BANNER */}
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f223d] via-[#13294b] to-[#1d3f72] text-white px-6 py-7 sm:px-8 sm:py-8 shadow-2xl border border-white/15">
           {/* Animated Ambient Background Orbs */}
           <div
@@ -97,47 +82,24 @@ export const HubScreen: React.FC<HubScreenProps> = ({
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-7">
             <div className="space-y-4 max-w-2xl">
-              <div className="inline-flex flex-wrap items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-[#ffd66b]/40 text-xs font-extrabold uppercase tracking-widest text-[#ffd66b]">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-[#ffd66b]/40 text-xs font-extrabold uppercase tracking-widest text-[#ffd66b]">
                 <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                <span>БГИИК · Кафедра библиотечно-информационной деятельности</span>
+                <span>Интерактивная игра · Кафедра БИД БГИИК</span>
               </div>
 
-              <div className="space-y-2">
-                <div className="text-xs sm:text-sm font-extrabold text-[#7dd3fc] tracking-wide">
-                  «Информация управляет миром. А кто управляет информацией?»
-                </div>
-                <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight">
-                  В океане информации мы учим быть навигатором, а не пассажиром
-                </h1>
-              </div>
+              <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight">
+                Профессиональная проба «Книгоград»
+              </h1>
 
               <p className="text-sm sm:text-base text-white/90 leading-relaxed">
-                Интерактивная профессиональная проба <strong>«Книгоград»</strong> знакомит с
-                программами кафедры БИД (СПО, бакалавриат, магистратура и аспирантура): от
-                профессионального поиска, переработки и представления информации и создания
-                мультимедийных электронных ресурсов — до редакторской подготовки изданий,
-                социокультурных проектов и цифрового продвижения.
+                Попробуй себя в трёх профессиях на реальных рабочих задачах: управляй
+                информационными ресурсами и электронным каталогом, редактируй и верстай новый выпуск
+                журнала, запускай культурный проект и продвигай его в цифровой среде.
               </p>
-
-              {/* Official Department Slogan Badges */}
-              <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-xs font-bold text-[#ffd66b]">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Гуманитарий с цифровым характером
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-xs font-bold text-[#7dd3fc]">
-                  <BookOpen className="w-3.5 h-3.5" />
-                  51.02.03 · 51.03.06 · 51.04.06 · 5.10.4 БИД
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-xs font-bold text-[#fda4af]">
-                  <FileText className="w-3.5 h-3.5" />
-                  42.03.03 Издательское дело
-                </span>
-              </div>
 
               {/* Single Prominent Primary CTA: Open 3D Tour */}
               {onSwitchTo3D && (
-                <div className="pt-2 flex flex-wrap items-center gap-4">
+                <div className="pt-1 flex flex-wrap items-center gap-4">
                   <button
                     type="button"
                     onClick={onSwitchTo3D}
@@ -148,14 +110,13 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     <ArrowRight className="w-5 h-5 shrink-0" />
                   </button>
                   <span className="text-xs text-white/80 font-semibold max-w-xs leading-snug">
-                    Твоим идеям пора получить профессию: исследуй 3D-залы кафедры или выбери
-                    программу и мастерскую ниже
+                    Гуляй по виртуальным залам в 3D-режиме или сразу выбирай любую мастерскую ниже
                   </span>
                 </div>
               )}
             </div>
 
-            {/* Right Interactive 3D Preview Card + Stats */}
+            {/* Right Interactive 3D Preview Card + Game Stats */}
             <div className="shrink-0 lg:w-[360px] space-y-3">
               {onSwitchTo3D && (
                 <button
@@ -179,7 +140,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                         Виртуальный 3D-мир «Книгоград»
                       </div>
                       <div className="text-[11px] text-white/85">
-                        51.02.03 / 51.03.06 БИД · 42.03.03 Издательское дело
+                        Холл · Библиотека · Редакция · Зал «Библионочи»
                       </div>
                     </div>
                     <span className="w-8 h-8 rounded-xl bg-[#ffd66b] text-[#13294b] flex items-center justify-center font-extrabold shrink-0">
@@ -192,15 +153,15 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               <div className="grid grid-cols-3 gap-2.5">
                 <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
                   <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
-                    5
+                    3
                   </div>
-                  <div className="text-[11px] font-bold text-white/80">ступеней БИД</div>
+                  <div className="text-[11px] font-bold text-white/80">мастерские</div>
                 </div>
                 <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
                   <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
                     12
                   </div>
-                  <div className="text-[11px] font-bold text-white/80">практик-задач</div>
+                  <div className="text-[11px] font-bold text-white/80">заданий</div>
                 </div>
                 <div className="rounded-2xl bg-white/10 border border-white/10 px-3 py-2.5 text-center">
                   <div className="font-display font-extrabold text-xl text-[#ffd66b] font-mono-tabular">
@@ -213,15 +174,73 @@ export const HubScreen: React.FC<HubScreenProps> = ({
           </div>
         </section>
 
-        {/* 2. Section Heading + 3 Workshop Cards Mapped Directly to Official Department Programs */}
+        {/* 2. GAME RULES RIGHT AFTER THE HERO BANNER */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white rounded-2xl p-5 border border-[#13294b]/10 shadow-xs space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-[#e8f3f7] text-[#135c75] flex items-center justify-center shrink-0">
+                <Compass className="w-5 h-5" />
+              </div>
+              <h2 className="font-display font-extrabold text-base text-[#13294b]">
+                1. Выбери роль и мастерскую
+              </h2>
+            </div>
+            <p className="text-sm text-[#13294b]/75 leading-relaxed">
+              Заходи в 3D-тур или открывай любую из 3 мастерских ниже. В каждой тебя ждут 4 рабочих
+              задания и готовый итоговый проект.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 border border-[#13294b]/10 shadow-xs space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-[#fdecee] text-[#c41e2e] flex items-center justify-center shrink-0">
+                <Award className="w-5 h-5" />
+              </div>
+              <h2 className="font-display font-extrabold text-base text-[#13294b]">
+                2. Зарабатывай библики
+              </h2>
+            </div>
+            <ul className="space-y-1 text-xs sm:text-sm text-[#13294b]/80">
+              <li className="flex items-center justify-between gap-2">
+                <span>С первой попытки без подсказок</span>
+                <strong className="font-mono-tabular text-[#157a4f]">+3 библика</strong>
+              </li>
+              <li className="flex items-center justify-between gap-2">
+                <span>С одной ошибкой</span>
+                <strong className="font-mono-tabular text-[#135c75]">+2 библика</strong>
+              </li>
+              <li className="flex items-center justify-between gap-2">
+                <span>С подсказкой или от 2 ошибок</span>
+                <strong className="font-mono-tabular text-[#9c5a08]">+1 библик</strong>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 border border-[#13294b]/10 shadow-xs space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-[#eef2f9] text-[#13294b] flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h2 className="font-display font-extrabold text-base text-[#13294b]">
+                3. Узнай, какая роль тебе ближе
+              </h2>
+            </div>
+            <p className="text-sm text-[#13294b]/75 leading-relaxed">
+              После прохождения игра покажет диаграмму твоих результатов и подскажет, какое
+              направление на кафедре БИД подходит именно тебе.
+            </p>
+          </div>
+        </section>
+
+        {/* 3. THREE WORKSHOPS TO PLAY */}
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
             <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#13294b]">
-              Профессиональные мастерские кафедры БИД
+              Выбери мастерскую для прохождения
             </h2>
             <p className="text-sm text-[#13294b]/70">
-              Каждая мастерская моделирует реальные профессиональные компетенции образовательных
-              программ кафедры. Проходить можно в любом порядке!
+              Проходить мастерские можно в любом порядке — прогресс и заработанные библики
+              сохраняются автоматически.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -250,7 +269,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
           </div>
         </div>
 
-        {/* 3 Workshop Cards with Official Program Codes & 4-Task Launch List */}
+        {/* 3 Workshop Cards */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {WORKSHOPS.map((ws) => {
             const prog = getTasksProgress(ws.id);
@@ -272,20 +291,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                      <span
-                        className="px-2.5 py-1 rounded-lg text-white font-mono-tabular text-[10px] font-extrabold tracking-wider shadow"
-                        style={{ backgroundColor: ws.accentBg }}
-                      >
-                        {ws.programCode}
-                      </span>
-                      {ws.id === 3 && (
-                        <span className="px-2.5 py-1 rounded-lg bg-[#ffd66b] text-[#13294b] font-mono-tabular text-[10px] font-extrabold uppercase shadow">
-                          NEW!!! Новый профиль
-                        </span>
-                      )}
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
                       <span className="text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
                         Мастерская {ws.id}
@@ -299,10 +305,14 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                   <div className="p-5 space-y-3">
                     <div>
                       <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#135c75]">
-                        {card.place}
+                        {card.roleBadge}
                       </div>
-                      <h3 className="font-display font-extrabold text-base sm:text-lg text-[#13294b] leading-snug mt-0.5">
-                        {ws.title}
+                      <h3 className="font-display font-extrabold text-lg text-[#13294b] leading-snug mt-0.5">
+                        {ws.id === 1
+                          ? 'Библиотека и информационные ресурсы'
+                          : ws.id === 2
+                            ? 'Издательское дело и редакция'
+                            : 'Креативный менеджмент и проекты'}
                       </h3>
                       <p className="text-xs sm:text-sm text-[#13294b]/75 leading-relaxed mt-1.5">
                         {card.summary}
@@ -373,287 +383,6 @@ export const HubScreen: React.FC<HubScreenProps> = ({
               </article>
             );
           })}
-        </section>
-
-        {/* 3. Interactive Educational Programs Navigator (СПО, Бакалавриат, Магистратура, Аспирантура) */}
-        <section className="bg-white rounded-3xl p-5 sm:p-7 border border-[#13294b]/12 shadow-md space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#13294b]/10 pb-4">
-            <div>
-              <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e] inline-flex items-center gap-1.5">
-                <GraduationCap className="w-4 h-4" />
-                <span>Образовательные программы кафедры БИД · От СПО до аспирантуры</span>
-              </div>
-              <h2 className="font-display font-extrabold text-lg sm:text-2xl text-[#13294b] mt-0.5">
-                Куда поступать и чему научат на кафедре
-              </h2>
-            </div>
-            <div className="text-xs font-bold text-[#135c75] bg-[#f4f7fc] px-3 py-1.5 rounded-xl border border-[#13294b]/10">
-              Выбери ступень обучения, чтобы увидеть вступительные испытания, практику и профессии
-            </div>
-          </div>
-
-          {/* 5 Program Tabs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-            {DEPARTMENT_PROGRAMS.map((prog) => {
-              const active = prog.id === activeProgram.id;
-              return (
-                <button
-                  key={prog.id}
-                  type="button"
-                  onClick={() => setSelectedProgramId(prog.id)}
-                  className={`p-3 rounded-2xl text-left border-2 transition-all flex flex-col justify-between gap-1.5 ${
-                    active
-                      ? 'bg-[#13294b] text-white border-[#13294b] shadow-sm'
-                      : 'bg-[#f6f8fc] hover:bg-[#e9effa] text-[#13294b] border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-1">
-                    <span
-                      className={`font-mono-tabular text-[11px] font-extrabold px-2 py-0.5 rounded-md ${
-                        active ? 'bg-[#ffd66b] text-[#13294b]' : 'bg-white text-[#135c75]'
-                      }`}
-                    >
-                      {prog.code}
-                    </span>
-                    {prog.isNew && (
-                      <span className="px-1.5 py-0.5 rounded bg-[#c41e2e] text-white font-mono-tabular text-[9px] font-extrabold uppercase">
-                        NEW!
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-xs font-extrabold leading-snug line-clamp-2">
-                      {prog.id === 'bak-bid'
-                        ? 'Креативный менеджмент в БИД'
-                        : prog.id === 'bak-pub'
-                          ? 'Издательское дело'
-                          : prog.id === 'spo-bid'
-                            ? 'СПО · БИД'
-                            : prog.id === 'mag-bid'
-                              ? 'Магистратура БИД'
-                              : 'Аспирантура 5.10.4'}
-                    </div>
-                    <div
-                      className={`text-[10px] mt-0.5 truncate ${
-                        active ? 'text-white/75' : 'text-[#13294b]/65'
-                      }`}
-                    >
-                      {prog.duration}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Selected Program Detailed Card */}
-          <div className="rounded-2xl bg-[#f6f8fc] border border-[#13294b]/10 p-5 space-y-4">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-1 max-w-3xl">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className="px-2.5 py-0.5 rounded-lg text-white font-mono-tabular text-xs font-extrabold"
-                    style={{ backgroundColor: activeProgram.accentHex }}
-                  >
-                    {activeProgram.code}
-                  </span>
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#135c75]">
-                    {activeProgram.level}
-                  </span>
-                  {activeProgram.isNew && (
-                    <span className="px-2 py-0.5 rounded-lg bg-[#c41e2e] text-white text-[11px] font-extrabold">
-                      NEW!!! Новый профиль кафедры
-                    </span>
-                  )}
-                </div>
-                <h3 className="font-display font-extrabold text-lg sm:text-xl text-[#13294b]">
-                  {activeProgram.title} — {activeProgram.profile}
-                </h3>
-                <p className="text-xs sm:text-sm text-[#13294b]/80 leading-relaxed">
-                  {activeProgram.summary}
-                </p>
-              </div>
-
-              {activeProgram.linkedWorkshop && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    onNavigate({
-                      view: 'workshop',
-                      workshop: activeProgram.linkedWorkshop!,
-                      task: getNextTaskIdx(activeProgram.linkedWorkshop!),
-                    })
-                  }
-                  className="min-h-[42px] px-4 rounded-xl text-white font-display font-extrabold text-xs sm:text-sm inline-flex items-center gap-2 shadow-sm shrink-0"
-                  style={{ backgroundColor: activeProgram.accentHex }}
-                >
-                  <span>Попробовать в Мастерской {activeProgram.linkedWorkshop}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-xl bg-white p-4 border border-[#13294b]/8 space-y-2">
-                <div className="text-xs font-extrabold uppercase tracking-wider text-[#135c75] inline-flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>Чему научат</span>
-                </div>
-                <ul className="space-y-1.5 text-xs text-[#13294b]">
-                  {activeProgram.whatYouLearn.map((item) => (
-                    <li key={item} className="flex items-start gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-[#157a4f] shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-xl bg-white p-4 border border-[#13294b]/8 space-y-2">
-                <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e] inline-flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5" />
-                  <span>Кем и где можно работать</span>
-                </div>
-                <ul className="space-y-1.5 text-xs text-[#13294b]">
-                  {activeProgram.careers.map((item) => (
-                    <li key={item} className="flex items-start gap-1.5 font-bold">
-                      <ArrowRight className="w-3.5 h-3.5 text-[#c41e2e] shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="pt-2 border-t border-[#13294b]/10 text-[11px] text-[#13294b]/75 space-y-1">
-                  {activeProgram.whereToWork.map((place) => (
-                    <div key={place} className="flex items-start gap-1">
-                      <MapPin className="w-3 h-3 text-[#135c75] shrink-0 mt-0.5" />
-                      <span>{place}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl bg-white p-4 border border-[#13294b]/8 space-y-2.5 text-xs text-[#13294b]">
-                <div className="text-xs font-extrabold uppercase tracking-wider text-[#13294b] inline-flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  <span>Поступление и практика</span>
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-[#13294b]/60">
-                    Вступительные испытания:
-                  </div>
-                  <div className="font-bold mt-0.5">{activeProgram.exams}</div>
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-[#13294b]/60">
-                    Форма и срок обучения:
-                  </div>
-                  <div className="font-bold mt-0.5 inline-flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-[#135c75]" />
-                    <span>{activeProgram.duration}</span>
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-[#13294b]/60">
-                    Где проходит практика:
-                  </div>
-                  <div className="font-semibold mt-0.5">{activeProgram.practice}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Research Lab, Scientific School & Slogans Footer inside Department Block */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
-            <div className="lg:col-span-7 rounded-2xl bg-[#13294b] text-white p-4 sm:p-5 space-y-2.5">
-              <div className="text-xs font-extrabold uppercase tracking-wider text-[#ffd66b]">
-                Научная и практическая база кафедры БИД
-              </div>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-white/90">
-                {DEPARTMENT_RESEARCH_HIGHLIGHTS.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-xl bg-white/8 border border-white/10 p-2.5 leading-snug"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="lg:col-span-5 rounded-2xl bg-[#fff8e6] border border-[#e59c2d]/40 p-4 sm:p-5 flex flex-col justify-between gap-3">
-              <div className="text-xs font-extrabold uppercase tracking-wider text-[#8a4d03]">
-                Ориентиры кафедры БИД БГИИК
-              </div>
-              <div className="space-y-1.5">
-                {DEPARTMENT_SLOGANS.map((slogan) => (
-                  <div
-                    key={slogan}
-                    className="text-xs font-extrabold text-[#13294b] bg-white/85 px-3 py-1.5 rounded-xl border border-[#13294b]/10"
-                  >
-                    {slogan}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 4. Three Clearly Separated Game Rules Info Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-2xl p-5 border border-[#13294b]/10 shadow-xs space-y-2.5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#e8f3f7] text-[#135c75] flex items-center justify-center shrink-0">
-                <Compass className="w-5 h-5" />
-              </div>
-              <h2 className="font-display font-extrabold text-base text-[#13294b]">
-                1. Выбери мастерскую или 3D-тур
-              </h2>
-            </div>
-            <p className="text-sm text-[#13294b]/75 leading-relaxed">
-              Исследуй виртуальные залы кафедры в 3D-туре или открывай любую из 3 мастерских. В
-              каждой — 4 практических задания и готовый проект.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 border border-[#13294b]/10 shadow-xs space-y-2.5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#fdecee] text-[#c41e2e] flex items-center justify-center shrink-0">
-                <Award className="w-5 h-5" />
-              </div>
-              <h2 className="font-display font-extrabold text-base text-[#13294b]">
-                2. Собирай библики
-              </h2>
-            </div>
-            <ul className="space-y-1 text-xs sm:text-sm text-[#13294b]/80">
-              <li className="flex items-center justify-between gap-2">
-                <span>Без ошибок и подсказок</span>
-                <strong className="font-mono-tabular text-[#157a4f]">+3 библика</strong>
-              </li>
-              <li className="flex items-center justify-between gap-2">
-                <span>С одной ошибкой</span>
-                <strong className="font-mono-tabular text-[#135c75]">+2 библика</strong>
-              </li>
-              <li className="flex items-center justify-between gap-2">
-                <span>С подсказкой или от 2 ошибок</span>
-                <strong className="font-mono-tabular text-[#9c5a08]">+1 библик</strong>
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 border border-[#13294b]/10 shadow-xs space-y-2.5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#eef2f9] text-[#13294b] flex items-center justify-center shrink-0">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <h2 className="font-display font-extrabold text-base text-[#13294b]">
-                3. Узнай свой профиль
-              </h2>
-            </div>
-            <p className="text-sm text-[#13294b]/75 leading-relaxed">
-              После прохождения откроется карта твоих компетенций, подходящая программа кафедры БИД
-              и перечень вступительных испытаний.
-            </p>
-          </div>
         </section>
       </div>
     </div>

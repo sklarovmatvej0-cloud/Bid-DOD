@@ -97,7 +97,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             <BookOpen className="w-5 h-5 text-white" />
           </span>
           <span className="font-display font-extrabold text-sm sm:text-base tracking-tight text-white">
-            КНИГОГРАД · БГИИК
+            КНИГОГРАД · БИД · БГИИК
           </span>
         </button>
 

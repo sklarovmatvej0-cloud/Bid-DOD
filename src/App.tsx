@@ -7,6 +7,7 @@ import { TopBar } from './components/TopBar';
 import { Workshop1View } from './components/Workshop1View';
 import { Workshop2View } from './components/Workshop2View';
 import { Workshop3View } from './components/Workshop3View';
+import { STICKERS } from './game/assets';
 import {
   createInitialSave,
   loadKnigogradSave,
@@ -20,6 +21,18 @@ import {
   WorkshopId,
 } from './game/knigogradTypes';
 import { soundEngine } from './game/sound';
+
+const TASK_SUCCESS_STICKERS: Record<WorkshopId, string[]> = {
+  1: [STICKERS.searchPro, STICKERS.systematize, STICKERS.gost, STICKERS.inResource],
+  2: [STICKERS.sourceCheck, STICKERS.editing, STICKERS.noFormat, STICKERS.gost],
+  3: [STICKERS.ideas, STICKERS.heroBid, STICKERS.content, STICKERS.vibe],
+};
+
+const WORKSHOP_HINT_STICKERS: Record<WorkshopId, string> = {
+  1: STICKERS.database,
+  2: STICKERS.sourceCheck,
+  3: STICKERS.ideas,
+};
 
 function getWorkshopKey(wId: WorkshopId): 'w1' | 'w2' | 'w3' {
   if (wId === 1) return 'w1';
@@ -110,6 +123,7 @@ export function App() {
         success: false,
         title: hintTitle,
         body: hintBody,
+        sticker: WORKSHOP_HINT_STICKERS[wId],
       });
     },
     [updateSave]
@@ -161,6 +175,7 @@ export function App() {
 
       setFeedback({
         ...modalContent,
+        sticker: modalContent.sticker ?? TASK_SUCCESS_STICKERS[wId][taskIdx] ?? STICKERS.heroBid,
         bibliksAwarded: awarded,
         alreadyDone,
       });

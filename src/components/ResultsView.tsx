@@ -301,13 +301,24 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         <section className="studio-card rounded-3xl p-6 sm:p-7 space-y-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="space-y-1.5">
-              <div className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e] inline-flex items-center gap-1.5">
-                <Award className="w-4 h-4" />
-                Рекомендованное направление на кафедре БИД (БГИИК)
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-[#c41e2e] inline-flex items-center gap-1.5">
+                  <Award className="w-4 h-4" />
+                  Рекомендованная программа кафедры БИД (БГИИК)
+                </span>
+                <span
+                  className="px-2.5 py-0.5 rounded-lg text-white font-mono-tabular text-xs font-extrabold"
+                  style={{ backgroundColor: bestWorkshop.ws.accentBg }}
+                >
+                  {bestWorkshop.ws.programCode}
+                </span>
               </div>
               <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#13294b]">
                 {bestWorkshop.ws.title}
               </h2>
+              <div className="text-xs font-extrabold text-[#135c75]">
+                {bestWorkshop.ws.programProfile} · «Гуманитарий с цифровым характером»
+              </div>
               <p className="text-sm text-[#13294b]/75 max-w-3xl">{bestWorkshop.ws.description}</p>
             </div>
             <button
@@ -320,11 +331,11 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="rounded-2xl bg-[#f5f7fc] p-5 space-y-2.5">
               <div className="text-xs font-extrabold uppercase tracking-wider text-[#135c75] inline-flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4" />
-                Кем и где ты сможешь работать
+                Кем и где можно работать
               </div>
               <ul className="space-y-2 text-xs sm:text-sm text-[#13294b]">
                 {bestWorkshop.ws.professions.map((prof) => (
@@ -334,12 +345,17 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
                   </li>
                 ))}
               </ul>
+              <div className="pt-2 border-t border-[#13294b]/10 text-xs text-[#13294b]/75 space-y-1">
+                {bestWorkshop.ws.whereToWork.map((place) => (
+                  <div key={place}>• {place}</div>
+                ))}
+              </div>
             </div>
 
             <div className="rounded-2xl bg-[#f5f7fc] p-5 space-y-2.5">
               <div className="text-xs font-extrabold uppercase tracking-wider text-[#13294b] inline-flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
-                Чем занимаются на этом направлении
+                Чему научат на кафедре
               </div>
               <ul className="space-y-2 text-xs sm:text-sm text-[#13294b]">
                 {bestWorkshop.ws.disciplines.map((disc) => (
@@ -349,6 +365,30 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
                   </li>
                 ))}
               </ul>
+            </div>
+
+            <div className="rounded-2xl bg-[#fff8e6] border border-[#e59c2d]/40 p-5 space-y-3 text-xs sm:text-sm text-[#13294b]">
+              <div className="text-xs font-extrabold uppercase tracking-wider text-[#8a4d03]">
+                Поступление и практика
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-[#13294b]/60">
+                  Вступительные испытания:
+                </div>
+                <div className="font-bold mt-0.5">{bestWorkshop.ws.entranceExams}</div>
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-[#13294b]/60">
+                  Форма и срок обучения:
+                </div>
+                <div className="font-bold mt-0.5">{bestWorkshop.ws.studyDuration}</div>
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-[#13294b]/60">
+                  Практическая подготовка:
+                </div>
+                <div className="font-semibold mt-0.5">{bestWorkshop.ws.practicePlace}</div>
+              </div>
             </div>
           </div>
 

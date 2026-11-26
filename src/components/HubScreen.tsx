@@ -632,7 +632,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                 return (
                   <div
                     key={item}
-                    className="rounded-2xl bg-white/10 hover:bg-white/14 transition-colors border border-white/15 p-4 flex flex-col justify-between gap-2.5"
+                    className="rounded-2xl bg-white/10 hover:bg-white/14 transition-colors border border-white/15 p-4 flex flex-col justify-start gap-3"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="px-2.5 py-0.5 rounded-lg bg-[#38bdf8]/20 border border-[#7dd3fc]/40 text-[#7dd3fc] font-mono-tabular text-[10px] font-extrabold">

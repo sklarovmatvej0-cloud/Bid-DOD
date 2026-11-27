@@ -199,6 +199,27 @@ class DeskSoundEngine {
       osc.stop(start + 0.48);
     });
   }
+
+  public playBiblikCoin(): void {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const notes = [987.77, 1318.51]; // B5 -> E6 coin ping
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      const start = now + idx * 0.07;
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.001, start);
+      gain.gain.linearRampToValueAtTime(0.09, start + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.22);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.24);
+    });
+  }
 }
 
 export const soundEngine = new DeskSoundEngine();

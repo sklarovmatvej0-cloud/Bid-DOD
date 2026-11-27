@@ -32,114 +32,171 @@ export const MissionBanner: React.FC<MissionBannerProps> = ({
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const doneSteps = steps.filter((s) => s.done).length;
+  const activeStepIdx = steps.findIndex((s) => !s.done);
+  const gridColsClass =
+    steps.length >= 4
+      ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+      : steps.length === 2
+        ? 'grid-cols-1 sm:grid-cols-2'
+        : 'grid-cols-1 md:grid-cols-3';
 
   return (
     <section
-      className={`rounded-2xl overflow-hidden border shadow-xs transition-all ${
+      className={`rounded-2xl overflow-hidden border shadow-sm transition-all ${
         dark
           ? 'bg-[#0e2642] border-white/15 text-white'
           : 'bg-white border-[#13294b]/12 text-[#13294b]'
       }`}
     >
-      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3.5 sm:gap-4 p-3.5 sm:p-4">
-        {!collapsed && (
-          <div className="w-full md:w-44 lg:w-48 shrink-0 aspect-[16/10] md:aspect-[4/3] rounded-xl bg-[#13294b] overflow-hidden shadow-xs">
-            <img
-              src={image}
-              alt={imageAlt}
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
+      {/* Top Bar: Track & Step Badge + Progress + Hint/Collapse */}
+      <div
+        className={`flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b ${
+          dark ? 'bg-white/5 border-white/10' : 'bg-[#f8fafd] border-[#13294b]/8'
+        }`}
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className="text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg"
+            style={{
+              backgroundColor: dark ? 'rgba(125,211,252,0.14)' : `${accentColor}14`,
+              color: dark ? '#7dd3fc' : accentColor,
+            }}
+          >
+            {stepLabel}
+          </span>
+          <span
+            className={`font-mono-tabular text-[11px] font-extrabold px-2.5 py-1 rounded-lg ${
+              dark ? 'bg-white/10 text-white/90' : 'bg-white border border-[#13294b]/10 text-[#13294b]/75'
+            }`}
+          >
+            Выполнено: {doneSteps} из {steps.length}
+          </span>
+        </div>
 
-        <div className="flex-1 min-w-0 flex flex-col justify-between gap-2.5">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className="text-[11px] font-extrabold uppercase tracking-wider"
-                  style={{ color: dark ? '#7dd3fc' : accentColor }}
-                >
-                  {stepLabel}
-                </span>
-                <span
-                  className={`font-mono-tabular text-[11px] font-bold px-2 py-0.5 rounded-md ${
-                    dark ? 'bg-white/10 text-white/80' : 'bg-[#f1f5fb] text-[#13294b]/70'
-                  }`}
-                >
-                  {doneSteps}/{steps.length}
-                </span>
-              </div>
-              <h2 className="font-display font-extrabold text-base sm:text-lg leading-snug">
-                {title}
-              </h2>
-              {!collapsed && (
-                <p
-                  className={`text-xs sm:text-[13px] leading-relaxed max-w-4xl ${
-                    dark ? 'text-white/85' : 'text-[#13294b]/80'
-                  }`}
-                >
-                  {goal}
-                </p>
-              )}
-            </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={onHint}
+            className={`min-h-[34px] px-3 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
+              dark
+                ? 'bg-white/12 hover:bg-white/22 text-[#7dd3fc]'
+                : 'bg-white hover:bg-[#e5eefb] border border-[#13294b]/12 text-[#13294b]'
+            }`}
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span>Подсказка</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setCollapsed((v) => !v)}
+            title={collapsed ? 'Развернуть условие' : 'Свернуть условие'}
+            aria-label={collapsed ? 'Развернуть условие' : 'Свернуть условие'}
+            className={`w-8 h-8 rounded-xl inline-flex items-center justify-center transition-colors ${
+              dark
+                ? 'bg-white/10 hover:bg-white/20 text-white/80'
+                : 'bg-white hover:bg-[#e5eefb] border border-[#13294b]/12 text-[#13294b]/70'
+            }`}
+          >
+            {collapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
 
-            <div className="flex items-center gap-1.5 shrink-0">
-              <button
-                type="button"
-                onClick={onHint}
-                className={`min-h-[36px] px-3 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap ${
-                  dark
-                    ? 'bg-white/12 hover:bg-white/22 text-[#7dd3fc]'
-                    : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b]'
-                }`}
-              >
-                <HelpCircle className="w-4 h-4" />
-                <span>Подсказка</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setCollapsed((v) => !v)}
-                title={collapsed ? 'Развернуть условие' : 'Свернуть условие'}
-                aria-label={collapsed ? 'Развернуть условие' : 'Свернуть условие'}
-                className={`w-9 h-9 rounded-xl inline-flex items-center justify-center transition-colors ${
-                  dark
-                    ? 'bg-white/10 hover:bg-white/20 text-white/80'
-                    : 'bg-[#f4f7fc] hover:bg-[#e5eefb] text-[#13294b]/70'
-                }`}
-              >
-                {collapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
+      {/* Main Content */}
+      <div className="p-4 sm:p-5 space-y-4">
+        <div className="flex flex-col md:flex-row items-stretch md:items-start gap-4">
           {!collapsed && (
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-current/10 text-xs font-bold">
-              {steps.map((st, idx) => (
-                <span
-                  key={st.text}
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-colors ${
-                    st.done
-                      ? dark
-                        ? 'bg-[#157a4f]/30 text-[#86efac]'
-                        : 'bg-[#e9f7ef] text-[#157a4f]'
-                      : dark
-                        ? 'bg-white/8 text-white/85'
-                        : 'bg-[#f4f7fc] text-[#13294b]/80'
-                  }`}
-                >
-                  {st.done ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  ) : (
-                    <span className="font-mono-tabular font-extrabold text-[11px]">{idx + 1}.</span>
-                  )}
-                  <span className={st.done ? 'line-through opacity-85' : ''}>{st.text}</span>
-                </span>
-              ))}
+            <div className="w-full md:w-44 lg:w-48 shrink-0 aspect-[16/10] md:aspect-[4/3] rounded-xl bg-[#13294b] overflow-hidden shadow-xs">
+              <img
+                src={image}
+                alt={imageAlt}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover"
+              />
             </div>
           )}
+
+          <div className="flex-1 min-w-0 space-y-2.5">
+            <h2 className="font-display font-extrabold text-lg sm:text-xl leading-snug">
+              {title}
+            </h2>
+            {!collapsed && (
+              <div
+                className={`rounded-xl px-3.5 py-2.5 border-l-4 text-xs sm:text-sm leading-relaxed ${
+                  dark
+                    ? 'bg-white/6 text-white/90'
+                    : 'bg-[#f6f9fd] text-[#13294b]/85'
+                }`}
+                style={{ borderLeftColor: dark ? '#7dd3fc' : accentColor }}
+              >
+                {goal}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Clear Step-by-Step Action Cards */}
+        {!collapsed && (
+          <div className={`pt-3 border-t space-y-2 ${dark ? 'border-white/10' : 'border-[#13294b]/10'}`}>
+            <div
+              className={`text-[11px] font-extrabold uppercase tracking-wider ${
+                dark ? 'text-[#7dd3fc]' : 'text-[#13294b]/55'
+              }`}
+            >
+              Что нужно сделать:
+            </div>
+            <div className={`grid ${gridColsClass} gap-2.5`}>
+              {steps.map((st, idx) => {
+                const isCurrent = idx === activeStepIdx;
+                return (
+                  <div
+                    key={st.text}
+                    className={`rounded-xl p-3 border flex items-start gap-2.5 text-xs leading-snug transition-all ${
+                      st.done
+                        ? dark
+                          ? 'bg-[#157a4f]/25 border-[#4ade80]/30 text-[#86efac]'
+                          : 'bg-[#ecfdf3] border-[#86efac] text-[#157a4f]'
+                        : isCurrent
+                          ? dark
+                            ? 'bg-white/12 border-[#7dd3fc]/60 text-white shadow-xs'
+                            : 'bg-white border-2 text-[#13294b] shadow-xs'
+                          : dark
+                            ? 'bg-white/5 border-white/10 text-white/75'
+                            : 'bg-[#f8fafc] border-[#13294b]/10 text-[#13294b]/75'
+                    }`}
+                    style={
+                      !st.done && isCurrent && !dark ? { borderColor: accentColor } : undefined
+                    }
+                  >
+                    <span
+                      className={`w-6 h-6 rounded-full flex items-center justify-center font-mono-tabular font-extrabold text-[11px] shrink-0 mt-0.5 ${
+                        st.done
+                          ? dark
+                            ? 'bg-[#157a4f] text-white'
+                            : 'bg-[#157a4f] text-white'
+                          : isCurrent
+                            ? 'text-white'
+                            : dark
+                              ? 'bg-white/15 text-white/80'
+                              : 'bg-[#e2e8f0] text-[#13294b]/75'
+                      }`}
+                      style={
+                        !st.done && isCurrent
+                          ? { backgroundColor: dark ? '#0284c7' : accentColor }
+                          : undefined
+                      }
+                    >
+                      {st.done ? <CheckCircle2 className="w-3.5 h-3.5" /> : idx + 1}
+                    </span>
+                    <span className={`font-semibold ${st.done ? 'line-through opacity-85' : ''}`}>
+                      {st.text}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

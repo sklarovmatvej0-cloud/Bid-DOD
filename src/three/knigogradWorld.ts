@@ -1165,7 +1165,7 @@ export function buildKnigogradWorld(
       map: createPlaqueTexture(renderer, {
         bg: '#13294b',
         border: '#7dd3fc',
-        title: 'ББК 85.12 · 26.8',
+        title: 'ББК 85.15 · 26.8',
         width: 400,
         height: 84,
       }),

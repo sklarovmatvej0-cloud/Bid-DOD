@@ -226,7 +226,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
       title: `Анонс «Библионочи» опубликован! Игровой прогноз регистраций: ${smmMetrics.regs}`,
       body: 'Понятный заголовок, яркие карточки с расписанием площадок, чёткий призыв с кнопкой онлайн-записи и публикация за 5 дней с репостом партнёров.',
       lesson:
-        'Хороший анонс в соцсетях сразу отвечает на вопросы читателя: что будет, когда приходить и как записаться.',
+        'Специалист по цифровому продвижению в сфере культуры выстраивает структуру анонса: формулирует заголовок, готовит карточки с программой, добавляет ссылку на регистрацию и выбирает время публикации.',
       nextActionLabel: 'Ответить читателям в комментариях (шаг 4)',
       onNext: 'next_task',
     });
@@ -1220,7 +1220,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                       </span>
                     </div>
                     <div className="px-2.5 py-1.5 rounded-xl bg-white flex items-center justify-between">
-                      <span className="text-[#13294b]/65">4. Посев:</span>
+                      <span className="text-[#13294b]/65">4. Время:</span>
                       <span className={smmPicks.timing === 'best' ? 'text-[#157a4f]' : 'text-[#c41e2e]'}>
                         {smmPicks.timing === 'best' ? '✓ За 5 дней' : 'Поздно'}
                       </span>
@@ -1475,7 +1475,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         ) : smmPicks.visual === 'photo' ? (
                           <div className="relative aspect-[16/10] bg-[#0f172a] overflow-hidden">
                             <img
-                              src={MEDIA.sceneFestivalStage}
+                              src={MEDIA.sceneLibraryDesk}
                               alt="Фото зала библиотеки"
                               referrerPolicy="no-referrer"
                               className="w-full h-full object-cover opacity-85"

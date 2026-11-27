@@ -177,7 +177,7 @@ export const MissionBanner: React.FC<MissionBannerProps> = ({
                       }`}
                     />
                     <div>
-                      <span className="font-extrabold">Простыми словами ({proTip.term}): </span>
+                      <span className="font-extrabold">{proTip.term}: </span>
                       <span>{proTip.text}</span>
                     </div>
                   </div>

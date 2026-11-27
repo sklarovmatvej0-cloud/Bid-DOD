@@ -55,11 +55,11 @@ interface Workshop2ViewProps {
 const LAYOUT_HEADLINES = [
   { id: 'dry', text: 'Отчёт о проведении выставки книжной графики № 4' },
   { id: 'clickbait', text: 'ШОК! Вы не поверите, что нашли в старых книгах!' },
-  { id: 'strong', text: 'Искусство книги: от гравюры до цифрового зина' },
+  { id: 'strong', text: 'Искусство книги: от гравюры до цифрового журнала' },
 ] as const;
 
 const LAYOUT_PHOTOS = [
-  { id: 'print', label: 'Офортный станок и гравюра', img: MEDIA.studioPrint },
+  { id: 'print', label: 'Печатный станок и гравюра', img: MEDIA.studioPrint },
   { id: 'music', label: 'Вечерняя сцена фестиваля', img: MEDIA.studioMusic },
   { id: 'arch', label: 'Фасады старого центра', img: MEDIA.studioArch },
 ] as const;
@@ -88,7 +88,7 @@ const LAYOUT_PRESETS = [
 const LAYOUT_CAPTIONS = [
   { id: 'none', text: 'Без подписи и указания автора' },
   { id: 'wrong', text: 'Фото: из открытых источников сети' },
-  { id: 'good', text: 'Печать книжной гравюры на офортном станке. Фото: Алексей Климов' },
+  { id: 'good', text: 'Печать книжной гравюры на печатном станке. Фото: Алексей Климов' },
 ] as const;
 
 const LAYOUT_STEPS = [
@@ -109,7 +109,7 @@ const PROOF_PAGES: { idx: number; label: string; defId: ProofDefect['id']; quest
     idx: 1,
     label: '2. Содержание',
     defId: 'page',
-    question: 'На какой странице открывается главный материал «Искусство книги: от гравюры до цифрового зина»?',
+    question: 'На какой странице открывается главный материал «Искусство книги: от гравюры до цифрового журнала»?',
   },
   {
     idx: 2,
@@ -156,7 +156,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
   const [tapePlaying, setTapePlaying] = useState(false);
 
   const INTERVIEW_AUDIO_TEXT =
-    'Для выставки мы отобрали двенадцать редких изданий из фонда библиотеки и дополнили их авторскими иллюстрациями студентов. Каждую гравюру печатали вручную на офортном станке в две краски — тёмно-синюю и киноварь. На подготовку всей экспозиции у команды ушло три недели, а открытие назначили на пятницу в восемнадцать ноль-ноль.';
+    'Для выставки мы отобрали двенадцать редких изданий из фонда библиотеки и дополнили их авторскими иллюстрациями студентов. Каждую гравюру печатали вручную на печатном станке в две краски — тёмно-синюю и киноварь. На подготовку всей экспозиции у команды ушло три недели, а открытие назначили на пятницу в восемнадцать ноль-ноль.';
 
   useEffect(() => {
     return () => {
@@ -180,7 +180,13 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(INTERVIEW_AUDIO_TEXT);
       utterance.lang = 'ru-RU';
-      utterance.rate = 0.98;
+      utterance.rate = 1.15;
+      utterance.pitch = 1.04;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred =
+        voices.find((v) => v.lang.startsWith('ru') && /google|dmitry|pavel|svetlana/i.test(v.name)) ||
+        voices.find((v) => v.lang.startsWith('ru'));
+      if (preferred) utterance.voice = preferred;
       utterance.onend = () => setTapePlaying(false);
       utterance.onerror = () => setTapePlaying(false);
       setTapePlaying(true);
@@ -240,7 +246,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
         onCompleteTask(0, {
           success: true,
           title: 'Макет выпуска журнала «Культура · № 01» сформирован!',
-          body: 'На главный разворот (стр. 08–09) поставлена статья «Искусство книги: от гравюры до цифрового зина», на полосу репортажа (стр. 14) — «За кулисами литературного фестиваля», а материалы с неподтверждёнными правами на фотографии и скрытой рекламой отклонены.',
+          body: 'На главный разворот (стр. 08–09) поставлена статья «Искусство книги: от гравюры до цифрового журнала», на полосу репортажа (стр. 14) — «За кулисами литературного фестиваля», а материалы с неподтверждёнными правами на фотографии и скрытой рекламой отклонены.',
           lesson:
             'При формировании номера редактор оценивает соответствие теме и объёму рубрики, проверяет разрешение правообладателей на иллюстрации и отсекает скрытую рекламу.',
           nextActionLabel: 'Перейти к редактуре статьи (шаг 2)',
@@ -334,7 +340,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
         onCompleteTask(1, {
           success: true,
           title: 'Рукопись статьи вычитана и сверена со стенограммой!',
-          body: 'Факты восстановлены по интервью куратора Анны Морозовой (12 редких изданий из фонда библиотеки, ручная печать гравюр на офортном станке в две краски), устранены речевые плеоназмы («три недели времени», «первый дебютный», «18:00 часов вечера») и сохранён точный авторский абзац.',
+          body: 'Факты восстановлены по интервью куратора Анны Морозовой (12 редких изданий из фонда библиотеки, ручная печать гравюр на печатном станке в две краски), устранены лишние слова и повторы («три недели времени», «первый дебютный», «18:00 часов вечера») и сохранён точный авторский абзац.',
           lesson:
             'Литературный редактор сверяет фактические данные с первоисточником, устраняет речевую избыточность и бережно относится к точным авторским формулировкам.',
           nextActionLabel: 'Перейти к вёрстке разворота (шаг 3)',
@@ -432,15 +438,15 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
     const hints = [
       {
         title: 'Подсказка · Шаг 1',
-        body: '«Искусство книги: от гравюры до цифрового зина» — на главный разворот (стр. 08–09). «За кулисами литературного фестиваля» — в рубрику репортажа (стр. 14). «Необычные фасады» (чужие фото без разрешения) и «Кофейня Зерно» (скрытая реклама) — отклонить.',
+        body: '«Искусство книги: от гравюры до цифрового журнала» — на главный разворот (стр. 08–09). «За кулисами литературного фестиваля» — в рубрику репортажа (стр. 14). «Необычные фасады» (чужие фото без разрешения) и «Кофейня Зерно» (скрытая реклама) — отклонить.',
       },
       {
         title: 'Подсказка · Шаг 2',
-        body: 'Сверь со стенограммой интервью куратора Анны Морозовой: 1) 12 редких изданий из фонда библиотеки и студенческие иллюстрации; 2) ручная печать гравюр на офортном станке в две краски (тёмно-синюю и киноварь); 3) третий фрагмент написан грамотно — оставь без правки; 4) убери лишние слова «времени», «первый дебютный» и «часов вечера».',
+        body: 'Сверь со стенограммой интервью куратора Анны Морозовой: 1) 12 редких изданий из фонда библиотеки и студенческие иллюстрации; 2) ручная печать гравюр на печатном станке в две краски (тёмно-синюю и киноварь); 3) третий фрагмент написан грамотно — оставь без правки; 4) убери лишние слова «времени», «первый дебютный» и «часов вечера».',
       },
       {
         title: 'Подсказка · Шаг 3',
-        body: '1. Заголовок «Искусство книги: от гравюры до цифрового зина», 2. Иллюстрация «Офортный станок и гравюра», 3. Сетка «Модульный разворот в 2 колонки», 4. Подпись с именем фотографа Алексея Климова.',
+        body: '1. Заголовок «Искусство книги: от гравюры до цифрового журнала», 2. Иллюстрация «Печатный станок и гравюра», 3. Сетка «Модульный разворот в 2 колонки», 4. Подпись с именем фотографа Алексея Климова.',
       },
       {
         title: 'Подсказка · Шаг 4',
@@ -525,7 +531,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
               </h2>
               <p className="text-sm text-[#13294b]/80 leading-relaxed">
                 В экспозицию вошли двенадцать редких изданий из фонда библиотеки и серия
-                студенческих иллюстраций. Каждую гравюру печатали вручную на офортном станке в две
+                студенческих иллюстраций. Каждую гравюру печатали вручную на печатном станке в две
                 краски — тёмно-синюю и киноварь.
               </p>
               <p className="text-sm text-[#13294b]/80 leading-relaxed">
@@ -537,12 +543,12 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
             <figure className="space-y-2">
               <img
                 src={MEDIA.studioPrint}
-                alt="Офортный станок и печать книжной гравюры"
+                alt="Печатный станок и печать книжной гравюры"
                 referrerPolicy="no-referrer"
                 className="w-full aspect-[4/3] object-cover rounded-xl shadow-md"
               />
               <figcaption className="text-xs text-[#13294b]/70 font-semibold">
-                Печать книжной гравюры на офортном станке. Фото: Алексей Климов
+                Печать книжной гравюры на печатном станке. Фото: Алексей Климов
               </figcaption>
             </figure>
           </div>
@@ -659,6 +665,25 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
           </div>
 
           {pages[readerPage].content}
+
+          {/* Bottom Navigation Bar */}
+          <div className="rounded-2xl bg-white border border-[#13294b]/12 p-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+            <button
+              type="button"
+              onClick={() => onSelectTask(0)}
+              className="min-h-[44px] px-4 rounded-xl bg-[#f4f7fc] hover:bg-[#e5ecf7] text-[#13294b] text-xs sm:text-sm font-bold whitespace-nowrap"
+            >
+              ← Вернуться к заданиям
+            </button>
+            <button
+              type="button"
+              onClick={onNextWorkshop}
+              className="min-h-[44px] px-5 rounded-xl bg-[#13294b] hover:bg-[#0f223d] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 whitespace-nowrap shadow-sm"
+            >
+              Дальше: Креативный менеджер
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -1085,7 +1110,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                               экспозицию вошли редкие издания из фонда библиотеки и авторские гравюры...
                             </p>
                             <p className="line-clamp-3">
-                              Оттиски выполнялись вручную на офортном станке в две краски — синюю и киноварь.
+                              Оттиски выполнялись вручную на печатном станке в две краски — синюю и киноварь.
                             </p>
                           </div>
                         </div>
@@ -1207,7 +1232,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                         <Trash2 className="w-3.5 h-3.5" />
                         Отклонено редакцией ({trashedIds.length} / 2)
                       </span>
-                      <span className="text-[10px] text-white/65">Брак по правам и джинса</span>
+                      <span className="text-[10px] text-white/65">Чужие фото и скрытая реклама</span>
                     </div>
                     {trashedIds.length === 0 ? (
                       <div className="py-1.5 text-center text-[11px] text-white/60 font-semibold">
@@ -1246,7 +1271,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 imageAlt="Литературное редактирование и сверка фактов по интервью"
                 stepLabel="Проф-трек 02 · Редактор-издатель · Шаг 2 из 4"
                 title="Редактура и фактчекинг: сверь текст статьи со стенограммой интервью"
-                goal="Главный материал номера «Искусство книги: от гравюры до цифрового зина» поступил на редакторский стол. Корреспондент торопился сдать черновик и допустил фактические искажения и речевые повторы. Сверь все 4 абзаца рукописи с расшифровкой интервью куратора выставки Анны Морозовой. Обрати внимание: один из абзацев уже написан точно и грамотно — его менять не нужно."
+                goal="Главный материал номера «Искусство книги: от гравюры до цифрового журнала» поступил на редакторский стол. Корреспондент торопился сдать черновик и допустил фактические искажения и речевые повторы. Сверь все 4 абзаца рукописи с расшифровкой интервью куратора выставки Анны Морозовой. Обрати внимание: один из абзацев уже написан точно и грамотно — его менять не нужно."
                 steps={[
                   { text: 'Прочитай стенограмму интервью куратора выставки Анны Морозовой', done: true },
                   { text: `Проверь и отредактируй все 4 абзаца статьи (${solvedEditCount} из 4)`, done: solvedEditCount === 4 },
@@ -1303,7 +1328,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 </div>
 
                 <blockquote className="rounded-xl bg-white/10 border border-[#7dd3fc]/25 px-4 py-3 text-xs sm:text-sm leading-relaxed text-white font-medium">
-                  «Для выставки мы отобрали <strong className="text-[#7dd3fc]">двенадцать редких изданий из фонда библиотеки</strong> и дополнили их <strong className="text-[#7dd3fc]">авторскими иллюстрациями студентов</strong>. Каждую гравюру печатали <strong className="text-[#7dd3fc]">вручную на офортном станке в две краски — тёмно-синюю и киноварь</strong>. На подготовку всей экспозиции у команды ушло <strong className="text-[#7dd3fc]">три недели</strong>, а открытие назначили на <strong className="text-[#7dd3fc]">пятницу в 18:00</strong>».
+                  «Для выставки мы отобрали <strong className="text-[#7dd3fc]">двенадцать редких изданий из фонда библиотеки</strong> и дополнили их <strong className="text-[#7dd3fc]">авторскими иллюстрациями студентов</strong>. Каждую гравюру печатали <strong className="text-[#7dd3fc]">вручную на печатном станке в две краски — тёмно-синюю и киноварь</strong>. На подготовку всей экспозиции у команды ушло <strong className="text-[#7dd3fc]">три недели</strong>, а открытие назначили на <strong className="text-[#7dd3fc]">пятницу в 18:00</strong>».
                 </blockquote>
               </div>
 
@@ -1325,7 +1350,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                       Главная тема номера · Автор: Мария Соколова
                     </div>
                     <h3 className="font-display font-extrabold text-xl text-[#13294b]">
-                      Искусство книги: от гравюры до цифрового зина
+                      Искусство книги: от гравюры до цифрового журнала
                     </h3>
                   </div>
 
@@ -1480,7 +1505,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 imageAlt="Вёрстка журнального разворота"
                 stepLabel="Проф-трек 02 · Технический редактор · Шаг 3 из 4"
                 title="Вёрстка разворота: оформи главный материал номера (стр. 08–09)"
-                goal="Вычитанная статья поступает на вёрстку. Перед тобой разворот полос 08–09 журнала «Культура». Настрой все 4 элемента макета: выбери точный журнальный заголовок, тематическую фотографию из офортной студии, удобную двухколонную сетку разворота и подпись с указанием автора снимка Алексея Климова."
+                goal="Вычитанная статья поступает на вёрстку. Перед тобой разворот полос 08–09 журнала «Культура». Настрой все 4 элемента макета: выбери точный журнальный заголовок, тематическую фотографию из печатной мастерской, удобную двухколонную сетку разворота и подпись с указанием автора снимка Алексея Климова."
                 steps={[
                   { text: 'Установи точный заголовок и снимок печатного станка', done: layoutHeadline === 'strong' && layoutPhoto === 'print' },
                   { text: 'Выбери модульный разворот в 2 колонки без наложения текста на фото', done: layoutPreset === 'columns' },
@@ -1649,7 +1674,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                                   </span>
                                   экспозицию вошли двенадцать редких изданий из фонда библиотеки и
                                   серия студенческих иллюстраций. Каждую гравюру печатали вручную на
-                                  офортном станке в две краски — тёмно-синюю и киноварь.
+                                  печатном станке в две краски — тёмно-синюю и киноварь.
                                 </p>
                                 <p>
                                   Сочетание классической книжной гравюры и современной типографики
@@ -1659,7 +1684,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                               </div>
 
                               <blockquote className="border-l-2 border-[#c41e2e] pl-3 py-1 text-[11px] font-extrabold italic text-[#13294b] bg-[#13294b]/[0.03] rounded-r-lg">
-                                «Каждую гравюру печатали вручную на офортном станке в две краски —
+                                «Каждую гравюру печатали вручную на печатном станке в две краски —
                                 тёмно-синюю и киноварь»
                               </blockquote>
                             </div>
@@ -1785,7 +1810,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             <p>
                               В экспозицию вошли двенадцать редких изданий из фонда библиотеки и
                               серия студенческих иллюстраций. Каждую гравюру печатали вручную на
-                              офортном станке в две краски — тёмно-синюю и киноварь. На пёстром
+                              печатном станке в две краски — тёмно-синюю и киноварь. На пёстром
                               фотофоне мелкие строки текста теряют контраст и утомляют глаза.
                             </p>
                             <div
@@ -1838,7 +1863,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             <p className="text-base sm:text-lg leading-snug text-[#13294b] font-medium">
                               В экспозицию вошли двенадцать редких изданий из фонда библиотеки и
                               серия студенческих иллюстраций. Каждую гравюру печатали вручную на
-                              офортном станке в две краски.
+                              печатном станке в две краски.
                             </p>
                           </div>
                         </div>
@@ -2113,7 +2138,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                   <span className="font-display font-extrabold text-[#7dd3fc]">Паспорт выпуска:</span>
                   <span>Маркировка: 12+</span>
                   <span className="text-white/35">·</span>
-                  <span>Стр. 8: «Искусство книги: от гравюры до цифрового зина» (Фото: Алексей Климов)</span>
+                  <span>Стр. 8: «Искусство книги: от гравюры до цифрового журнала» (Фото: Алексей Климов)</span>
                   <span className="text-white/35">·</span>
                   <span>Стр. 14: «За кулисами литературного фестиваля»</span>
                 </div>
@@ -2200,7 +2225,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                         <div className="relative space-y-1">
                           <div className="font-display font-extrabold text-3xl sm:text-4xl">КУЛЬТУРА</div>
                           <div className="text-sm text-[#7dd3fc] font-bold">
-                            Искусство книги: от гравюры до цифрового зина · За кулисами фестиваля
+                            Искусство книги: от гравюры до цифрового журнала · За кулисами фестиваля
                           </div>
                         </div>
                       </div>
@@ -2225,7 +2250,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                           <div className="py-3 flex items-center justify-between gap-4">
                             <div>
                               <div className="font-display font-bold text-base text-[#13294b]">
-                                Искусство книги: от гравюры до цифрового зина
+                                Искусство книги: от гравюры до цифрового журнала
                               </div>
                               <div className="text-xs text-[#13294b]/65">Мария Соколова · Главная тема номера</div>
                             </div>
@@ -2255,7 +2280,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             РАЗВОРОТ СТР. 8–9 · ГЛАВНАЯ ТЕМА
                           </div>
                           <h3 className="font-display font-extrabold text-xl text-[#13294b] leading-snug">
-                            Искусство книги: от гравюры до цифрового зина
+                            Искусство книги: от гравюры до цифрового журнала
                           </h3>
                           <p className="text-sm text-[#13294b]/80 leading-relaxed">
                             В экспозицию вошли двенадцать редких изданий из фонда библиотеки и серия
@@ -2266,7 +2291,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                         <div className="space-y-2">
                           <img
                             src={MEDIA.studioPrint}
-                            alt="Офортный станок в печатной студии"
+                            alt="Печатный станок в печатной студии"
                             referrerPolicy="no-referrer"
                             className="w-full aspect-[4/3] object-cover rounded-xl shadow-sm"
                           />
@@ -2310,8 +2335,13 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
 
                   {/* Direct Question & 3 Options Right Underneath the Proof Sheet */}
                   <div className="space-y-3">
-                    <div className="font-display font-extrabold text-sm sm:text-base text-[#13294b]">
-                      {currentProofTab.question}
+                    <div>
+                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#0284c7]">
+                        Сверь эту страницу с паспортом выпуска вверху и выбери верное значение:
+                      </div>
+                      <div className="font-display font-extrabold text-sm sm:text-base text-[#13294b] mt-0.5">
+                        {currentProofTab.question}
+                      </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                       {currentProofDefect.alts.map((alt) => {

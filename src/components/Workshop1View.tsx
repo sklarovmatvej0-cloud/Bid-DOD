@@ -506,6 +506,25 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               </div>
             ))}
           </div>
+
+          {/* Bottom Navigation Bar */}
+          <div className="rounded-2xl bg-white/10 border border-white/15 p-4 flex flex-wrap items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => onSelectTask(0)}
+              className="min-h-[44px] px-4 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold whitespace-nowrap"
+            >
+              ← Вернуться к заданиям
+            </button>
+            <button
+              type="button"
+              onClick={onNextWorkshop}
+              className="min-h-[44px] px-5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 whitespace-nowrap shadow-sm"
+            >
+              Дальше: Редактор-издатель
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {showcaseBook && (

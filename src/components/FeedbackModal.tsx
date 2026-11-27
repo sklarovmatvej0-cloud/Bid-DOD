@@ -154,7 +154,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
               <div className="rounded-xl bg-[#f3f6fc] border border-[#13294b]/10 p-4">
                 <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#135c75] mb-1">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Чему это учит на кафедре БИД
+                  Как это работает в профессии
                 </div>
                 <p className="text-xs sm:text-sm leading-relaxed text-[#13294b]/85">
                   {feedback.lesson}

@@ -74,6 +74,12 @@ export const MEDIA = {
   studioArch: w2ArticleArchImg,
 } as const;
 
+export const HERO_ROLES = {
+  role1: pub('assets/hero/role1.png'),
+  role2: pub('assets/hero/role2.png'),
+  role3: pub('assets/hero/role3.png'),
+} as const;
+
 export const STICKERS = {
   bannerBid: pub('assets/stickers/banner_bid.png'),
   heroBid: pub('assets/stickers/hero_bid.png'),

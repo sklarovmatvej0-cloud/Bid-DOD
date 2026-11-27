@@ -180,11 +180,13 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(INTERVIEW_AUDIO_TEXT);
       utterance.lang = 'ru-RU';
-      utterance.rate = 1.15;
-      utterance.pitch = 1.04;
+      utterance.rate = 1.28;
+      utterance.pitch = 1.12;
       const voices = window.speechSynthesis.getVoices();
       const preferred =
-        voices.find((v) => v.lang.startsWith('ru') && /google|dmitry|pavel|svetlana/i.test(v.name)) ||
+        voices.find((v) => v.lang.startsWith('ru') && /svetlana|milena|google/i.test(v.name)) ||
+        voices.find((v) => v.lang.startsWith('ru') && /irina|elena|katya|tatyana|female/i.test(v.name)) ||
+        voices.find((v) => v.lang.startsWith('ru') && !/pavel|dmitry|yuri|maxim|male/i.test(v.name)) ||
         voices.find((v) => v.lang.startsWith('ru'));
       if (preferred) utterance.voice = preferred;
       utterance.onend = () => setTapePlaying(false);

@@ -22,6 +22,7 @@ import { FeedbackState, KnigogradSave, TaskProgress } from '../game/knigogradTyp
 import { soundEngine } from '../game/sound';
 import { MissionBanner } from './MissionBanner';
 import { ProjectShowcase3D } from './ProjectShowcase3D';
+import { WorkshopStepper } from './WorkshopStepper';
 
 interface Workshop1ViewProps {
   taskIdx: number;
@@ -540,6 +541,16 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
         }`}
       >
         <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w1-t${taskIdx}`}>
+          <WorkshopStepper
+            trackTitle={WORKSHOPS[0].title}
+            taskTitles={WORKSHOPS[0].tasks.map((t) => t.title)}
+            activeIdx={taskIdx}
+            progress={progress}
+            accentColor="#135c75"
+            dark={isDarkOcean}
+            onSelectTask={onSelectTask}
+          />
+
           {/* ============ TASK 0: ILLUSTRATED CATALOG SEARCH ============ */}
           {taskIdx === 0 && (
             <>
@@ -556,6 +567,10 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 ]}
                 resultPreview="Читатель получает точно подобранную книгу, а не похожее издание того же автора."
                 accentColor="#135c75"
+                proTip={{
+                  term: 'АБИС OPAC',
+                  text: 'Электронный каталог библиотеки, где книги ищут по автору, году, теме и ключевым словам.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -730,6 +745,10 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 ]}
                 resultPreview="Читатель получил книгу по заказу, а все издания расставлены строго по отраслевым отделам ББК."
                 accentColor="#135c75"
+                proTip={{
+                  term: 'Индекс ББК',
+                  text: 'Цифровой шифр на ярлыке книги, по которому издания стоят на полках по отраслям знаний (например, 85.12 — дизайн, 26.8 — география).',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -1019,6 +1038,10 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 ]}
                 resultPreview="Библиографическая запись полностью соответствует изданию и готова к публикации в каталоге."
                 accentColor="#135c75"
+                proTip={{
+                  term: 'Библиографическая запись по ГОСТу',
+                  text: 'Официальный «паспорт» книги в каталоге (автор, год, издательство, тема), который сверяют с титульным листом.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -1206,6 +1229,10 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 resultPreview="Сформированы все 3 тематических раздела виртуальной выставки «Тайны океанских глубин»."
                 accentColor="#7dd3fc"
                 dark
+                proTip={{
+                  term: 'Виртуальная выставка',
+                  text: 'Тематическая онлайн-подборка изданий с обложками и краткими аннотациями, которая помогает читателям выбрать книги по интересам.',
+                }}
                 onHint={handleHintClick}
               />
 

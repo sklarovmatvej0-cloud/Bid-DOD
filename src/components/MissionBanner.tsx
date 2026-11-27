@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { CheckCircle2, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 
 export interface MissionStep {
   text: string;
   done: boolean;
+}
+
+export interface MissionProTip {
+  term: string;
+  text: string;
 }
 
 interface MissionBannerProps {
@@ -16,6 +21,7 @@ interface MissionBannerProps {
   resultPreview: string;
   accentColor: string;
   dark?: boolean;
+  proTip?: MissionProTip;
   onHint: () => void;
 }
 
@@ -28,6 +34,7 @@ export const MissionBanner: React.FC<MissionBannerProps> = ({
   steps,
   accentColor,
   dark = false,
+  proTip,
   onHint,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -121,15 +128,36 @@ export const MissionBanner: React.FC<MissionBannerProps> = ({
               {title}
             </h2>
             {!collapsed && (
-              <div
-                className={`rounded-xl px-3.5 py-2.5 border-l-4 text-xs sm:text-sm leading-relaxed ${
-                  dark
-                    ? 'bg-white/6 text-white/90'
-                    : 'bg-[#f6f9fd] text-[#13294b]/85'
-                }`}
-                style={{ borderLeftColor: dark ? '#7dd3fc' : accentColor }}
-              >
-                {goal}
+              <div className="space-y-2.5">
+                <div
+                  className={`rounded-xl px-3.5 py-2.5 border-l-4 text-xs sm:text-sm leading-relaxed ${
+                    dark
+                      ? 'bg-white/6 text-white/90'
+                      : 'bg-[#f6f9fd] text-[#13294b]/85'
+                  }`}
+                  style={{ borderLeftColor: dark ? '#7dd3fc' : accentColor }}
+                >
+                  {goal}
+                </div>
+                {proTip && (
+                  <div
+                    className={`rounded-xl px-3.5 py-2 border flex items-start gap-2.5 text-xs leading-relaxed ${
+                      dark
+                        ? 'bg-[#0b1f38] border-[#7dd3fc]/25 text-white/85'
+                        : 'bg-[#fffbeb] border-[#fde68a] text-[#78350f]'
+                    }`}
+                  >
+                    <BookOpen
+                      className={`w-4 h-4 shrink-0 mt-0.5 ${
+                        dark ? 'text-[#7dd3fc]' : 'text-[#b45309]'
+                      }`}
+                    />
+                    <div>
+                      <span className="font-extrabold">Простыми словами ({proTip.term}): </span>
+                      <span>{proTip.text}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

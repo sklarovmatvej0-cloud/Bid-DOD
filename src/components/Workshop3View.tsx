@@ -32,6 +32,7 @@ import { soundEngine } from '../game/sound';
 import { MissionBanner } from './MissionBanner';
 import { ProjectShowcase3D } from './ProjectShowcase3D';
 import { AnimatedNumber } from './VisualEffects';
+import { WorkshopStepper } from './WorkshopStepper';
 
 interface Workshop3ViewProps {
   taskIdx: number;
@@ -441,6 +442,15 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
       {/* Main Game Stage */}
       <div className="flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w3-t${taskIdx}`}>
+          <WorkshopStepper
+            trackTitle={WORKSHOPS[2].title}
+            taskTitles={WORKSHOPS[2].tasks.map((t) => t.title)}
+            activeIdx={taskIdx}
+            progress={progress}
+            accentColor="#13294b"
+            onSelectTask={onSelectTask}
+          />
+
           {/* ============ TASK 0: AUDIENCE INSIGHTS + INTERACTIVE EVENT POSTER & TICKET STUDIO ============ */}
           {taskIdx === 0 && (
             <>
@@ -457,6 +467,10 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 ]}
                 resultPreview="Собрана городская афиша и электронный пригласительный билет «Библионочи»."
                 accentColor="#13294b"
+                proTip={{
+                  term: 'Концепция социокультурного проекта',
+                  text: 'Замысел события, основанный на интересах аудитории: формат, запоминающееся название и партнёры, которые усилят программу.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -751,6 +765,10 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 ]}
                 resultPreview="Все 3 пространства на карте библиотеки оснащены в пределах гранта 300 тыс. ₽."
                 accentColor="#13294b"
+                proTip={{
+                  term: 'Грантовая смета',
+                  text: 'План расходов выделенного бюджета: важно распределить деньги между техникой, активностями и комфортом гостей, не выходя за лимит.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -1111,6 +1129,10 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 ]}
                 resultPreview="Готовый SMM-пост с каруселью карточек, кнопкой онлайн-записи и прогнозом от 400 гостей."
                 accentColor="#13294b"
+                proTip={{
+                  term: 'SMM-воронка и CTA',
+                  text: 'Путь читателя от первого взгляда на пост до регистрации: цепляющий заголовок, понятные карточки, призыв к действию (CTA) и удачное время публикации.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -1522,6 +1544,10 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                 ]}
                 resultPreview="Все 4 комментария отработаны, читатели получили точные ответы."
                 accentColor="#13294b"
+                proTip={{
+                  term: 'Комьюнити-менеджмент',
+                  text: 'Общение с подписчиками от лица организации: быстрые, вежливые и точные ответы на вопросы, критику и слухи формируют доверие к бренду.',
+                }}
                 onHint={handleHintClick}
               />
 

@@ -32,6 +32,7 @@ import { FeedbackState, KnigogradSave, TaskProgress } from '../game/knigogradTyp
 import { soundEngine } from '../game/sound';
 import { MissionBanner } from './MissionBanner';
 import { ProjectShowcase3D } from './ProjectShowcase3D';
+import { WorkshopStepper } from './WorkshopStepper';
 
 interface Workshop2ViewProps {
   taskIdx: number;
@@ -684,6 +685,15 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
       {/* Main Game Stage */}
       <div className="flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w2-t${taskIdx}`}>
+          <WorkshopStepper
+            trackTitle={WORKSHOPS[1].title}
+            taskTitles={WORKSHOPS[1].tasks.map((t) => t.title)}
+            activeIdx={taskIdx}
+            progress={progress}
+            accentColor="#c41e2e"
+            onSelectTask={onSelectTask}
+          />
+
           {/* ============ TASK 0: EDITORIAL INBOX + REALISTIC VISUAL MAGAZINE ISSUE MOCKUP ============ */}
           {taskIdx === 0 && (
             <>
@@ -700,6 +710,10 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 ]}
                 resultPreview="Пополосный макет журнала заполнен: обложка, содержание и развороты автоматически собраны."
                 accentColor="#c41e2e"
+                proTip={{
+                  term: 'Пополосный макет',
+                  text: 'Схема всего номера журнала по страницам (полосам), где заранее расписано, какая статья и фото стоят на каждой странице.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -1205,6 +1219,10 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 ]}
                 resultPreview="Факты сверены с первоисточником, речевые повторы устранены, авторский стиль сохранён."
                 accentColor="#c41e2e"
+                proTip={{
+                  term: 'Фактчекинг',
+                  text: 'Проверка дат, имён, цифр и цитат по первоисточнику (например, стенограмме интервью), чтобы в печать не попала ошибка.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -1407,6 +1425,10 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 ]}
                 resultPreview="Журнальный разворот стр. 08–09 свёрстан чисто, читаемо и по издательским стандартам."
                 accentColor="#c41e2e"
+                proTip={{
+                  term: 'Модульная сетка',
+                  text: 'Невидимые направляющие линии и колонки на странице, благодаря которым текст, заголовки и фотографии стоят ровно и легко читаются.',
+                }}
                 onHint={handleHintClick}
               />
 
@@ -1977,6 +1999,10 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                 ]}
                 resultPreview="Журнал «Культура · № 01» прошёл препресс-контроль и подписан в печать."
                 accentColor="#c41e2e"
+                proTip={{
+                  term: 'Сигнальный экземпляр и препресс',
+                  text: 'Финальная сверка всех страниц перед отправкой в типографию: проверяют возрастную маркировку, тираж, заголовки и подписи к фото.',
+                }}
                 onHint={handleHintClick}
               />
 

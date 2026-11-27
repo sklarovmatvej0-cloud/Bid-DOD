@@ -47,6 +47,23 @@ export function App() {
   const [playerPos, setPlayerPos] = useState<PlayerWorldPos>({ x: 0, z: 5.1, rotY: Math.PI });
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const [muted, setMuted] = useState<boolean>(() => soundEngine.isMuted());
+  const [streakCount, setStreakCount] = useState(0);
+  const [achievementToast, setAchievementToast] = useState<{
+    title: string;
+    subtitle: string;
+    badge: string;
+  } | null>(null);
+  const achievementTimerRef = useRef<number | null>(null);
+
+  const triggerAchievement = useCallback((title: string, subtitle: string, badge: string) => {
+    if (achievementTimerRef.current) {
+      window.clearTimeout(achievementTimerRef.current);
+    }
+    setAchievementToast({ title, subtitle, badge });
+    achievementTimerRef.current = window.setTimeout(() => {
+      setAchievementToast(null);
+    }, 4200);
+  }, []);
 
   const saveRef = useRef(save);
   saveRef.current = save;
@@ -94,6 +111,7 @@ export function App() {
   const handleRecordMistake = useCallback(
     (wId: WorkshopId, taskIdx: number) => {
       soundEngine.playErrorThud();
+      setStreakCount(0);
       const key = getWorkshopKey(wId);
       updateSave((prev) => {
         const arr = [...prev[key]];
@@ -157,6 +175,29 @@ export function App() {
         soundEngine.playSuccessChime();
       }
 
+      if (!alreadyDone && awarded > 0) {
+        window.setTimeout(() => soundEngine.playBiblikCoin(), 240);
+        const nextStreak = awarded === 3 ? streakCount + 1 : 0;
+        setStreakCount(nextStreak);
+
+        const nextArr = [...saveRef.current[key]];
+        nextArr[taskIdx] = { ...nextArr[taskIdx], completed: true, bibliks: awarded };
+        const trackDone = nextArr.every((t) => t.completed);
+
+        if (nextStreak >= 3) {
+          triggerAchievement('🔥 Комбо-серия!', `${nextStreak} точных ответа подряд без ошибок`, `+${awarded} Б`);
+        } else if (trackDone) {
+          const trackBadges: Record<WorkshopId, { badge: string; title: string }> = {
+            1: { badge: '📚 Мастер каталога', title: 'Трек «Инфоресурсы БИД» пройден полностью!' },
+            2: { badge: '✒️ Зоркий редактор', title: 'Трек «Издательское дело» пройден полностью!' },
+            3: { badge: '🚀 SMM-продюсер', title: 'Трек «Креативный менеджмент» пройден полностью!' },
+          };
+          triggerAchievement(trackBadges[wId].badge, trackBadges[wId].title, `+${awarded} Б`);
+        } else if (awarded === 3) {
+          triggerAchievement('⚡ Точно с первой попытки!', 'Максимальная награда за шаг без подсказок', '+3 Б');
+        }
+      }
+
       updateSave((prev) => {
         const arr = [...prev[key]];
         if (!arr[taskIdx].completed) {
@@ -180,7 +221,7 @@ export function App() {
         alreadyDone,
       });
     },
-    [updateSave]
+    [updateSave, streakCount, triggerAchievement]
   );
 
   const handleShowError = useCallback((title: string, body: string) => {
@@ -330,6 +371,26 @@ export function App() {
         onAction={handleModalAction}
         onBackToWorld={() => handleNavigate({ view: 'hub' })}
       />
+
+      {achievementToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed top-20 right-4 z-50 max-w-xs rounded-2xl bg-[#13294b] text-white border border-[#7dd3fc]/40 shadow-2xl px-4 py-3 flex items-center gap-3 animate-card-in"
+        >
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-display font-extrabold text-[#7dd3fc] truncate">
+              {achievementToast.title}
+            </div>
+            <div className="text-[11px] text-white/85 leading-snug mt-0.5">
+              {achievementToast.subtitle}
+            </div>
+          </div>
+          <span className="px-2.5 py-1 rounded-xl bg-[#0284c7] text-white font-mono-tabular text-xs font-extrabold shrink-0">
+            {achievementToast.badge}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

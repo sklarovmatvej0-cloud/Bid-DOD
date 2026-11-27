@@ -14,7 +14,7 @@ import {
   MapPin,
   Sparkles,
 } from 'lucide-react';
-import { MEDIA, STICKERS } from '../game/assets';
+import { HERO_ROLES, MEDIA } from '../game/assets';
 import {
   DEPARTMENT_PROGRAMS,
   DEPARTMENT_RESEARCH_HIGHLIGHTS,
@@ -60,57 +60,45 @@ const ROLE_SHOWCASE: Record<
   {
     shortTitle: string;
     roleTitle: string;
-    question: string;
     tagline: string;
     description: string;
     skills: string[];
-    primarySticker: string;
-    altSticker: string;
+    characterImg: string;
     accentColor: string;
-    softBg: string;
     pillBorder: string;
   }
 > = {
   1: {
     shortTitle: 'Инфо-специалист',
     roleTitle: 'Специалист по информационным ресурсам',
-    question: 'Любишь находить точные факты и наводить порядок в хаосе?',
-    tagline: '«Сейчас всё загуглим. Профессионально»',
+    tagline: 'Поиск · Электронный каталог · ГОСТ · Выставка',
     description:
-      'Ищи редкие издания в электронном каталоге, систематизируй фонды, проверяй библиографические записи по ГОСТу и собирай виртуальную выставку.',
-    skills: ['Поиск в каталоге', 'Систематизация', 'Сверка по ГОСТу', 'Мультимедиа-выставка'],
-    primarySticker: STICKERS.searchPro,
-    altSticker: STICKERS.database,
+      'Ищи редкие издания в электронном каталоге, систематизируй фонды, проверяй библиографические записи и собирай мультимедийную выставку.',
+    skills: ['Поиск в каталоге', 'Систематизация', 'Сверка по ГОСТу', 'Виртуальная выставка'],
+    characterImg: HERO_ROLES.role1,
     accentColor: '#0284c7',
-    softBg: 'from-[#e0f2fe] via-[#f0f9ff] to-[#ffffff]',
     pillBorder: 'border-[#0284c7]/35',
   },
   2: {
     shortTitle: 'Редактор-издатель',
     roleTitle: 'Редактор-издатель медиапроектов',
-    question: 'Замечаешь ошибки в тексте и любишь собирать красивые развороты?',
-    tagline: '«Я не придираюсь. Я редактирую»',
+    tagline: 'Рукопись · Фактчекинг · Вёрстка · Выпуск',
     description:
-      'Работай с авторской рукописью, проверяй факты, редактируй интервью, верстай журнальный разворот и готовь выпуск к печати.',
+      'Работай с авторскими материалами, редактируй текст по стенограмме интервью, верстай журнальный разворот и готовь издание к выпуску.',
     skills: ['Фактчекинг', 'Редактура текста', 'Модульная вёрстка', 'Выпуск издания'],
-    primarySticker: STICKERS.editing,
-    altSticker: STICKERS.noFormat,
+    characterImg: HERO_ROLES.role2,
     accentColor: '#c41e2e',
-    softBg: 'from-[#ffe4e6] via-[#fff1f2] to-[#ffffff]',
     pillBorder: 'border-[#c41e2e]/35',
   },
   3: {
     shortTitle: 'Креативный менеджер',
     roleTitle: 'Креативный менеджер в БИД',
-    question: 'Хочешь придумывать события, вести соцсети и развивать проекты?',
-    tagline: '«Тихо! Я генерирую идеи»',
+    tagline: 'Социокультурный проект · Грант · SMM · Бренд',
     description:
-      'Проектируй программу «Библионочи», распределяй грантовый бюджет, собирай SMM-анонс и продвигай бренд учреждения культуры.',
-    skills: ['Концепция события', 'Бюджет проекта', 'SMM-продвижение', 'Развитие бренда'],
-    primarySticker: STICKERS.ideas,
-    altSticker: STICKERS.content,
+      'Проектируй программу «Библионочи», управляй бюджетом гранта и площадками, запускай SMM-продвижение и развивай бренд учреждения культуры.',
+    skills: ['Концепция события', 'Бюджет гранта', 'SMM-анонс', 'Развитие бренда'],
+    characterImg: HERO_ROLES.role3,
     accentColor: '#7c3aed',
-    softBg: 'from-[#ede9fe] via-[#f5f3ff] to-[#ffffff]',
     pillBorder: 'border-[#7c3aed]/35',
   },
 };
@@ -146,8 +134,8 @@ export const HubScreen: React.FC<HubScreenProps> = ({
   return (
     <div className="h-full overflow-y-auto desk-scroll px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-6xl mx-auto space-y-6 animate-card-in">
-        {/* 1. LIGHT SPARKLE-INSPIRED HERO + CLICK-CHARACTER ROLE CYCLER */}
-        <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#fffaf4] via-[#f4f8ff] to-[#eef4ff] text-[#13294b] px-6 py-8 sm:px-10 sm:py-11 shadow-xl border border-[#13294b]/8">
+        {/* 1. LIGHT SPARKLE-INSPIRED HERO + FULL MAIN INFO + 3D INTERACTIVE CHARACTER */}
+        <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#fffaf4] via-[#f3f8ff] to-[#edf4ff] text-[#13294b] px-6 py-7 sm:px-9 sm:py-9 shadow-xl border border-[#13294b]/10">
           {/* Soft Pastel Glow Orbs */}
           <div
             className="pointer-events-none absolute -top-24 -left-16 w-80 h-80 rounded-full bg-[#fde68a]/35 blur-3xl animate-hero-float"
@@ -160,25 +148,38 @@ export const HubScreen: React.FC<HubScreenProps> = ({
           />
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Column: Clean Editorial Headline + Actions */}
-            <div className="lg:col-span-6 space-y-5">
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-[#0284c7]/20 shadow-xs text-xs font-extrabold uppercase tracking-wider text-[#0369a1]">
+            {/* Left Column: Complete Main Info + 3D Tour Preview + Stats */}
+            <div className="lg:col-span-7 space-y-5">
+              <div className="space-y-2.5">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#0284c7]/20 shadow-xs text-xs font-extrabold uppercase tracking-wider text-[#0369a1]">
                   <Sparkles className="w-3.5 h-3.5 shrink-0 text-[#c41e2e]" />
-                  <span>Кафедра библиотечно-информационной деятельности</span>
+                  <span>Кафедра библиотечно-информационной деятельности · БГИИК</span>
                 </div>
-                <h1 className="font-display font-extrabold text-3xl sm:text-5xl leading-[1.06] tracking-tight text-[#13294b]">
-                  Узнай, какая роль{' '}
-                  <span className="italic text-[#c41e2e]">тебе ближе.</span>
+                <h1 className="font-display font-extrabold text-3xl sm:text-[42px] leading-[1.08] tracking-tight text-[#13294b]">
+                  Информация управляет миром.{' '}
+                  <span className="italic text-[#c41e2e]">А кто управляет информацией?</span>
                 </h1>
-                <p className="text-sm sm:text-base text-[#13294b]/75 leading-relaxed max-w-lg">
-                  Нажимай на маскота справа — он примеряет три профессии «Инфополиса БИД». Выбери
-                  образ, который откликается, и начни свой первый трек.
+                <p className="text-sm sm:text-base text-[#13294b]/80 leading-relaxed max-w-2xl">
+                  Попробуй себя в мире профессий «Инфополис БИД» на реальных рабочих задачах:
+                  управляй электронным каталогом и фондом, редактируй и верстай новый выпуск
+                  журнала, запускай культурный проект и продвигай его в цифровой среде.
                 </p>
               </div>
 
-              {/* Primary CTA for Active Role + 3D Tour */}
-              <div className="flex flex-wrap items-center gap-3 pt-1">
+              {/* Primary CTAs */}
+              <div className="flex flex-wrap items-center gap-3">
+                {onSwitchTo3D && (
+                  <button
+                    type="button"
+                    onClick={onSwitchTo3D}
+                    className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#c41e2e] via-[#dc2638] to-[#e11d48] hover:brightness-110 active:scale-[0.99] text-white font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all shadow-lg"
+                  >
+                    <Box className="w-5 h-5 text-white shrink-0" />
+                    <span>Открыть 3D-тур по Инфополису БИД</span>
+                    <ArrowRight className="w-4 h-4 shrink-0" />
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() =>
@@ -188,117 +189,150 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                       task: getNextTaskIdx(selectedRole),
                     })
                   }
-                  className="min-h-[52px] px-6 rounded-2xl text-white font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 shadow-lg transition-all hover:brightness-110 active:scale-[0.99]"
+                  className="min-h-[52px] px-5 rounded-2xl text-white font-display font-extrabold text-sm inline-flex items-center gap-2 shadow-md transition-all hover:brightness-110"
                   style={{ backgroundColor: activeRole.accentColor }}
                 >
-                  <span>Начать трек «{activeRole.shortTitle}»</span>
+                  <span>Начать: {activeRole.shortTitle}</span>
                   <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
+              </div>
+
+              {/* 3 Stat Cards + Compact 3D World Preview Card */}
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-1">
+                <div className="sm:col-span-6 grid grid-cols-3 gap-2">
+                  <div className="rounded-2xl bg-white/90 border border-[#13294b]/10 px-2.5 py-3 text-center shadow-xs">
+                    <div className="font-display font-extrabold text-xl text-[#0284c7] font-mono-tabular">
+                      3
+                    </div>
+                    <div className="text-[11px] font-bold text-[#13294b]/75">проф-трека</div>
+                  </div>
+                  <div className="rounded-2xl bg-white/90 border border-[#13294b]/10 px-2.5 py-3 text-center shadow-xs">
+                    <div className="font-display font-extrabold text-xl text-[#c41e2e] font-mono-tabular">
+                      12
+                    </div>
+                    <div className="text-[11px] font-bold text-[#13294b]/75">кейсов</div>
+                  </div>
+                  <div className="rounded-2xl bg-white/90 border border-[#13294b]/10 px-2.5 py-3 text-center shadow-xs">
+                    <div className="font-display font-extrabold text-xl text-[#7c3aed] font-mono-tabular">
+                      36
+                    </div>
+                    <div className="text-[11px] font-bold text-[#13294b]/75">библиков</div>
+                  </div>
+                </div>
 
                 {onSwitchTo3D && (
                   <button
                     type="button"
                     onClick={onSwitchTo3D}
-                    className="min-h-[52px] px-5 rounded-2xl bg-white/95 hover:bg-white border border-[#13294b]/12 text-[#13294b] font-display font-extrabold text-sm inline-flex items-center gap-2 shadow-xs transition-all"
+                    className="sm:col-span-6 group rounded-2xl bg-white/95 hover:bg-white border border-[#13294b]/10 p-2.5 flex items-center gap-3 text-left shadow-xs transition-all"
                   >
-                    <Box className="w-4 h-4 text-[#0284c7] shrink-0" />
-                    <span>Открыть 3D-тур</span>
+                    <img
+                      src={MEDIA.studioRoom}
+                      alt="Виртуальный 3D-мир Инфополис БИД"
+                      className="w-14 h-14 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-extrabold text-[#13294b] truncate">
+                        3D-мир «Инфополис БИД»
+                      </div>
+                      <div className="text-[11px] text-[#13294b]/65 line-clamp-2 leading-snug mt-0.5">
+                        Холл · Библиотека · Редакция · Зал «Библионочи»
+                      </div>
+                    </div>
+                    <span className="w-8 h-8 rounded-xl bg-[#eef6fc] text-[#0284c7] group-hover:bg-[#0284c7] group-hover:text-white flex items-center justify-center font-extrabold text-sm transition-colors shrink-0">
+                      →
+                    </span>
                   </button>
                 )}
               </div>
-
-              {/* Minimal Metadata Row + Scroll Link */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-bold text-[#13294b]/60 pt-1">
-                <span>• 3 проф-трека</span>
-                <span>• 12 интерактивных кейсов</span>
-                <span>• До 36 библиков</span>
-                <a
-                  href="#tracks-section"
-                  className="text-[#135c75] hover:underline font-extrabold"
-                >
-                  Все треки ниже ↓
-                </a>
-              </div>
             </div>
 
-            {/* Right Column: Airy Standing Character Stage (Click Character to Switch Roles) */}
-            <div className="lg:col-span-6 flex flex-col items-center">
+            {/* Right Column: Crisp 3D Standing Character — Click to Switch Roles */}
+            <div className="lg:col-span-5 flex flex-col items-center">
               <div
                 key={selectedRole}
                 className="relative w-full max-w-md flex flex-col items-center text-center animate-card-in"
               >
                 {/* Floating Role Counter Pill */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#13294b]/10 shadow-sm text-xs font-extrabold text-[#13294b] mb-2">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#13294b]/10 shadow-sm text-xs font-extrabold text-[#13294b]">
                   <span
                     className="w-2.5 h-2.5 rounded-full"
                     style={{ backgroundColor: activeRole.accentColor }}
                   />
                   <span>
-                    Роль {selectedRole} из 3 · {activeRole.shortTitle}
+                    Роль {selectedRole} из 3 · Нажми на персонажа ✨
                   </span>
                 </div>
 
-                {/* Standing Interactive Character — Click to Cycle Roles */}
-                <div className="relative flex flex-col items-center my-1">
-                  {/* Soft Radial Halo Behind Character */}
+                {/* Standing Crisp 3D Character */}
+                <div className="relative flex flex-col items-center mt-2">
                   <div
-                    className="pointer-events-none absolute inset-4 rounded-full blur-2xl opacity-55"
+                    className="pointer-events-none absolute inset-6 rounded-full blur-3xl opacity-30"
                     style={{ backgroundColor: activeRole.accentColor }}
                     aria-hidden="true"
                   />
                   <button
                     type="button"
                     onClick={cycleNextRole}
-                    aria-label="Нажмите на маскота, чтобы сменить роль"
-                    className="group relative z-10 flex flex-col items-center focus:outline-none cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95"
+                    aria-label="Нажмите на персонажа, чтобы сменить роль"
+                    className="group relative z-10 flex flex-col items-center focus:outline-none cursor-pointer transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
                   >
                     <img
-                      src={activeRole.primarySticker}
+                      src={activeRole.characterImg}
                       alt={activeRole.roleTitle}
-                      className="w-52 h-52 sm:w-60 sm:h-60 object-contain drop-shadow-[0_18px_28px_rgba(19,41,75,0.18)] select-none"
+                      className="h-72 sm:h-80 w-auto object-contain drop-shadow-[0_18px_28px_rgba(19,41,75,0.2)] select-none"
                     />
-                    {/* Ground Shadow */}
                     <div
-                      className="w-36 h-4 rounded-full bg-[#13294b]/15 blur-sm -mt-2 group-hover:scale-95 transition-transform"
+                      className="w-36 h-3.5 rounded-full bg-[#13294b]/15 blur-sm -mt-2"
                       aria-hidden="true"
                     />
-                    <span className="mt-2 px-3.5 py-1 rounded-full bg-[#13294b] text-white text-[11px] font-extrabold shadow-md group-hover:bg-[#0284c7] transition-colors">
-                      Нажми на маскота — сменить роль ✨
-                    </span>
                   </button>
                 </div>
 
-                {/* Compact Floating Role Info Pill */}
-                <div className="mt-3 w-full rounded-2xl bg-white/85 backdrop-blur-xs border border-white shadow-md px-5 py-3.5 space-y-1.5">
-                  <div
-                    className="text-xs font-extrabold italic"
-                    style={{ color: activeRole.accentColor }}
-                  >
-                    {activeRole.tagline}
+                {/* Floating Role Info Card */}
+                <div className="mt-2 w-full rounded-2xl bg-white/92 backdrop-blur-xs border border-white shadow-md px-4 py-3.5 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span
+                      className="text-[11px] font-extrabold uppercase tracking-wider"
+                      style={{ color: activeRole.accentColor }}
+                    >
+                      Трек 0{selectedRole} · {activeRole.shortTitle}
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      {([1, 2, 3] as WorkshopId[]).map((wId) => {
+                        const isCurrent = selectedRole === wId;
+                        return (
+                          <button
+                            key={wId}
+                            type="button"
+                            onClick={() => setSelectedRole(wId)}
+                            aria-label={`Выбрать роль ${ROLE_SHOWCASE[wId].shortTitle}`}
+                            className={`h-2 rounded-full transition-all ${
+                              isCurrent ? 'w-6' : 'w-2 bg-[#13294b]/20 hover:bg-[#13294b]/40'
+                            }`}
+                            style={
+                              isCurrent ? { backgroundColor: activeRole.accentColor } : undefined
+                            }
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
-                  <h2 className="font-display font-extrabold text-base sm:text-lg text-[#13294b] leading-snug">
+                  <h2 className="font-display font-extrabold text-base text-[#13294b] text-left leading-snug">
                     {activeRole.roleTitle}
                   </h2>
-                  <p className="text-xs text-[#13294b]/75 leading-relaxed">
+                  <p className="text-xs text-[#13294b]/75 text-left leading-relaxed">
                     {activeRole.description}
                   </p>
-                  {/* 3 Role Step Dots */}
-                  <div className="flex items-center justify-center gap-2 pt-1.5">
-                    {([1, 2, 3] as WorkshopId[]).map((wId) => {
-                      const isCurrent = selectedRole === wId;
-                      return (
-                        <button
-                          key={wId}
-                          type="button"
-                          onClick={() => setSelectedRole(wId)}
-                          aria-label={`Выбрать роль ${ROLE_SHOWCASE[wId].shortTitle}`}
-                          className={`h-2 rounded-full transition-all ${
-                            isCurrent ? 'w-7' : 'w-2 bg-[#13294b]/20 hover:bg-[#13294b]/40'
-                          }`}
-                          style={isCurrent ? { backgroundColor: activeRole.accentColor } : undefined}
-                        />
-                      );
-                    })}
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                    {activeRole.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="px-2 py-0.5 rounded-full bg-[#f4f7fc] border border-[#13294b]/8 text-[10px] font-bold text-[#13294b]"
+                      >
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>

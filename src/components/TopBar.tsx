@@ -102,7 +102,7 @@ export const TopBar: React.FC<TopBarProps> = ({
         <button
           type="button"
           onClick={handleGoMain}
-          className="flex items-center gap-2 text-left group min-h-[40px] rounded-lg hover:bg-white/8 transition-colors px-1.5 min-w-0 overflow-hidden"
+          className={`${showBackToMain ? 'hidden sm:flex' : 'flex'} items-center gap-2 text-left group min-h-[40px] rounded-lg hover:bg-white/8 transition-colors px-1.5 min-w-0 overflow-hidden`}
           title="Вернуться на главную страницу"
         >
           <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#c41e2e] flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">

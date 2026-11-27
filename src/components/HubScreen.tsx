@@ -449,29 +449,25 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                       >
                         {prog.id === 'spo-bid'
                           ? 'СПО'
-                          : prog.id === 'bak-bid-base'
-                            ? 'ВО · БАЗА'
-                            : prog.id === 'bak-pub'
-                              ? 'ВО'
-                              : prog.id === 'mag-bid'
-                                ? 'МАГИСТР.'
-                                : 'АСПИРАНТ.'}
+                          : prog.id === 'bak-bid-base' || prog.id === 'bak-pub'
+                            ? 'Бакалавриат'
+                            : prog.id === 'mag-bid'
+                              ? 'Магистратура'
+                              : 'Аспирантура'}
                       </span>
                     )}
                   </div>
                   <div>
                     <div className="text-xs font-extrabold leading-snug line-clamp-2">
-                      {prog.id === 'spo-bid'
-                        ? 'СПО · Библиотечно-информационная деятельность'
-                        : prog.id === 'bak-bid-base'
-                          ? 'ВО · Библиотечно-информационная деятельность'
-                          : prog.id === 'bak-bid'
-                            ? 'Профиль «Креативный менеджмент в БИД»'
-                            : prog.id === 'bak-pub'
-                              ? 'ВО · Издательское дело'
-                              : prog.id === 'mag-bid'
-                                ? 'Магистратура БИД'
-                                : 'Аспирантура 5.10.4'}
+                      {prog.id === 'spo-bid' || prog.id === 'bak-bid-base'
+                        ? 'Библиотечно-информационная деятельность'
+                        : prog.id === 'bak-bid'
+                          ? 'Креативный менеджмент в БИД'
+                          : prog.id === 'bak-pub'
+                            ? 'Издательское дело'
+                            : prog.id === 'mag-bid'
+                              ? 'Управление БИД'
+                              : 'Библиотековедение и книговедение'}
                     </div>
                     <div
                       className={`text-[10px] mt-0.5 truncate ${

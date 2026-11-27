@@ -537,7 +537,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
       {/* Main Game Stage */}
       <div
         className={`flex-1 min-h-0 overflow-y-auto desk-scroll px-4 sm:px-6 py-4 ${
-          taskIdx === 3 ? 'bg-[#081c33] text-white' : ''
+          taskIdx === 3 ? 'bg-[#eef6fc] text-[#13294b]' : ''
         }`}
       >
         <div className="max-w-6xl mx-auto space-y-4 animate-card-in" key={`w1-t${taskIdx}`}>
@@ -547,7 +547,6 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
             activeIdx={taskIdx}
             progress={progress}
             accentColor="#135c75"
-            dark={taskIdx === 3}
             onSelectTask={onSelectTask}
           />
 
@@ -1227,8 +1226,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                   { text: 'Нажми «Открыть готовую выставку!»', done: progress[3].completed },
                 ]}
                 resultPreview="Сформированы все 3 тематических раздела виртуальной выставки «Тайны океанских глубин»."
-                accentColor="#7dd3fc"
-                dark
+                accentColor="#135c75"
                 proTip={{
                   term: 'Виртуальная выставка',
                   text: 'Тематическая онлайн-подборка изданий с обложками и краткими аннотациями, которая помогает читателям выбрать книги по интересам.',
@@ -1240,17 +1238,17 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 {/* LEFT: 10 REAL OCEAN COVERS + LIVE BRIEF STRIP */}
                 <div className="lg:col-span-7 space-y-4">
                   {/* Live Book Inspector */}
-                  <div className="rounded-2xl bg-[#102a49] border border-white/15 p-4 flex flex-col sm:flex-row gap-4 items-start">
+                  <div className="rounded-2xl bg-white border border-[#13294b]/12 shadow-sm p-4 flex flex-col sm:flex-row gap-4 items-start">
                     <img
                       src={inspectedOcean.cover}
                       alt={inspectedOcean.title}
-                      className="w-24 h-32 object-cover rounded-xl shadow-lg shrink-0"
+                      className="w-24 h-32 object-cover rounded-xl shadow-md shrink-0"
                     />
                     <div className="flex-1 space-y-2">
-                      <div className="font-display font-extrabold text-base text-[#7dd3fc]">
+                      <div className="font-display font-extrabold text-base text-[#135c75]">
                         {inspectedOcean.title}
                       </div>
-                      <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-[#13294b]/80 leading-relaxed">
                         {inspectedOcean.desc}
                       </p>
                       <div className="flex flex-wrap gap-1.5 pt-1">
@@ -1292,12 +1290,12 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                             soundEngine.playSelectTick();
                             setInspectedOceanId(book.id);
                           }}
-                          className={`group rounded-2xl p-2 text-left transition-all cursor-grab active:cursor-grabbing select-none border-2 ${
+                          className={`group rounded-2xl p-2 text-left transition-all cursor-grab active:cursor-grabbing select-none border-2 shadow-2xs ${
                             isSelected
-                              ? 'bg-white/18 border-[#7dd3fc]'
+                              ? 'bg-[#e0f2fe] border-[#0284c7]'
                               : isUsed
-                                ? 'bg-[#157a4f]/25 border-[#86efac]/50 opacity-75'
-                                : 'bg-white/8 border-white/10 hover:bg-white/15'
+                                ? 'bg-[#ecfdf3] border-[#86efac] opacity-80'
+                                : 'bg-white border-[#13294b]/10 hover:border-[#0284c7]/40'
                           }`}
                         >
                           <div className="relative">
@@ -1307,11 +1305,11 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                               draggable={false}
                               className="w-full aspect-[3/4] object-cover rounded-xl mb-1.5"
                             />
-                            <span className="absolute top-1 right-1 w-6 h-6 rounded-lg bg-black/55 text-white flex items-center justify-center">
+                            <span className="absolute top-1 right-1 w-6 h-6 rounded-lg bg-[#13294b]/70 text-white flex items-center justify-center">
                               {isUsed ? <Check className="w-3.5 h-3.5 text-[#86efac]" /> : <GripVertical className="w-3.5 h-3.5" />}
                             </span>
                           </div>
-                          <div className="text-[11px] font-bold text-white leading-tight line-clamp-2">
+                          <div className="text-[11px] font-bold text-[#13294b] leading-tight line-clamp-2">
                             {book.title}
                           </div>
                         </div>
@@ -1340,13 +1338,13 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                           if (id) assignOceanBook(id, div.id);
                           setDraggedOceanId(null);
                         }}
-                        className={`rounded-2xl overflow-hidden border-2 transition-all ${
+                        className={`rounded-2xl overflow-hidden border-2 transition-all bg-white shadow-xs ${
                           isOver
-                            ? 'border-[#38bdf8] scale-[1.015] shadow-lg'
+                            ? 'border-[#0284c7] scale-[1.015] shadow-md'
                             : draggedOceanId && placedIds.length < 2
-                              ? 'border-[#7dd3fc]/60'
-                              : 'border-white/15'
-                        } bg-white/8`}
+                              ? 'border-[#0284c7]/50'
+                              : 'border-[#13294b]/12'
+                        }`}
                       >
                         <div
                           className="px-4 py-2.5 flex items-center justify-between gap-2"
@@ -1356,9 +1354,9 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                             <div className="font-display font-bold text-xs sm:text-sm text-white">
                               {div.title}
                             </div>
-                            <div className="text-[11px] text-white/80">{div.desc}</div>
+                            <div className="text-[11px] text-white/85">{div.desc}</div>
                           </div>
-                          <span className="font-mono-tabular text-xs font-extrabold bg-black/25 px-2.5 py-1 rounded-lg">
+                          <span className="font-mono-tabular text-xs font-extrabold bg-black/25 text-white px-2.5 py-1 rounded-lg">
                             {placedIds.length} / 2
                           </span>
                         </div>
@@ -1373,10 +1371,10 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                                   key={slotIdx}
                                   className={`min-h-[82px] rounded-xl border-2 border-dashed flex items-center justify-center text-center p-2 text-[11px] font-bold transition-colors ${
                                     isOver
-                                      ? 'border-[#38bdf8] bg-[#38bdf8]/15 text-[#7dd3fc]'
+                                      ? 'border-[#0284c7] bg-[#e0f2fe] text-[#0369a1]'
                                       : draggedOceanId
-                                        ? 'border-[#7dd3fc]/60 bg-white/10 text-white/85'
-                                        : 'border-white/25 bg-white/5 text-white/60'
+                                        ? 'border-[#0284c7]/45 bg-[#f0f9ff] text-[#135c75]'
+                                        : 'border-[#13294b]/20 bg-[#f8fafc] text-[#13294b]/55'
                                   }`}
                                 >
                                   Перетащи обложку сюда
@@ -1386,14 +1384,14 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                             return (
                               <div
                                 key={book.id}
-                                className="rounded-xl bg-white/14 p-2 flex items-center gap-2 relative group"
+                                className="rounded-xl bg-[#f4f7fc] border border-[#13294b]/10 p-2 flex items-center gap-2 relative group"
                               >
                                 <img
                                   src={book.cover}
                                   alt={book.title}
                                   className="w-11 h-15 object-cover rounded-lg shrink-0"
                                 />
-                                <div className="text-[11px] font-bold text-white leading-tight line-clamp-3 pr-4">
+                                <div className="text-[11px] font-bold text-[#13294b] leading-tight line-clamp-3 pr-4">
                                   {book.title}
                                 </div>
                                 <button

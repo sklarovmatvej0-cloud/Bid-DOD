@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -154,6 +154,41 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
   const [solvedEdits, setSolvedEdits] = useState<Record<string, string>>({});
   const [editFeedback, setEditFeedback] = useState<{ ok: boolean; text: string } | null>(null);
   const [tapePlaying, setTapePlaying] = useState(false);
+
+  const INTERVIEW_AUDIO_TEXT =
+    'Для выставки мы отобрали двенадцать редких изданий из фонда библиотеки и дополнили их авторскими иллюстрациями студентов. Каждую гравюру печатали вручную на офортном станке в две краски — тёмно-синюю и киноварь. На подготовку всей экспозиции у команды ушло три недели, а открытие назначили на пятницу в восемнадцать ноль-ноль.';
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [taskIdx]);
+
+  const handleToggleTape = () => {
+    soundEngine.playSelectTick();
+    if (tapePlaying) {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      setTapePlaying(false);
+      return;
+    }
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(INTERVIEW_AUDIO_TEXT);
+      utterance.lang = 'ru-RU';
+      utterance.rate = 0.98;
+      utterance.onend = () => setTapePlaying(false);
+      utterance.onerror = () => setTapePlaying(false);
+      setTapePlaying(true);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setTapePlaying(true);
+    }
+  };
 
   /* ---- Task 2: InDesign-style Page Studio ---- */
   const [layoutStep, setLayoutStep] = useState<number>(0);
@@ -1232,11 +1267,12 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                   <div className="flex items-center gap-2.5">
                     <button
                       type="button"
-                      onClick={() => setTapePlaying((p) => !p)}
-                      className="w-9 h-9 rounded-full bg-[#c41e2e] hover:bg-[#dc2638] text-white flex items-center justify-center shrink-0 shadow-sm transition-colors"
+                      onClick={handleToggleTape}
+                      className="min-h-[36px] px-3 rounded-full bg-[#c41e2e] hover:bg-[#dc2638] text-white inline-flex items-center gap-1.5 text-xs font-extrabold shrink-0 shadow-sm transition-colors"
                       title={tapePlaying ? 'Пауза записи' : 'Прослушать стенограмму интервью'}
                     >
-                      {tapePlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+                      {tapePlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                      <span>{tapePlaying ? 'Пауза' : 'Прослушать'}</span>
                     </button>
                     <div>
                       <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#7dd3fc]">

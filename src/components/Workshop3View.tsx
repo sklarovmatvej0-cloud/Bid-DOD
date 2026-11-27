@@ -82,9 +82,10 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
   const [conceptStepIdx, setConceptStepIdx] = useState(0);
   const [conceptPicks, setConceptPicks] = useState<Record<string, string>>({});
 
-  /* ---- Task 1: Festival Command Center + Budget & Timeline ---- */
+  /* ---- Task 1: Festival Command Center + Budget & Drag-and-Drop Floorplan ---- */
   const [activeZoneIdx, setActiveZoneIdx] = useState(0);
   const [budgetPicks, setBudgetPicks] = useState<Record<string, string>>({});
+  const [overFloorZone, setOverFloorZone] = useState<'main' | 'zones' | 'care' | null>(null);
 
   /* ---- Task 2: Tabbed SMM Studio + Realistic Smartphone ---- */
   const [smmStepIdx, setSmmStepIdx] = useState(0);
@@ -903,7 +904,7 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         {activeZone.title}
                       </h3>
                       <p className="text-xs text-[#13294b]/70">
-                        Выбери оснащение площадки — изменения сразу отобразятся на архитектурной схеме справа.
+                        Выбери или перетащи оснащение прямо на нужный зал на схеме справа — смета и настроение пересчитаются сразу.
                       </p>
                     </div>
                   </div>
@@ -915,11 +916,16 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                         <button
                           key={opt.id}
                           type="button"
+                          draggable
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData('text/plain', `${activeZone.id}:${opt.id}`);
+                          }}
+                          onDragEnd={() => setOverFloorZone(null)}
                           onClick={() => {
                             soundEngine.playSelectTick();
                             setBudgetPicks((prev) => ({ ...prev, [activeZone.id]: opt.id }));
                           }}
-                          className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
+                          className={`w-full p-4 rounded-2xl border-2 text-left transition-all cursor-grab active:cursor-grabbing ${
                             selected
                               ? 'bg-[#13294b] text-white border-[#13294b] shadow-sm'
                               : 'bg-[#f6f8fc] hover:bg-[#e8effa] text-[#13294b] border-transparent'
@@ -981,12 +987,30 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setActiveZoneIdx(0)}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setOverFloorZone('main');
+                            }}
+                            onDragLeave={() => setOverFloorZone(null)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setOverFloorZone(null);
+                              const payload = e.dataTransfer.getData('text/plain');
+                              const [zId, optId] = payload.split(':');
+                              if (zId === 'main' && optId) {
+                                soundEngine.playStampThud();
+                                setBudgetPicks((prev) => ({ ...prev, main: optId }));
+                                setActiveZoneIdx(0);
+                              }
+                            }}
                             className={`col-span-7 rounded-xl p-2.5 text-left border-2 transition-all flex flex-col justify-between min-h-[104px] ${
-                              active
-                                ? 'bg-[#173661] border-[#38bdf8] shadow-md'
-                                : p0?.isBest
-                                  ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
-                                  : 'bg-white/5 border-white/15 hover:bg-white/10'
+                              overFloorZone === 'main'
+                                ? 'bg-[#1e4b85] border-[#7dd3fc] border-dashed scale-[1.02]'
+                                : active
+                                  ? 'bg-[#173661] border-[#38bdf8] shadow-md'
+                                  : p0?.isBest
+                                    ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
+                                    : 'bg-white/5 border-white/15 hover:bg-white/10'
                             }`}
                           >
                             <div className="flex items-center justify-between gap-1 text-[9px] font-mono-tabular font-extrabold">
@@ -1014,12 +1038,30 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setActiveZoneIdx(1)}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setOverFloorZone('zones');
+                            }}
+                            onDragLeave={() => setOverFloorZone(null)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setOverFloorZone(null);
+                              const payload = e.dataTransfer.getData('text/plain');
+                              const [zId, optId] = payload.split(':');
+                              if (zId === 'zones' && optId) {
+                                soundEngine.playStampThud();
+                                setBudgetPicks((prev) => ({ ...prev, zones: optId }));
+                                setActiveZoneIdx(1);
+                              }
+                            }}
                             className={`col-span-5 rounded-xl p-2.5 text-left border-2 transition-all flex flex-col justify-between min-h-[104px] ${
-                              active
-                                ? 'bg-[#173661] border-[#38bdf8] shadow-md'
-                                : p1?.isBest
-                                  ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
-                                  : 'bg-white/5 border-white/15 hover:bg-white/10'
+                              overFloorZone === 'zones'
+                                ? 'bg-[#1e4b85] border-[#7dd3fc] border-dashed scale-[1.02]'
+                                : active
+                                  ? 'bg-[#173661] border-[#38bdf8] shadow-md'
+                                  : p1?.isBest
+                                    ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
+                                    : 'bg-white/5 border-white/15 hover:bg-white/10'
                             }`}
                           >
                             <div className="flex items-center justify-between gap-1 text-[9px] font-mono-tabular font-extrabold">
@@ -1047,12 +1089,30 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setActiveZoneIdx(2)}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setOverFloorZone('care');
+                            }}
+                            onDragLeave={() => setOverFloorZone(null)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setOverFloorZone(null);
+                              const payload = e.dataTransfer.getData('text/plain');
+                              const [zId, optId] = payload.split(':');
+                              if (zId === 'care' && optId) {
+                                soundEngine.playStampThud();
+                                setBudgetPicks((prev) => ({ ...prev, care: optId }));
+                                setActiveZoneIdx(2);
+                              }
+                            }}
                             className={`col-span-12 rounded-xl p-2.5 text-left border-2 transition-all flex items-center justify-between gap-3 ${
-                              active
-                                ? 'bg-[#173661] border-[#38bdf8] shadow-md'
-                                : p2?.isBest
-                                  ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
-                                  : 'bg-white/5 border-white/15 hover:bg-white/10'
+                              overFloorZone === 'care'
+                                ? 'bg-[#1e4b85] border-[#7dd3fc] border-dashed scale-[1.01]'
+                                : active
+                                  ? 'bg-[#173661] border-[#38bdf8] shadow-md'
+                                  : p2?.isBest
+                                    ? 'bg-[#157a4f]/25 border-[#4ade80]/50'
+                                    : 'bg-white/5 border-white/15 hover:bg-white/10'
                             }`}
                           >
                             <div className="min-w-0">

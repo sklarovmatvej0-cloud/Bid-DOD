@@ -1329,58 +1329,85 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                     </h3>
                   </div>
 
-                  {/* Interactive Article Paragraphs */}
+                  {/* Interactive Article Paragraphs with Inline Red-Pen Markup */}
                   <div className="space-y-3 text-sm sm:text-[15px] leading-relaxed text-[#13294b]">
                     {EDITORIAL_EDITS.map((item, idx) => {
                       const solvedText = getDraftLine(item);
                       const isCurrent = editStepIdx === idx;
                       return (
-                        <button
+                        <div
                           key={item.id}
-                          type="button"
-                          onClick={() => {
-                            soundEngine.playSelectTick();
-                            setEditStepIdx(idx);
-                            setEditFeedback(null);
-                          }}
-                          className={`w-full text-left rounded-xl p-3.5 border-2 transition-all block ${
+                          className={`rounded-xl p-3.5 border-2 transition-all ${
                             isCurrent
-                              ? 'bg-[#f0f7ff] border-[#0284c7] shadow-xs'
+                              ? 'bg-[#fff8f8] border-[#c41e2e] shadow-sm'
                               : solvedText
                                 ? 'bg-[#effaf3] border-[#157a4f]/30'
-                                : 'bg-white border-[#13294b]/10 hover:border-[#13294b]/30'
+                                : 'bg-white border-[#13294b]/10 hover:border-[#c41e2e]/40'
                           }`}
                         >
-                          <div className="flex items-center justify-between gap-2 mb-1">
-                            <span className="font-mono-tabular text-[10px] font-extrabold uppercase tracking-wider text-[#13294b]/55">
-                              Абзац #{idx + 1} · {item.category}
-                            </span>
-                            {solvedText ? (
-                              <span className="text-[11px] font-extrabold text-[#157a4f] inline-flex items-center gap-1">
-                                <Check className="w-3.5 h-3.5" /> Вычитано
+                          <button
+                            type="button"
+                            onClick={() => {
+                              soundEngine.playPencilMark();
+                              setEditStepIdx(idx);
+                              setEditFeedback(null);
+                            }}
+                            className="w-full text-left block"
+                          >
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-mono-tabular text-[10px] font-extrabold uppercase tracking-wider text-[#13294b]/55">
+                                Абзац #{idx + 1} · {item.category}
                               </span>
-                            ) : isCurrent ? (
-                              <span className="text-[11px] font-extrabold text-[#0284c7]">
-                                На проверке
-                              </span>
-                            ) : null}
-                          </div>
-
-                          {solvedText ? (
-                            <div className="space-y-1">
-                              {item.hasError && (
-                                <div className="text-xs line-through text-[#c41e2e]/75">
-                                  {item.original}
-                                </div>
+                              {solvedText ? (
+                                <span className="text-[11px] font-extrabold text-[#157a4f] inline-flex items-center gap-1">
+                                  <Check className="w-3.5 h-3.5" /> Вычитано
+                                </span>
+                              ) : (
+                                <span className="text-[11px] font-extrabold text-[#c41e2e]">
+                                  {isCurrent ? '✎ Красная ручка' : '✎ Нажми для правки'}
+                                </span>
                               )}
-                              <div className="font-bold text-[#157a4f]">
-                                {item.hasError ? solvedText : item.original}
-                              </div>
                             </div>
-                          ) : (
-                            <div className="font-semibold text-[#13294b]">{item.original}</div>
+
+                            {solvedText ? (
+                              <div className="space-y-1">
+                                {item.hasError && (
+                                  <div className="text-xs line-through text-[#c41e2e]/75">
+                                    {item.original}
+                                  </div>
+                                )}
+                                <div className="font-bold text-[#157a4f]">
+                                  {item.hasError ? solvedText : item.original}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="font-semibold text-[#13294b]">
+                                <span className="bg-[#ffe4e6] border-b-2 border-dashed border-[#c41e2e] px-1 py-0.5 rounded">
+                                  {item.original}
+                                </span>
+                              </div>
+                            )}
+                          </button>
+
+                          {/* Inline Red-Pen Correction Options right inside the manuscript */}
+                          {isCurrent && !solvedText && (
+                            <div className="mt-3 pt-3 border-t border-[#c41e2e]/20 space-y-1.5 animate-card-in">
+                              <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#c41e2e]">
+                                Выбери правку по стенограмме:
+                              </div>
+                              {item.options.map((opt) => (
+                                <button
+                                  key={opt.id}
+                                  type="button"
+                                  onClick={() => handleAnswerEdit(opt)}
+                                  className="w-full px-3 py-2.5 rounded-xl bg-white hover:bg-[#13294b] hover:text-white border border-[#13294b]/15 text-left text-xs font-bold text-[#13294b] transition-colors"
+                                >
+                                  {opt.text}
+                                </button>
+                              ))}
+                            </div>
                           )}
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -1478,7 +1505,7 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                         InLayout Studio
                       </span>
                       <span className="text-[11px] text-white/80">
-                        Разворот полос 08–09 · Нажимай на элементы макета или переключай вкладки справа
+                        Разворот полос 08–09 · Перетаскивай блоки справа на разворот или нажимай на слоты
                       </span>
                     </div>
                     <button
@@ -1549,13 +1576,22 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                           {/* LEFT PAGE (PAGE 08): RUBRIC, HEADLINE, BYLINE & 2 TEXT COLUMNS */}
                           <div className="md:col-span-6 space-y-3 md:pr-2">
-                            {/* Clickable Headline Zone (Step 0) */}
+                            {/* Clickable & Droppable Headline Zone (Step 0) */}
                             <div
                               role="button"
                               tabIndex={0}
                               onClick={() => {
                                 soundEngine.playSelectTick();
                                 setLayoutStep(0);
+                              }}
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                const hId = e.dataTransfer.getData('text/plain') as 'dry' | 'clickbait' | 'strong';
+                                if (hId === 'dry' || hId === 'clickbait' || hId === 'strong') {
+                                  soundEngine.playPaperSlide();
+                                  setLayoutHeadline(hId);
+                                }
                               }}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') setLayoutStep(0);
@@ -1580,13 +1616,22 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                               </div>
                             </div>
 
-                            {/* Clickable Two-Column Article Text (Step 2) */}
+                            {/* Clickable & Droppable Two-Column Article Text (Step 2) */}
                             <div
                               role="button"
                               tabIndex={0}
                               onClick={() => {
                                 soundEngine.playSelectTick();
                                 setLayoutStep(2);
+                              }}
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                const pId = e.dataTransfer.getData('text/plain') as 'textover' | 'columns' | 'giant';
+                                if (pId === 'textover' || pId === 'columns' || pId === 'giant') {
+                                  soundEngine.playPaperSlide();
+                                  setLayoutPreset(pId);
+                                }
                               }}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') setLayoutStep(2);
@@ -1653,13 +1698,22 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                               />
                             </div>
 
-                            {/* Clickable Photo Caption Bar (Step 3) */}
+                            {/* Clickable & Droppable Photo Caption Bar (Step 3) */}
                             <div
                               role="button"
                               tabIndex={0}
                               onClick={() => {
                                 soundEngine.playSelectTick();
                                 setLayoutStep(3);
+                              }}
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                const cId = e.dataTransfer.getData('text/plain') as 'none' | 'wrong' | 'good';
+                                if (cId === 'none' || cId === 'wrong' || cId === 'good') {
+                                  soundEngine.playPaperSlide();
+                                  setLayoutCaption(cId);
+                                }
                               }}
                               className={`px-3 py-2 rounded-xl border-2 text-[11px] font-bold cursor-pointer transition-all flex items-center justify-between gap-2 ${
                                 layoutStep === 3
@@ -1871,17 +1925,20 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                           <button
                             key={h.id}
                             type="button"
+                            draggable
+                            onDragStart={(e) => e.dataTransfer.setData('text/plain', h.id)}
                             onClick={() => {
                               soundEngine.playSelectTick();
                               setLayoutHeadline(h.id);
                             }}
-                            className={`w-full px-4 py-3 rounded-xl text-left text-xs sm:text-sm font-bold transition-colors ${
+                            className={`w-full px-4 py-3 rounded-xl text-left text-xs sm:text-sm font-bold transition-colors flex items-center justify-between gap-2 cursor-grab active:cursor-grabbing ${
                               layoutHeadline === h.id
                                 ? 'bg-[#13294b] text-white'
                                 : 'bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b]'
                             }`}
                           >
-                            {h.text}
+                            <span>{h.text}</span>
+                            <GripVertical className="w-4 h-4 opacity-45 shrink-0" />
                           </button>
                         ))}
                       </div>
@@ -1930,27 +1987,32 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                             <button
                               key={preset.id}
                               type="button"
+                              draggable
+                              onDragStart={(e) => e.dataTransfer.setData('text/plain', preset.id)}
                               onClick={() => {
                                 soundEngine.playSelectTick();
                                 setLayoutPreset(preset.id);
                               }}
-                              className={`w-full px-4 py-3 rounded-xl text-left transition-colors flex items-center gap-3 ${
+                              className={`w-full px-4 py-3 rounded-xl text-left transition-colors flex items-center justify-between gap-3 cursor-grab active:cursor-grabbing ${
                                 active
                                   ? 'bg-[#13294b] text-white'
                                   : 'bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b]'
                               }`}
                             >
-                              <Icon className="w-4 h-4 shrink-0" />
-                              <div className="min-w-0">
-                                <div className="text-xs sm:text-sm font-extrabold">{preset.label}</div>
-                                <div
-                                  className={`text-[11px] ${
-                                    active ? 'text-white/75' : 'text-[#13294b]/65'
-                                  }`}
-                                >
-                                  {preset.desc}
+                              <div className="flex items-center gap-3 min-w-0">
+                                <Icon className="w-4 h-4 shrink-0" />
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-extrabold">{preset.label}</div>
+                                  <div
+                                    className={`text-[11px] ${
+                                      active ? 'text-white/75' : 'text-[#13294b]/65'
+                                    }`}
+                                  >
+                                    {preset.desc}
+                                  </div>
                                 </div>
                               </div>
+                              <GripVertical className="w-4 h-4 opacity-45 shrink-0" />
                             </button>
                           );
                         })}
@@ -1963,17 +2025,20 @@ export const Workshop2View: React.FC<Workshop2ViewProps> = ({
                           <button
                             key={c.id}
                             type="button"
+                            draggable
+                            onDragStart={(e) => e.dataTransfer.setData('text/plain', c.id)}
                             onClick={() => {
                               soundEngine.playSelectTick();
                               setLayoutCaption(c.id);
                             }}
-                            className={`w-full px-4 py-3 rounded-xl text-left text-xs sm:text-sm font-bold transition-colors ${
+                            className={`w-full px-4 py-3 rounded-xl text-left text-xs sm:text-sm font-bold transition-colors flex items-center justify-between gap-2 cursor-grab active:cursor-grabbing ${
                               layoutCaption === c.id
                                 ? 'bg-[#13294b] text-white'
                                 : 'bg-[#f4f7fc] hover:bg-[#e7eef9] text-[#13294b]'
                             }`}
                           >
-                            {c.text}
+                            <span>{c.text}</span>
+                            <GripVertical className="w-4 h-4 opacity-45 shrink-0" />
                           </button>
                         ))}
                       </div>

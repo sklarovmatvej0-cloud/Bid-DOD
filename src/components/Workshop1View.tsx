@@ -112,10 +112,13 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
   const [shelfOverZone, setShelfOverZone] = useState<'reader' | 'travel' | null>(null);
   const totalMisplacedCount = DESIGN_SHELF_BOOKS.filter((b) => b.isMisplaced).length;
 
-  /* ---- Task 2: Spot-the-Difference Desk ---- */
+  /* ---- Task 2: Drag-and-Drop Catalog Record Builder ---- */
   const [fixedYear, setFixedYear] = useState(false);
   const [fixedTopic, setFixedTopic] = useState(false);
   const [deskToast, setDeskToast] = useState<string | null>(null);
+  const [draggedCatalogTag, setDraggedCatalogTag] = useState<'title' | 'author' | 'year' | 'topic' | null>(null);
+  const [selectedCatalogTag, setSelectedCatalogTag] = useState<'title' | 'author' | 'year' | 'topic' | null>(null);
+  const [overCatalogField, setOverCatalogField] = useState<'title' | 'author' | 'year' | 'topic' | null>(null);
 
   /* ---- Task 3: Drag-and-Drop Ocean Exhibition ---- */
   const [sections, setSections] = useState<Record<'life' | 'research' | 'expedition', string[]>>(
@@ -251,8 +254,61 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
     }, 280);
   };
 
-  /* ---- Task 2 Bibliographic Record Verification ---- */
+  /* ---- Task 2 Bibliographic Record Verification & Tag Drop ---- */
+  const handleDropCatalogTag = (
+    field: 'author' | 'title' | 'year' | 'topic',
+    tag: 'author' | 'title' | 'year' | 'topic' | null
+  ) => {
+    setOverCatalogField(null);
+    setDraggedCatalogTag(null);
+    if (!tag) return;
+
+    if (field === 'author' || field === 'title') {
+      soundEngine.playErrorThud();
+      onRecordMistake(2);
+      setDeskToast(
+        field === 'author'
+          ? 'Автор (Елена Крылова) уже указан верно — это поле исправлять не нужно.'
+          : 'Заглавие («Экспедиция на дно океана») уже указано верно — это поле исправлять не нужно.'
+      );
+      setSelectedCatalogTag(null);
+      return;
+    }
+
+    if (tag !== field) {
+      soundEngine.playErrorThud();
+      onRecordMistake(2);
+      setDeskToast(
+        field === 'year'
+          ? 'В поле «Год издания» нужно перенести бирку с годом выпуска книги (2022).'
+          : 'В поле «Предметная рубрика» нужно перенести бирку с темой книги («Глубоководные экспедиции»).'
+      );
+      setSelectedCatalogTag(null);
+      return;
+    }
+
+    if (field === 'year' && !fixedYear) {
+      soundEngine.playPencilMark();
+      setFixedYear(true);
+      setSelectedCatalogTag(null);
+      setDeskToast('Ошибка №1 исправлена! Год издания уточнён: 2022.');
+      if (fixedTopic) triggerTask2Win();
+    }
+
+    if (field === 'topic' && !fixedTopic) {
+      soundEngine.playPencilMark();
+      setFixedTopic(true);
+      setSelectedCatalogTag(null);
+      setDeskToast('Ошибка №2 исправлена! Предметная рубрика: «Глубоководные экспедиции».');
+      if (fixedYear) triggerTask2Win();
+    }
+  };
+
   const handleStickyFieldClick = (field: 'author' | 'title' | 'year' | 'topic') => {
+    if (selectedCatalogTag) {
+      handleDropCatalogTag(field, selectedCatalogTag);
+      return;
+    }
     if (field === 'author' || field === 'title') {
       soundEngine.playErrorThud();
       onRecordMistake(2);
@@ -1110,6 +1166,60 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                       .
                     </p>
                   </div>
+
+                  {/* Draggable Book Data Tags Tray */}
+                  <div className="rounded-xl bg-[#f3f7fc] border border-[#135c75]/20 p-3.5 space-y-2">
+                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#135c75]">
+                      Бирки с данными книги · перетащи на ошибочное поле справа (или нажми):
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {(
+                        [
+                          { id: 'year', label: '2022', done: fixedYear },
+                          { id: 'topic', label: 'Глубоководные экспедиции', done: fixedTopic },
+                          { id: 'author', label: 'Елена Крылова', done: false },
+                          { id: 'title', label: 'Экспедиция на дно океана', done: false },
+                        ] as const
+                      ).map((tag) => {
+                        const isSelected = selectedCatalogTag === tag.id;
+                        return (
+                          <button
+                            key={tag.id}
+                            type="button"
+                            disabled={tag.done}
+                            draggable={!tag.done}
+                            onDragStart={(e) => {
+                              setDraggedCatalogTag(tag.id);
+                              setSelectedCatalogTag(tag.id);
+                              e.dataTransfer.setData('text/plain', tag.id);
+                            }}
+                            onDragEnd={() => {
+                              setDraggedCatalogTag(null);
+                              setOverCatalogField(null);
+                            }}
+                            onClick={() => {
+                              soundEngine.playSelectTick();
+                              setSelectedCatalogTag((prev) => (prev === tag.id ? null : tag.id));
+                            }}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 border-2 transition-all select-none ${
+                              tag.done
+                                ? 'bg-[#e9f7ef] border-[#86efac] text-[#157a4f] opacity-70 cursor-default'
+                                : isSelected
+                                  ? 'bg-[#13294b] border-[#13294b] text-white shadow-sm'
+                                  : 'bg-white border-[#135c75]/25 text-[#13294b] hover:border-[#0284c7] cursor-grab active:cursor-grabbing'
+                            }`}
+                          >
+                            {tag.done ? (
+                              <Check className="w-3.5 h-3.5" />
+                            ) : (
+                              <GripVertical className="w-3.5 h-3.5 opacity-60" />
+                            )}
+                            <span>{tag.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
 
                 {/* RIGHT: AUTHENTIC BIBLIOGRAPHIC CATALOG RECORD */}
@@ -1117,7 +1227,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b-2 border-[#c41e2e]/35 pb-2">
                       <span className="text-xs font-extrabold uppercase tracking-wider text-[#135c75]">
-                        Библиографическая запись · нажми на поле с ошибкой
+                        Библиографическая запись · перетащи бирку на поле с ошибкой
                       </span>
                       <span className="font-mono-tabular text-xs font-extrabold text-[#13294b]">
                         Исправлено: {(fixedYear ? 1 : 0) + (fixedTopic ? 1 : 0)} / 2
@@ -1127,7 +1237,26 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleStickyFieldClick('title')}
-                      className="w-full p-3.5 rounded-xl bg-white hover:bg-[#f4f7fc] text-left border border-[#13294b]/12 transition-colors flex items-center justify-between gap-2"
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setOverCatalogField('title');
+                      }}
+                      onDragLeave={() => setOverCatalogField(null)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const tag = (e.dataTransfer.getData('text/plain') || draggedCatalogTag) as
+                          | 'title'
+                          | 'author'
+                          | 'year'
+                          | 'topic'
+                          | null;
+                        handleDropCatalogTag('title', tag);
+                      }}
+                      className={`w-full p-3.5 rounded-xl text-left border-2 transition-colors flex items-center justify-between gap-2 ${
+                        overCatalogField === 'title'
+                          ? 'bg-[#e0f2fe] border-[#0284c7]'
+                          : 'bg-white hover:bg-[#f4f7fc] border-[#13294b]/12'
+                      }`}
                     >
                       <div>
                         <div className="text-[11px] font-bold text-[#135c75]">Заглавие (поле 200$a)</div>
@@ -1141,7 +1270,26 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleStickyFieldClick('author')}
-                      className="w-full p-3.5 rounded-xl bg-white hover:bg-[#f4f7fc] text-left border border-[#13294b]/12 transition-colors flex items-center justify-between gap-2"
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setOverCatalogField('author');
+                      }}
+                      onDragLeave={() => setOverCatalogField(null)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const tag = (e.dataTransfer.getData('text/plain') || draggedCatalogTag) as
+                          | 'title'
+                          | 'author'
+                          | 'year'
+                          | 'topic'
+                          | null;
+                        handleDropCatalogTag('author', tag);
+                      }}
+                      className={`w-full p-3.5 rounded-xl text-left border-2 transition-colors flex items-center justify-between gap-2 ${
+                        overCatalogField === 'author'
+                          ? 'bg-[#e0f2fe] border-[#0284c7]'
+                          : 'bg-white hover:bg-[#f4f7fc] border-[#13294b]/12'
+                      }`}
                     >
                       <div>
                         <div className="text-[11px] font-bold text-[#135c75]">Автор (поле 700$a)</div>
@@ -1155,10 +1303,27 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleStickyFieldClick('year')}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setOverCatalogField('year');
+                      }}
+                      onDragLeave={() => setOverCatalogField(null)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const tag = (e.dataTransfer.getData('text/plain') || draggedCatalogTag) as
+                          | 'title'
+                          | 'author'
+                          | 'year'
+                          | 'topic'
+                          | null;
+                        handleDropCatalogTag('year', tag);
+                      }}
                       className={`w-full p-3.5 rounded-xl text-left border-2 transition-all flex items-center justify-between gap-2 ${
                         fixedYear
                           ? 'bg-[#e9f7ef] border-[#157a4f]'
-                          : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
+                          : overCatalogField === 'year' || selectedCatalogTag === 'year'
+                            ? 'bg-[#e0f2fe] border-[#0284c7] border-dashed'
+                            : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
                       }`}
                     >
                       <div>
@@ -1175,17 +1340,34 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                         </div>
                       </div>
                       <span className="text-[11px] font-extrabold text-[#135c75]">
-                        {fixedYear ? 'Исправлено' : 'Исправить'}
+                        {fixedYear ? 'Исправлено' : selectedCatalogTag ? 'Вставить сюда ↓' : 'Перетащи бирку'}
                       </span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleStickyFieldClick('topic')}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setOverCatalogField('topic');
+                      }}
+                      onDragLeave={() => setOverCatalogField(null)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const tag = (e.dataTransfer.getData('text/plain') || draggedCatalogTag) as
+                          | 'title'
+                          | 'author'
+                          | 'year'
+                          | 'topic'
+                          | null;
+                        handleDropCatalogTag('topic', tag);
+                      }}
                       className={`w-full p-3.5 rounded-xl text-left border-2 transition-all flex items-center justify-between gap-2 ${
                         fixedTopic
                           ? 'bg-[#e9f7ef] border-[#157a4f]'
-                          : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
+                          : overCatalogField === 'topic' || selectedCatalogTag === 'topic'
+                            ? 'bg-[#e0f2fe] border-[#0284c7] border-dashed'
+                            : 'bg-white hover:bg-[#fff0f0] border-[#135c75]/25 hover:border-[#c41e2e]'
                       }`}
                     >
                       <div>
@@ -1202,7 +1384,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                         </div>
                       </div>
                       <span className="text-[11px] font-extrabold text-[#135c75]">
-                        {fixedTopic ? 'Исправлено' : 'Исправить'}
+                        {fixedTopic ? 'Исправлено' : selectedCatalogTag ? 'Вставить сюда ↓' : 'Перетащи бирку'}
                       </span>
                     </button>
                   </div>

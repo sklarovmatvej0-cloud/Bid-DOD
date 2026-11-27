@@ -54,19 +54,19 @@ interface ShelfBook {
 }
 
 const DESIGN_SHELF_BOOKS: ShelfBook[] = [
-  { id: 's4-1', title: 'История шрифта и книги', author: 'В. Белый', code: '85.12 / Б43', department: 'Дизайн', cover: MEDIA.coverFontHistory },
-  { id: 's4-2', title: 'Плакат как искусство', author: 'Е. Бекова', code: '85.12 / Б42', department: 'Дизайн', cover: MEDIA.coverPoster },
-  { id: 's4-6', title: 'Маршруты города', author: 'Н. Савина', code: '26.8 / С13', department: 'География и путешествия', cover: MEDIA.coverRoutes, isMisplaced: true },
-  { id: 's4-4', title: 'Модульная сетка', author: 'М. Миронова', code: '85.12 / М64', department: 'Дизайн', cover: MEDIA.coverGrid },
-  { id: 's4-5', title: 'Теория цвета', author: 'М. Миронова', code: '85.12 / М64', department: 'Дизайн', cover: MEDIA.coverColor },
-  { id: 's4-3', title: 'Язык формы', author: 'М. Миронова', code: '85.12 / М64', department: 'Дизайн', cover: MEDIA.coverForm, isTarget: true },
-  { id: 's4-8', title: 'Искусство путешествовать', author: 'А. Ветров', code: '26.8 / В39', department: 'География и путешествия', cover: MEDIA.coverTravel, isMisplaced: true },
-  { id: 's4-7', title: 'Дизайн и город', author: 'П. Чернов', code: '85.12 / Ч49', department: 'Дизайн', cover: MEDIA.coverDesignCity },
+  { id: 's4-1', title: 'История шрифта и книги', author: 'В. Белый', code: '85.15 / Б43', department: 'Графика', cover: MEDIA.coverFontHistory },
+  { id: 's4-2', title: 'Плакат как искусство', author: 'Е. Бекова', code: '85.15 / Б42', department: 'Графика', cover: MEDIA.coverPoster },
+  { id: 's4-6', title: 'Маршруты города', author: 'Н. Савина', code: '26.8 / С13', department: 'Географические науки', cover: MEDIA.coverRoutes, isMisplaced: true },
+  { id: 's4-4', title: 'Модульная сетка', author: 'М. Миронова', code: '85.15 / М64', department: 'Графика', cover: MEDIA.coverGrid },
+  { id: 's4-5', title: 'Теория цвета', author: 'М. Миронова', code: '85.15 / М64', department: 'Графика', cover: MEDIA.coverColor },
+  { id: 's4-3', title: 'Язык формы', author: 'М. Миронова', code: '85.15 / М64', department: 'Графика', cover: MEDIA.coverForm, isTarget: true },
+  { id: 's4-8', title: 'Искусство путешествовать', author: 'А. Ветров', code: '26.8 / В39', department: 'Географические науки', cover: MEDIA.coverTravel, isMisplaced: true },
+  { id: 's4-7', title: 'Дизайн и город', author: 'П. Чернов', code: '85.15 / Ч49', department: 'Графика', cover: MEDIA.coverDesignCity },
 ];
 
 const TRAVEL_SHELF_BOOKS: ShelfBook[] = [
-  { id: 's2-1', title: 'Морские открытия', author: 'П. Орлов', code: '26.8 / О-66', department: 'География и путешествия', cover: MEDIA.oceanDiscoveries },
-  { id: 's2-2', title: 'Экспедиция на дно океана', author: 'Е. Крылова', code: '26.8 / К85', department: 'География и путешествия', cover: MEDIA.oceanExpedition },
+  { id: 's2-1', title: 'Морские открытия', author: 'П. Орлов', code: '26.8 / О-66', department: 'Географические науки', cover: MEDIA.oceanDiscoveries },
+  { id: 's2-2', title: 'Экспедиция на дно океана', author: 'Е. Крылова', code: '26.8 / К85', department: 'Географические науки', cover: MEDIA.oceanExpedition },
 ];
 
 export const Workshop1View: React.FC<Workshop1ViewProps> = ({
@@ -166,7 +166,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
     if (book.id === 'b0') {
       onCompleteTask(0, {
         success: true,
-        title: 'Точно в цель! «Язык формы» (85.12 / М64)',
+        title: 'Точно в цель! «Язык формы» (85.15 / М64)',
         body: 'Поиск по каталогу выполнен точно: книга «Язык формы» найдена и не спутана с другим изданием того же автора и года («Модульная сетка»).',
         lesson:
           'При информационном поиске важно сопоставлять автора, год издания и аннотацию, чтобы безошибочно отличить похожие издания друг от друга.',
@@ -232,7 +232,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
       onRecordMistake(1);
       onShowError(
         'Это издание стоит в своём отраслевом отделе',
-        `Книга «${book.title}» относится к отделу 85.12 («Графический дизайн») и должна остаться на верхнем стеллаже. Проверь отраслевые индексы ББК и тематику остальных книг!`
+        `Книга «${book.title}» относится к отделу 85.15 («Графика») и должна остаться на верхнем стеллаже. Проверь отраслевые индексы ББК и тематику остальных книг!`
       );
     }
   };
@@ -242,9 +242,9 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
       onCompleteTask(1, {
         success: true,
         title: 'Заказ выполнен, а расстановка фонда исправлена!',
-        body: 'Издание «Язык формы» (85.12 / М64) выдано читателю по заказу, а книги «Маршруты города» и «Искусство путешествовать» (индекс ББК 26.8) перенесены в профильный раздел «География и путешествия».',
+        body: 'Издание «Язык формы» (85.15 / М64) выдано читателю по заказу, а книги «Маршруты города» и «Искусство путешествовать» (индекс ББК 26.8) перенесены в профильный раздел «Географические науки».',
         lesson:
-          'В библиотеках применяется систематико-алфавитная расстановка фонда: книги распределяются по отраслевым разделам таблиц ББК (85.12 — дизайн, 26.8 — география и путешествия), а внутри каждого раздела располагаются в алфавитном порядке авторов и заглавий.',
+          'В библиотеках применяется систематико-алфавитная расстановка фонда: книги распределяются по отраслевым разделам таблиц ББК (85.15 — графика, 26.8 — географические науки), а внутри каждого раздела располагаются в алфавитном порядке авторов и заглавий.',
         nextActionLabel: 'Сверить запись в каталоге (шаг 3)',
         onNext: 'next_task',
       });
@@ -284,8 +284,8 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
       onCompleteTask(2, {
         success: true,
         title: 'Библиографическая запись сверена!',
-        body: 'Каталожная запись приведена в соответствие с титульным листом издания: исправлены год выпуска (2022) и предметная рубрика («Глубоководные экспедиции»).',
-        lesson: 'Каталогизатор всегда сверяет выходные данные и предметные рубрики с самой книгой, чтобы читатели без ошибок находили её в электронном каталоге.',
+        body: 'Библиографическая запись исправлена: уточнён год издания (2022) и предметная рубрика («Глубоководные экспедиции»).',
+        lesson: 'При каталогизации специалист проверяет сведения о книге и определяет её тематику. Это помогает читателям находить нужные издания.',
         nextActionLabel: 'Собрать виртуальную выставку (шаг 4)',
         onNext: 'next_task',
       });
@@ -348,7 +348,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
       },
       {
         title: 'Подсказка · Шаг 2',
-        body: '1) Выдай читателю «Язык формы» (85.12 / М64) на кафедру справа. 2) На верхнем стеллаже отдела 85.12 стоят 2 книги из отдела 26.8 («Маршруты города» и «Искусство путешествовать») — перенеси обе на нижний стеллаж «Отдел 26.8 · География и путешествия».',
+        body: '1) Выдай читателю «Язык формы» (85.15 / М64) на кафедру справа. 2) На верхнем стеллаже отдела 85.15 стоят 2 книги из отдела 26.8 («Маршруты города» и «Искусство путешествовать») — перенеси обе на нижний стеллаж «Отдел 26.8 · Географические науки».',
       },
       {
         title: 'Подсказка · Шаг 3',
@@ -567,8 +567,8 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 resultPreview="Читатель получает точно подобранную книгу, а не похожее издание того же автора."
                 accentColor="#135c75"
                 proTip={{
-                  term: 'АБИС OPAC',
-                  text: 'Электронный каталог библиотеки, где книги ищут по автору, году, теме и ключевым словам.',
+                  term: 'Электронный каталог',
+                  text: 'Электронный каталог помогает находить книги по автору, названию, году издания и теме. В библиотеках Белгородской области используется АБИС «OPAC-Global».',
                 }}
                 onHint={handleHintClick}
               />
@@ -577,7 +577,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <div className="rounded-2xl bg-[#13294b] text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
                 <div className="flex items-center gap-2.5 text-xs">
                   <span className="px-2 py-0.5 rounded bg-[#135c75] text-[#7dd3fc] font-mono-tabular font-extrabold">
-                    АБИС OPAC · КАТАЛОГ
+                    Электронный каталог
                   </span>
                   <span className="font-semibold text-white/90">
                     Запрос читателя: <strong className="text-[#7dd3fc]">Марина Миронова · 2023 г. · шрифты и композиция плакатов</strong>
@@ -746,7 +746,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 accentColor="#135c75"
                 proTip={{
                   term: 'Индекс ББК',
-                  text: 'Цифровой шифр на ярлыке книги, по которому издания стоят на полках по отраслям знаний (например, 85.12 — дизайн, 26.8 — география).',
+                  text: 'Индекс ББК обозначает тематический раздел, к которому относится книга. Шифр хранения помогает найти её на полке.',
                 }}
                 onHint={handleHintClick}
               />
@@ -755,9 +755,9 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <div className="rounded-2xl bg-[#13294b] text-white px-4 py-3 text-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                   <span className="font-display font-extrabold text-[#7dd3fc]">Памятка систематической расстановки ББК:</span>
-                  <span><strong className="font-mono-tabular text-[#7dd3fc]">85.12</strong> — Графический дизайн (верхний стеллаж)</span>
+                  <span><strong className="font-mono-tabular text-[#7dd3fc]">85.15</strong> — Графика (верхний стеллаж)</span>
                   <span className="text-white/35">·</span>
-                  <span><strong className="font-mono-tabular text-[#86efac]">26.8</strong> — География и путешествия (нижний стеллаж)</span>
+                  <span><strong className="font-mono-tabular text-[#86efac]">26.8</strong> — Географические науки (нижний стеллаж)</span>
                 </div>
                 <span className="text-[11px] text-white/75 font-semibold">
                   Сверяй шифр на ярлыке каждой книги!
@@ -786,7 +786,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                       onClick={() => handleDropToTravel(selectedShelfBookId)}
                       className="min-h-[38px] px-4 rounded-xl bg-[#13294b] text-white text-xs font-extrabold"
                     >
-                      В отдел 26.8 «География и путешествия» ↓
+                      В отдел 26.8 «Географические науки» ↓
                     </button>
                   </div>
                 </div>
@@ -795,11 +795,11 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
                 {/* LEFT 8 COLS: REAL WOODEN BOOKCASE WITH SYSTEMATIC BBK SECTIONS */}
                 <div className="lg:col-span-8 rounded-3xl bg-[#5b3b22] p-4 sm:p-5 border-4 border-[#3d2514] shadow-2xl space-y-5">
-                  {/* SHELF 1: SECTION 85.12 DESIGN */}
+                  {/* SHELF 1: SECTION 85.15 GRAPHICS */}
                   <div className="rounded-2xl bg-[#2d1c10] p-4 pb-0 shadow-inner">
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                       <span className="px-3 py-1 rounded-lg bg-[#f6e4bc] text-[#3d2514] font-display font-extrabold text-xs">
-                        СТЕЛЛАЖ: Отдел 85.12 · Графический дизайн
+                        СТЕЛЛАЖ: Отдел 85.15 · Графика
                       </span>
                       <span className="text-xs text-[#f6e4bc]/80 font-semibold">
                         Перетаскивай книги мышкой или кликни для выбора
@@ -885,7 +885,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                       <span className="px-3 py-1 rounded-lg bg-[#d9f3e6] text-[#14532d] font-display font-extrabold text-xs">
-                        СТЕЛЛАЖ: Отдел 26.8 · География и путешествия
+                        СТЕЛЛАЖ: Отдел 26.8 · Географические науки
                       </span>
                       <span className="text-xs text-[#86efac] font-bold">
                         {movedMisplacedIds.length >= totalMisplacedCount
@@ -1038,8 +1038,8 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                 resultPreview="Библиографическая запись полностью соответствует изданию и готова к публикации в каталоге."
                 accentColor="#135c75"
                 proTip={{
-                  term: 'Библиографическая запись по ГОСТу',
-                  text: 'Официальный «паспорт» книги в каталоге (автор, год, издательство, тема), который сверяют с титульным листом.',
+                  term: 'Библиографическая запись',
+                  text: 'Сведения о книге в электронном каталоге, которые помогают её найти. Библиографическое описание составляют по ГОСТ Р 7.0.100-2018.',
                 }}
                 onHint={handleHintClick}
               />
@@ -1095,7 +1095,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
                   {/* Live ISBD / ГОСТ Р 7.0.100 Bibliographic Description String */}
                   <div className="rounded-xl bg-white border border-[#13294b]/12 p-3.5 space-y-1">
                     <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-[#135c75]">
-                      <span>Библиографическое описание по ГОСТ Р 7.0.100</span>
+                      <span>Библиографическое описание по ГОСТ Р 7.0.100-2018</span>
                       <span className="font-mono-tabular">ISBD</span>
                     </div>
                     <p className="font-mono-tabular text-xs text-[#13294b] leading-relaxed">

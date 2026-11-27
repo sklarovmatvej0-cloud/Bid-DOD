@@ -168,7 +168,10 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
     <div className="h-full overflow-y-auto desk-scroll px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-6xl mx-auto space-y-6 animate-card-in">
         {/* Top Score & Career Rank Certificate Card */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#13294b] via-[#17335c] to-[#0f223d] text-white p-6 sm:p-8 shadow-xl border border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <section
+          className="relative overflow-hidden rounded-3xl bg-[#13294b] text-white p-6 sm:p-8 shadow-xl border border-white/10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center"
+          style={{ background: 'linear-gradient(135deg, #13294b 0%, #17335c 50%, #0f223d 100%)' }}
+        >
           <div className="lg:col-span-6 space-y-3">
             <div className="inline-flex items-center gap-3 flex-wrap">
               <img

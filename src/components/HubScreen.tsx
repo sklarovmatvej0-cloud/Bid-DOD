@@ -82,7 +82,10 @@ export const HubScreen: React.FC<HubScreenProps> = ({
     <div className="h-full overflow-y-auto desk-scroll px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-6xl mx-auto space-y-6 animate-card-in">
         {/* 1. CLEAN HOOK-FIRST HERO BANNER («ИНФОПОЛИС БИД») */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0c1d36] via-[#13294b] to-[#164265] text-white px-6 py-7 sm:px-8 sm:py-9 shadow-2xl border border-white/15">
+        <section
+          className="relative overflow-hidden rounded-3xl bg-[#13294b] text-white px-6 py-7 sm:px-8 sm:py-9 shadow-2xl border border-white/15"
+          style={{ background: 'linear-gradient(135deg, #0c1d36 0%, #13294b 55%, #164265 100%)' }}
+        >
           {/* Animated Ambient Background Orbs */}
           <div
             className="pointer-events-none absolute -top-20 -right-16 w-72 h-72 rounded-full bg-[#38bdf8]/20 blur-3xl animate-hero-float"
@@ -124,7 +127,8 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     <button
                       type="button"
                       onClick={onSwitchTo3D}
-                      className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#c41e2e] via-[#dc2638] to-[#e11d48] hover:brightness-110 active:scale-[0.99] text-white font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all shadow-lg"
+                      className="min-h-[52px] px-6 rounded-2xl bg-[#c41e2e] hover:brightness-110 active:scale-[0.99] text-white font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all shadow-lg"
+                      style={{ background: 'linear-gradient(90deg, #c41e2e 0%, #dc2638 50%, #e11d48 100%)' }}
                     >
                       <Box className="w-5 h-5 text-white shrink-0" />
                       <span>Открыть 3D-тур по Инфополису БИД</span>
@@ -149,7 +153,10 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                     referrerPolicy="no-referrer"
                     className="w-full h-56 sm:h-64 object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f3a]/95 via-[#0d1f3a]/25 to-transparent" />
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: 'linear-gradient(to top, rgba(13,31,58,0.95) 0%, rgba(13,31,58,0.28) 55%, transparent 100%)' }}
+                  />
                   <div className="absolute top-3 left-3 px-3 py-1 rounded-xl bg-[#c41e2e] text-white font-mono-tabular text-[11px] font-extrabold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-md">
                     <Box className="w-3.5 h-3.5" /> Интерактивный 3D-режим
                   </div>
@@ -310,7 +317,10 @@ export const HubScreen: React.FC<HubScreenProps> = ({
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 55%, transparent 100%)' }}
+                    />
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
                       <span className="text-xs font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                         Проф-трек 0{ws.id}
@@ -599,7 +609,10 @@ export const HubScreen: React.FC<HubScreenProps> = ({
           </div>
 
           {/* Full-Width Styled Block: Научная и практическая база кафедры БИД */}
-          <div className="rounded-2xl bg-gradient-to-br from-[#0f223d] via-[#13294b] to-[#1b3a69] text-white p-5 sm:p-6 space-y-4 border border-white/10 shadow-md">
+          <div
+            className="rounded-2xl bg-[#13294b] text-white p-5 sm:p-6 space-y-4 border border-white/10 shadow-md"
+            style={{ background: 'linear-gradient(135deg, #0f223d 0%, #13294b 55%, #1b3a69 100%)' }}
+          >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#7dd3fc]">
                 <FlaskConical className="w-4 h-4 shrink-0" />

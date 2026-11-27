@@ -58,13 +58,16 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
         >
           {/* Top Accent Strip */}
           <div
-            className={`px-6 py-4 flex items-center justify-between gap-3 ${
-              isSuccess
-                ? 'bg-gradient-to-r from-[#157a4f] to-[#116440] text-white'
-                : isHint
-                  ? 'bg-gradient-to-r from-[#135c75] to-[#0f485c] text-white'
-                  : 'bg-gradient-to-r from-[#c41e2e] to-[#a21725] text-white'
+            className={`px-6 py-4 flex items-center justify-between gap-3 text-white ${
+              isSuccess ? 'bg-[#157a4f]' : isHint ? 'bg-[#135c75]' : 'bg-[#c41e2e]'
             }`}
+            style={{
+              background: isSuccess
+                ? 'linear-gradient(90deg, #157a4f 0%, #116440 100%)'
+                : isHint
+                  ? 'linear-gradient(90deg, #135c75 0%, #0f485c 100%)'
+                  : 'linear-gradient(90deg, #c41e2e 0%, #a21725 100%)',
+            }}
           >
             <div className="flex items-center gap-2.5 min-w-0">
               {isSuccess ? (

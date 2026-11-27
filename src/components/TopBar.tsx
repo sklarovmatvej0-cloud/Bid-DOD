@@ -32,7 +32,8 @@ export const BiblikCoin: React.FC<{ size?: 'sm' | 'md' | 'lg'; pulse?: boolean }
     <span
       className={`${dims} ${
         pulse ? 'animate-coin-pulse' : ''
-      } inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#38bdf8] via-[#0284c7] to-[#135c75] border-[#7dd3fc] text-white font-display font-extrabold shadow-xs select-none`}
+      } inline-flex shrink-0 items-center justify-center rounded-full bg-[#0284c7] border-[#7dd3fc] text-white font-display font-extrabold shadow-xs select-none`}
+      style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #135c75 100%)' }}
       aria-hidden="true"
     >
       Б

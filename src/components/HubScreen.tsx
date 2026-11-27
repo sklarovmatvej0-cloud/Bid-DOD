@@ -14,7 +14,7 @@ import {
   MapPin,
   Sparkles,
 } from 'lucide-react';
-import { HERO_ROLES, MEDIA } from '../game/assets';
+import { MEDIA } from '../game/assets';
 import {
   DEPARTMENT_PROGRAMS,
   DEPARTMENT_RESEARCH_HIGHLIGHTS,
@@ -55,54 +55,6 @@ const WORKSHOP_CARDS: Record<
   },
 };
 
-const ROLE_SHOWCASE: Record<
-  WorkshopId,
-  {
-    shortTitle: string;
-    roleTitle: string;
-    tagline: string;
-    description: string;
-    skills: string[];
-    characterImg: string;
-    accentColor: string;
-    pillBorder: string;
-  }
-> = {
-  1: {
-    shortTitle: 'Инфо-специалист',
-    roleTitle: 'Специалист по информационным ресурсам',
-    tagline: 'Поиск · Электронный каталог · ГОСТ · Выставка',
-    description:
-      'Ищи редкие издания в электронном каталоге, систематизируй фонды, проверяй библиографические записи и собирай мультимедийную выставку.',
-    skills: ['Поиск в каталоге', 'Систематизация', 'Сверка по ГОСТу', 'Виртуальная выставка'],
-    characterImg: HERO_ROLES.role1,
-    accentColor: '#0284c7',
-    pillBorder: 'border-[#0284c7]/35',
-  },
-  2: {
-    shortTitle: 'Редактор-издатель',
-    roleTitle: 'Редактор-издатель медиапроектов',
-    tagline: 'Рукопись · Фактчекинг · Вёрстка · Выпуск',
-    description:
-      'Работай с авторскими материалами, редактируй текст по стенограмме интервью, верстай журнальный разворот и готовь издание к выпуску.',
-    skills: ['Фактчекинг', 'Редактура текста', 'Модульная вёрстка', 'Выпуск издания'],
-    characterImg: HERO_ROLES.role2,
-    accentColor: '#c41e2e',
-    pillBorder: 'border-[#c41e2e]/35',
-  },
-  3: {
-    shortTitle: 'Креативный менеджер',
-    roleTitle: 'Креативный менеджер в БИД',
-    tagline: 'Социокультурный проект · Грант · SMM · Бренд',
-    description:
-      'Проектируй программу «Библионочи», управляй бюджетом гранта и площадками, запускай SMM-продвижение и развивай бренд учреждения культуры.',
-    skills: ['Концепция события', 'Бюджет гранта', 'SMM-анонс', 'Развитие бренда'],
-    characterImg: HERO_ROLES.role3,
-    accentColor: '#7c3aed',
-    pillBorder: 'border-[#7c3aed]/35',
-  },
-};
-
 export const HubScreen: React.FC<HubScreenProps> = ({
   save,
   totalBibliks,
@@ -110,14 +62,9 @@ export const HubScreen: React.FC<HubScreenProps> = ({
   onNavigate,
   onSwitchTo3D,
 }) => {
-  const [selectedRole, setSelectedRole] = useState<WorkshopId>(1);
   const [selectedProgramId, setSelectedProgramId] = useState<string>(DEPARTMENT_PROGRAMS[1].id);
   const activeProgram =
     DEPARTMENT_PROGRAMS.find((p) => p.id === selectedProgramId) ?? DEPARTMENT_PROGRAMS[0];
-  const activeRole = ROLE_SHOWCASE[selectedRole];
-  const cycleNextRole = () => {
-    setSelectedRole((prev) => (prev === 3 ? 1 : ((prev + 1) as WorkshopId)));
-  };
 
   const getTasksProgress = (wId: WorkshopId) => {
     if (wId === 1) return save.w1;
@@ -134,206 +81,112 @@ export const HubScreen: React.FC<HubScreenProps> = ({
   return (
     <div className="h-full overflow-y-auto desk-scroll px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-6xl mx-auto space-y-6 animate-card-in">
-        {/* 1. LIGHT SPARKLE-INSPIRED HERO + FULL MAIN INFO + 3D INTERACTIVE CHARACTER */}
-        <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#fffaf4] via-[#f3f8ff] to-[#edf4ff] text-[#13294b] px-6 py-7 sm:px-9 sm:py-9 shadow-xl border border-[#13294b]/10">
-          {/* Soft Pastel Glow Orbs */}
+        {/* 1. CLEAN HOOK-FIRST HERO BANNER («ИНФОПОЛИС БИД») */}
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0c1d36] via-[#13294b] to-[#164265] text-white px-6 py-7 sm:px-8 sm:py-9 shadow-2xl border border-white/15">
+          {/* Animated Ambient Background Orbs */}
           <div
-            className="pointer-events-none absolute -top-24 -left-16 w-80 h-80 rounded-full bg-[#fde68a]/35 blur-3xl animate-hero-float"
+            className="pointer-events-none absolute -top-20 -right-16 w-72 h-72 rounded-full bg-[#38bdf8]/20 blur-3xl animate-hero-float"
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute -bottom-24 right-0 w-96 h-96 rounded-full bg-[#bae6fd]/45 blur-3xl animate-hero-float"
-            style={{ animationDelay: '1.6s' }}
+            className="pointer-events-none absolute -bottom-24 left-1/3 w-80 h-80 rounded-full bg-[#c41e2e]/20 blur-3xl animate-hero-float"
+            style={{ animationDelay: '1.8s' }}
             aria-hidden="true"
           />
 
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Column: Complete Main Info + 3D Tour Preview + Stats */}
-            <div className="lg:col-span-7 space-y-5">
-              <div className="space-y-2.5">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#0284c7]/20 shadow-xs text-xs font-extrabold uppercase tracking-wider text-[#0369a1]">
-                  <Sparkles className="w-3.5 h-3.5 shrink-0 text-[#c41e2e]" />
-                  <span>Кафедра библиотечно-информационной деятельности · БГИИК</span>
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-7 items-center">
+            <div className="lg:col-span-7 space-y-4">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#7dd3fc]">
+                  <Sparkles className="w-4 h-4 shrink-0" />
+                  <span>Кафедра библиотечно-информационной деятельности</span>
                 </div>
-                <h1 className="font-display font-extrabold text-3xl sm:text-[42px] leading-[1.08] tracking-tight text-[#13294b]">
+                <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight text-white">
                   Информация управляет миром.{' '}
-                  <span className="italic text-[#c41e2e]">А кто управляет информацией?</span>
+                  <span className="text-[#7dd3fc]">А кто управляет информацией?</span>
                 </h1>
-                <p className="text-sm sm:text-base text-[#13294b]/80 leading-relaxed max-w-2xl">
-                  Попробуй себя в мире профессий «Инфополис БИД» на реальных рабочих задачах:
-                  управляй электронным каталогом и фондом, редактируй и верстай новый выпуск
-                  журнала, запускай культурный проект и продвигай его в цифровой среде.
-                </p>
               </div>
 
-              {/* Primary CTAs */}
-              <div className="flex flex-wrap items-center gap-3">
-                {onSwitchTo3D && (
-                  <button
-                    type="button"
-                    onClick={onSwitchTo3D}
-                    className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#c41e2e] via-[#dc2638] to-[#e11d48] hover:brightness-110 active:scale-[0.99] text-white font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all shadow-lg"
-                  >
-                    <Box className="w-5 h-5 text-white shrink-0" />
-                    <span>Открыть 3D-тур по Инфополису БИД</span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
-                  </button>
-                )}
+              <p className="text-sm sm:text-base text-white/90 leading-relaxed">
+                Попробуй себя в мире профессий «Инфополис БИД» на реальных рабочих задачах: управляй
+                информационными ресурсами и электронным каталогом, редактируй и верстай новый выпуск
+                журнала, запускай культурный проект и продвигай его в цифровой среде.
+              </p>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    onNavigate({
-                      view: 'workshop',
-                      workshop: selectedRole,
-                      task: getNextTaskIdx(selectedRole),
-                    })
-                  }
-                  className="min-h-[52px] px-5 rounded-2xl text-white font-display font-extrabold text-sm inline-flex items-center gap-2 shadow-md transition-all hover:brightness-110"
-                  style={{ backgroundColor: activeRole.accentColor }}
-                >
-                  <span>Начать: {activeRole.shortTitle}</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-              </div>
-
-              {/* 3 Stat Cards + Compact 3D World Preview Card */}
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-1">
-                <div className="sm:col-span-6 grid grid-cols-3 gap-2">
-                  <div className="rounded-2xl bg-white/90 border border-[#13294b]/10 px-2.5 py-3 text-center shadow-xs">
-                    <div className="font-display font-extrabold text-xl text-[#0284c7] font-mono-tabular">
-                      3
-                    </div>
-                    <div className="text-[11px] font-bold text-[#13294b]/75">проф-трека</div>
-                  </div>
-                  <div className="rounded-2xl bg-white/90 border border-[#13294b]/10 px-2.5 py-3 text-center shadow-xs">
-                    <div className="font-display font-extrabold text-xl text-[#c41e2e] font-mono-tabular">
-                      12
-                    </div>
-                    <div className="text-[11px] font-bold text-[#13294b]/75">кейсов</div>
-                  </div>
-                  <div className="rounded-2xl bg-white/90 border border-[#13294b]/10 px-2.5 py-3 text-center shadow-xs">
-                    <div className="font-display font-extrabold text-xl text-[#7c3aed] font-mono-tabular">
-                      36
-                    </div>
-                    <div className="text-[11px] font-bold text-[#13294b]/75">библиков</div>
-                  </div>
+              {/* Prominent Call-to-Action Block + Primary 3D Tour Button */}
+              <div className="rounded-2xl bg-white/10 border border-[#7dd3fc]/35 p-4 sm:p-5 space-y-3.5">
+                <div className="font-display font-extrabold text-sm sm:text-base text-white leading-snug">
+                  Твоим идеям пора получить профессию — исследуй 3D-залы «Инфополиса БИД» или выбери
+                  проф-трек ниже!
                 </div>
-
                 {onSwitchTo3D && (
-                  <button
-                    type="button"
-                    onClick={onSwitchTo3D}
-                    className="sm:col-span-6 group rounded-2xl bg-white/95 hover:bg-white border border-[#13294b]/10 p-2.5 flex items-center gap-3 text-left shadow-xs transition-all"
-                  >
-                    <img
-                      src={MEDIA.studioRoom}
-                      alt="Виртуальный 3D-мир Инфополис БИД"
-                      className="w-14 h-14 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-extrabold text-[#13294b] truncate">
-                        3D-мир «Инфополис БИД»
-                      </div>
-                      <div className="text-[11px] text-[#13294b]/65 line-clamp-2 leading-snug mt-0.5">
-                        Холл · Библиотека · Редакция · Зал «Библионочи»
-                      </div>
-                    </div>
-                    <span className="w-8 h-8 rounded-xl bg-[#eef6fc] text-[#0284c7] group-hover:bg-[#0284c7] group-hover:text-white flex items-center justify-center font-extrabold text-sm transition-colors shrink-0">
-                      →
-                    </span>
-                  </button>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={onSwitchTo3D}
+                      className="min-h-[52px] px-6 rounded-2xl bg-gradient-to-r from-[#c41e2e] via-[#dc2638] to-[#e11d48] hover:brightness-110 active:scale-[0.99] text-white font-display font-extrabold text-sm sm:text-base inline-flex items-center gap-2.5 transition-all shadow-lg"
+                    >
+                      <Box className="w-5 h-5 text-white shrink-0" />
+                      <span>Открыть 3D-тур по Инфополису БИД</span>
+                      <ArrowRight className="w-5 h-5 shrink-0" />
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
 
-            {/* Right Column: Crisp 3D Standing Character — Click to Switch Roles */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              <div
-                key={selectedRole}
-                className="relative w-full max-w-md flex flex-col items-center text-center animate-card-in"
-              >
-                {/* Floating Role Counter Pill */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#13294b]/10 shadow-sm text-xs font-extrabold text-[#13294b]">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ backgroundColor: activeRole.accentColor }}
+            {/* Right Interactive 3D Preview Card (Enlarged!) + Game Stats */}
+            <div className="lg:col-span-5 space-y-3.5">
+              {onSwitchTo3D && (
+                <button
+                  type="button"
+                  onClick={onSwitchTo3D}
+                  className="group w-full relative rounded-2xl overflow-hidden border-2 border-[#7dd3fc]/55 shadow-2xl text-left block transition-transform hover:-translate-y-0.5"
+                >
+                  <img
+                    src={MEDIA.studioRoom}
+                    alt="3D-тур по залам Инфополиса БИД"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-56 sm:h-64 object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
-                  <span>
-                    Роль {selectedRole} из 3 · Нажми на персонажа ✨
-                  </span>
-                </div>
-
-                {/* Standing Crisp 3D Character */}
-                <div className="relative flex flex-col items-center mt-2">
-                  <div
-                    className="pointer-events-none absolute inset-6 rounded-full blur-3xl opacity-30"
-                    style={{ backgroundColor: activeRole.accentColor }}
-                    aria-hidden="true"
-                  />
-                  <button
-                    type="button"
-                    onClick={cycleNextRole}
-                    aria-label="Нажмите на персонажа, чтобы сменить роль"
-                    className="group relative z-10 flex flex-col items-center focus:outline-none cursor-pointer transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
-                  >
-                    <img
-                      src={activeRole.characterImg}
-                      alt={activeRole.roleTitle}
-                      className="h-72 sm:h-80 w-auto object-contain drop-shadow-[0_18px_28px_rgba(19,41,75,0.2)] select-none"
-                    />
-                    <div
-                      className="w-36 h-3.5 rounded-full bg-[#13294b]/15 blur-sm -mt-2"
-                      aria-hidden="true"
-                    />
-                  </button>
-                </div>
-
-                {/* Floating Role Info Card */}
-                <div className="mt-2 w-full rounded-2xl bg-white/92 backdrop-blur-xs border border-white shadow-md px-4 py-3.5 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <span
-                      className="text-[11px] font-extrabold uppercase tracking-wider"
-                      style={{ color: activeRole.accentColor }}
-                    >
-                      Трек 0{selectedRole} · {activeRole.shortTitle}
-                    </span>
-                    <div className="flex items-center gap-1.5">
-                      {([1, 2, 3] as WorkshopId[]).map((wId) => {
-                        const isCurrent = selectedRole === wId;
-                        return (
-                          <button
-                            key={wId}
-                            type="button"
-                            onClick={() => setSelectedRole(wId)}
-                            aria-label={`Выбрать роль ${ROLE_SHOWCASE[wId].shortTitle}`}
-                            className={`h-2 rounded-full transition-all ${
-                              isCurrent ? 'w-6' : 'w-2 bg-[#13294b]/20 hover:bg-[#13294b]/40'
-                            }`}
-                            style={
-                              isCurrent ? { backgroundColor: activeRole.accentColor } : undefined
-                            }
-                          />
-                        );
-                      })}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f3a]/95 via-[#0d1f3a]/25 to-transparent" />
+                  <div className="absolute top-3 left-3 px-3 py-1 rounded-xl bg-[#c41e2e] text-white font-mono-tabular text-[11px] font-extrabold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-md">
+                    <Box className="w-3.5 h-3.5" /> Интерактивный 3D-режим
+                  </div>
+                  <div className="absolute bottom-3.5 left-4 right-4 flex items-center justify-between gap-3 text-white">
+                    <div>
+                      <div className="font-display font-extrabold text-sm sm:text-base text-[#7dd3fc]">
+                        Виртуальный 3D-мир «Инфополис БИД»
+                      </div>
+                      <div className="text-xs text-white/90 mt-0.5">
+                        Холл · Библиотека · Редакция и типография · Зал «Библионочи»
+                      </div>
                     </div>
+                    <span className="w-10 h-10 rounded-xl bg-[#0284c7] text-white flex items-center justify-center font-extrabold text-base shrink-0 shadow">
+                      →
+                    </span>
                   </div>
-                  <h2 className="font-display font-extrabold text-base text-[#13294b] text-left leading-snug">
-                    {activeRole.roleTitle}
-                  </h2>
-                  <p className="text-xs text-[#13294b]/75 text-left leading-relaxed">
-                    {activeRole.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 pt-0.5">
-                    {activeRole.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-2 py-0.5 rounded-full bg-[#f4f7fc] border border-[#13294b]/8 text-[10px] font-bold text-[#13294b]"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+                </button>
+              )}
+
+              <div className="grid grid-cols-3 gap-2.5">
+                <div className="rounded-2xl bg-white/10 border border-white/12 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#7dd3fc] font-mono-tabular">
+                    3
                   </div>
+                  <div className="text-[11px] font-bold text-white/85">проф-трека</div>
+                </div>
+                <div className="rounded-2xl bg-white/10 border border-white/12 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#7dd3fc] font-mono-tabular">
+                    12
+                  </div>
+                  <div className="text-[11px] font-bold text-white/85">заданий</div>
+                </div>
+                <div className="rounded-2xl bg-white/10 border border-white/12 px-3 py-2.5 text-center">
+                  <div className="font-display font-extrabold text-xl text-[#7dd3fc] font-mono-tabular">
+                    36
+                  </div>
+                  <div className="text-[11px] font-bold text-white/85">макс. библиков</div>
                 </div>
               </div>
             </div>
@@ -399,7 +252,7 @@ export const HubScreen: React.FC<HubScreenProps> = ({
         </section>
 
         {/* 3. THREE PROFESSIONAL TRACKS TO PLAY */}
-        <div id="tracks-section" className="flex flex-wrap items-baseline justify-between gap-2 pt-2">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
             <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#13294b]">
               Выбери профессиональный трек

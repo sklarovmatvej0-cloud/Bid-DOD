@@ -547,7 +547,7 @@ export const Workshop1View: React.FC<Workshop1ViewProps> = ({
             activeIdx={taskIdx}
             progress={progress}
             accentColor="#135c75"
-            dark={isDarkOcean}
+            dark={taskIdx === 3}
             onSelectTask={onSelectTask}
           />
 

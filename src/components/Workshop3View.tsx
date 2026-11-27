@@ -1412,25 +1412,33 @@ export const Workshop3View: React.FC<Workshop3ViewProps> = ({
                               </div>
                             </div>
                           </div>
+                        ) : smmPicks.visual === 'photo' ? (
+                          <div className="relative aspect-[16/10] bg-[#0f172a] overflow-hidden">
+                            <img
+                              src={MEDIA.sceneFestivalStage}
+                              alt="Фото зала библиотеки"
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover opacity-85"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
+                            <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-black/60 text-white/90 text-[9px] font-bold">
+                              1 фото · без расписания
+                            </div>
+                            <div className="absolute bottom-2.5 left-3 right-3 text-white text-[10px] leading-snug">
+                              Читальный зал готов к вечеру — подробности и время ищите в тексте ниже.
+                            </div>
+                          </div>
                         ) : (
-                          <div className="relative aspect-[16/10] bg-[#e5e9f0] p-3.5 overflow-hidden flex flex-col justify-between">
-                            <div className="flex items-center justify-between">
-                              <span className="px-2 py-0.5 rounded bg-[#c41e2e] text-white text-[9px] font-extrabold">
-                                ⚠ СПЛОШНОЙ ТЕКСТ БЕЗ КАРТОЧЕК
-                              </span>
-                              <span className="font-mono-tabular text-[9px] font-extrabold text-[#13294b]/60">
-                                Шаг 2
-                              </span>
+                          <div className="bg-[#f8fafc] border-y border-[#13294b]/10 p-3.5 space-y-1.5">
+                            <div className="flex items-center justify-between text-[9px] font-bold text-[#13294b]/55">
+                              <span>Текстовое объявление · без иллюстраций</span>
+                              <span>Шаг 2</span>
                             </div>
-                            <p className="text-[9px] leading-tight text-[#13294b]/75 font-mono-tabular line-clamp-6">
-                              ПОЛОЖЕНИЕ О ПРОВЕДЕНИИ КУЛЬТУРНО-МАССОВОГО МЕРОПРИЯТИЯ. Доводим до
-                              сведения всех заинтересованных лиц регламент проведения вечерней
-                              программы согласно утверждённому плану работы отдела на текущий
-                              квартал без иллюстраций и разбивки на абзацы...
+                            <p className="text-[11px] leading-relaxed text-[#13294b]/80 line-clamp-4">
+                              Уведомляем читателей о проведении вечерней программы в пятницу. В
+                              программе запланированы тематические встречи, викторина и работа
+                              творческих площадок согласно расписанию отдела...
                             </p>
-                            <div className="text-[10px] font-extrabold text-[#c41e2e]">
-                              Нажми, чтобы заменить на яркую карусель карточек →
-                            </div>
                           </div>
                         )}
                       </div>

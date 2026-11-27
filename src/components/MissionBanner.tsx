@@ -32,12 +32,14 @@ export const MissionBanner: React.FC<MissionBannerProps> = ({
   title,
   goal,
   steps,
+  resultPreview,
   accentColor,
   dark = false,
   proTip,
   onHint,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [showResultPeek, setShowResultPeek] = useState(false);
   const doneSteps = steps.filter((s) => s.done).length;
   const activeStepIdx = steps.findIndex((s) => !s.done);
   const gridColsClass =
@@ -113,14 +115,36 @@ export const MissionBanner: React.FC<MissionBannerProps> = ({
       <div className="p-4 sm:p-5 space-y-4">
         <div className="flex flex-col md:flex-row items-stretch md:items-start gap-4">
           {!collapsed && (
-            <div className="w-full md:w-44 lg:w-48 shrink-0 aspect-[16/10] md:aspect-[4/3] rounded-xl bg-[#13294b] overflow-hidden shadow-xs">
+            <button
+              type="button"
+              onClick={() => setShowResultPeek((v) => !v)}
+              title="Нажми, чтобы увидеть итог шага"
+              className="group relative w-full md:w-44 lg:w-48 shrink-0 aspect-[16/10] md:aspect-[4/3] rounded-xl bg-[#13294b] overflow-hidden shadow-xs text-left cursor-pointer"
+            >
               <img
                 src={image}
                 alt={imageAlt}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
-            </div>
+              <div
+                className={`absolute inset-0 transition-opacity duration-200 flex flex-col justify-end p-2.5 ${
+                  showResultPeek
+                    ? 'bg-[#0c1d36]/90 opacity-100'
+                    : 'bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-90 group-hover:opacity-100'
+                }`}
+              >
+                {showResultPeek ? (
+                  <span className="text-[11px] font-bold text-white leading-snug">
+                    ✓ Итог: {resultPreview}
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-extrabold text-[#7dd3fc] tracking-wide">
+                    Нажми: что получится →
+                  </span>
+                )}
+              </div>
+            </button>
           )}
 
           <div className="flex-1 min-w-0 space-y-2.5">

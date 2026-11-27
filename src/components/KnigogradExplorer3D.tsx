@@ -1238,18 +1238,18 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
                 onClick={() => controllerRef.current?.walkToRoom('w3')}
               />
 
-              {/* Zone Micro Labels */}
-              <text x="35" y="101" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="7.5" fontWeight="700">
-                1. БИД
+              {/* Zone Micro Labels + Progress */}
+              <text x="35" y="101" textAnchor="middle" fill="rgba(255,255,255,0.8)" fontSize="7" fontWeight="700">
+                1. БИД ({save.w1.filter((t) => t.completed).length}/4)
               </text>
-              <text x="100" y="16" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="7.5" fontWeight="700">
-                2. Редакция
+              <text x="100" y="16" textAnchor="middle" fill="rgba(255,255,255,0.8)" fontSize="7" fontWeight="700">
+                2. Ред. ({save.w2.filter((t) => t.completed).length}/4)
               </text>
-              <text x="100" y="101" textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="7.5" fontWeight="700">
+              <text x="100" y="101" textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="7" fontWeight="700">
                 Холл
               </text>
-              <text x="165" y="101" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="7.5" fontWeight="700">
-                3. Библионочь
+              <text x="165" y="101" textAnchor="middle" fill="rgba(255,255,255,0.8)" fontSize="7" fontWeight="700">
+                3. БН ({save.w3.filter((t) => t.completed).length}/4)
               </text>
 
               {/* 12 Station Dots */}
@@ -1291,6 +1291,54 @@ export const KnigogradExplorer3D: React.FC<KnigogradExplorer3DProps> = ({
             </svg>
           );
         })()}
+
+        {/* Quick 1-Click Room Teleport Buttons */}
+        <div className="mt-2 grid grid-cols-2 gap-1.5 text-[10px] font-extrabold">
+          <button
+            type="button"
+            onClick={() => controllerRef.current?.walkToRoom('w1')}
+            className={`px-2 py-1.5 rounded-lg border text-left truncate transition-colors ${
+              currentZone === 'w1'
+                ? 'bg-[#135c75] border-[#7dd3fc] text-white'
+                : 'bg-white/8 hover:bg-white/15 border-white/10 text-white/85'
+            }`}
+          >
+            1. БИД · {save.w1.filter((t) => t.completed).length}/4
+          </button>
+          <button
+            type="button"
+            onClick={() => controllerRef.current?.walkToRoom('w2')}
+            className={`px-2 py-1.5 rounded-lg border text-left truncate transition-colors ${
+              currentZone === 'w2'
+                ? 'bg-[#c41e2e] border-[#fda4af] text-white'
+                : 'bg-white/8 hover:bg-white/15 border-white/10 text-white/85'
+            }`}
+          >
+            2. Редакция · {save.w2.filter((t) => t.completed).length}/4
+          </button>
+          <button
+            type="button"
+            onClick={() => controllerRef.current?.walkToRoom('w3')}
+            className={`px-2 py-1.5 rounded-lg border text-left truncate transition-colors ${
+              currentZone === 'w3'
+                ? 'bg-[#b45309] border-[#fde047] text-white'
+                : 'bg-white/8 hover:bg-white/15 border-white/10 text-white/85'
+            }`}
+          >
+            3. Библионочь · {save.w3.filter((t) => t.completed).length}/4
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              nextObjective
+                ? controllerRef.current?.walkToStation(nextObjective.stationId, true)
+                : controllerRef.current?.walkToRoom('lobby')
+            }
+            className="px-2 py-1.5 rounded-lg bg-[#ffd66b] hover:bg-[#f7c84d] text-[#13294b] text-left truncate transition-colors"
+          >
+            {nextObjective ? '⚡ К стенду' : '🏛 В холл'}
+          </button>
+        </div>
       </div>
 
       {/* Unified Bottom Stack (Perfectly Centered, Zero Overlap Between Prompt & Dock) */}
